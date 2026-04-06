@@ -1,7 +1,164 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Migrations\\20260406132051_AddedRepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:EliteFitPersistence\\Migrations\\20260406132051_AddedRepositories.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{416DD8F6-D857-4CFE-A798-55AE5EDB282E}|EliteFit\\EliteFit.Api.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{416DD8F6-D857-4CFE-A798-55AE5EDB282E}|EliteFit\\EliteFit.Api.csproj|solutionrelative:elitefit\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefitpersistence\\persistence\\repositories\\auditlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|solutionrelative:elitefitpersistence\\persistence\\repositories\\auditlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefitpersistence\\persistence\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|solutionrelative:elitefitpersistence\\persistence\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\interfaces\\iauditlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\interfaces\\iauditlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{416DD8F6-D857-4CFE-A798-55AE5EDB282E}|EliteFit\\EliteFit.Api.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{416DD8F6-D857-4CFE-A798-55AE5EDB282E}|EliteFit\\EliteFit.Api.csproj|solutionrelative:elitefit\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Migrations\\20260406124406_InitialSetup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:EliteFitPersistence\\Migrations\\20260406124406_InitialSetup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{416DD8F6-D857-4CFE-A798-55AE5EDB282E}|EliteFit\\EliteFit.Api.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit\\elitefit.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{416DD8F6-D857-4CFE-A798-55AE5EDB282E}|EliteFit\\EliteFit.Api.csproj|solutionrelative:elitefit\\elitefit.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefitpersistence\\elitefit.persistence.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|solutionrelative:elitefitpersistence\\elitefit.persistence.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefitpersistence\\persistence\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|solutionrelative:elitefitpersistence\\persistence\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefitpersistence\\persistence\\context\\mongodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFitPersistence\\EliteFit.Persistence.csproj|solutionrelative:elitefitpersistence\\persistence\\context\\mongodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\mongo\\auditlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\mongo\\auditlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\workoutvideo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\workoutvideo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\userworkouthistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\userworkouthistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\userstreak.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\userstreak.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\usergoal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\usergoal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\userbadge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\userbadge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\userallergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\userallergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\setting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\setting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\rolepermission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\rolepermission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\recipeallergeninfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\recipeallergeninfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\recipe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\recipe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\quickfixtip.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\quickfixtip.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\permission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\permission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\goal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\goal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\fileentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\fileentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\exercisecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\exercisecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\badge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\badge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.domain\\entities\\allergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\entities\\allergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{06332A85-2B1B-45D0-A3F3-CEA008E52509}|EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.infrastructure\\elitefit.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{06332A85-2B1B-45D0-A3F3-CEA008E52509}|EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj|solutionrelative:elitefit.infrastructure\\elitefit.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitefit\\elitefit\\elitebackend\\elitefit.application\\elitefit.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|solutionrelative:elitefit.application\\elitefit.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +166,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -22,6 +179,513 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20260406132051_AddedRepositories.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Migrations\\20260406132051_AddedRepositories.cs",
+              "RelativeDocumentMoniker": "EliteFitPersistence\\Migrations\\20260406132051_AddedRepositories.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Migrations\\20260406132051_AddedRepositories.cs",
+              "RelativeToolTip": "EliteFitPersistence\\Migrations\\20260406132051_AddedRepositories.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T13:20:51.607Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AuditLogRepository.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Repositories\\AuditLogRepository.cs",
+              "RelativeDocumentMoniker": "EliteFitPersistence\\Persistence\\Repositories\\AuditLogRepository.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Repositories\\AuditLogRepository.cs",
+              "RelativeToolTip": "EliteFitPersistence\\Persistence\\Repositories\\AuditLogRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T12:53:44.094Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Repositories\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "EliteFitPersistence\\Persistence\\Repositories\\GenericRepository.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Repositories\\GenericRepository.cs",
+              "RelativeToolTip": "EliteFitPersistence\\Persistence\\Repositories\\GenericRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T12:53:20.581Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IAuditLogRepository.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Interfaces\\IAuditLogRepository.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Interfaces\\IAuditLogRepository.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Interfaces\\IAuditLogRepository.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Interfaces\\IAuditLogRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T12:52:51.667Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IGenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Interfaces\\IGenericRepository.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Interfaces\\IGenericRepository.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Interfaces\\IGenericRepository.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Interfaces\\IGenericRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T12:52:29.732Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "20260406124406_InitialSetup.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Migrations\\20260406124406_InitialSetup.cs",
+              "RelativeDocumentMoniker": "EliteFitPersistence\\Migrations\\20260406124406_InitialSetup.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Migrations\\20260406124406_InitialSetup.cs",
+              "RelativeToolTip": "EliteFitPersistence\\Migrations\\20260406124406_InitialSetup.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T12:44:07.167Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit\\Program.cs",
+              "RelativeDocumentMoniker": "EliteFit\\Program.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit\\Program.cs",
+              "RelativeToolTip": "EliteFit\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T00:35:43.545Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Context\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "EliteFitPersistence\\Persistence\\Context\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Context\\ApplicationDbContext.cs",
+              "RelativeToolTip": "EliteFitPersistence\\Persistence\\Context\\ApplicationDbContext.cs",
+              "ViewState": "AgIAABwAAACApHvQ3P0ewCUAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:11:12.719Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "MongoDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Context\\MongoDbContext.cs",
+              "RelativeDocumentMoniker": "EliteFitPersistence\\Persistence\\Context\\MongoDbContext.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\Persistence\\Context\\MongoDbContext.cs",
+              "RelativeToolTip": "EliteFitPersistence\\Persistence\\Context\\MongoDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T00:35:23.055Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "EliteFit.Persistence.csproj",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\EliteFit.Persistence.csproj",
+              "RelativeDocumentMoniker": "EliteFitPersistence\\EliteFit.Persistence.csproj",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFitPersistence\\EliteFit.Persistence.csproj",
+              "RelativeToolTip": "EliteFitPersistence\\EliteFit.Persistence.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-06T00:00:16.604Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit\\appsettings.json",
+              "RelativeDocumentMoniker": "EliteFit\\appsettings.json",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit\\appsettings.json",
+              "RelativeToolTip": "EliteFit\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-06T12:18:46.884Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AuditLog.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Mongo\\AuditLog.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Mongo\\AuditLog.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Mongo\\AuditLog.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Mongo\\AuditLog.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBYAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T00:59:32.248Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "EliteFit.Api.csproj",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit\\EliteFit.Api.csproj",
+              "RelativeDocumentMoniker": "EliteFit\\EliteFit.Api.csproj",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit\\EliteFit.Api.csproj",
+              "RelativeToolTip": "EliteFit\\EliteFit.Api.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-05T23:39:41.498Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "UserWorkoutHistory.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserWorkoutHistory.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\UserWorkoutHistory.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserWorkoutHistory.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\UserWorkoutHistory.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:06:40.271Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserStreak.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserStreak.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\UserStreak.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserStreak.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\UserStreak.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAAAgAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:08:07.621Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserRole.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\UserRole.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserRole.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:06:21.155Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "UserProfile.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserProfile.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\UserProfile.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserProfile.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\UserProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:07:44.923Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "UserGoal.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserGoal.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\UserGoal.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserGoal.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\UserGoal.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:06:01.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "UserBadge.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserBadge.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\UserBadge.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserBadge.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\UserBadge.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:05:43.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "UserAllergy.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserAllergy.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\UserAllergy.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\UserAllergy.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\UserAllergy.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:05:24.404Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\User.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\User.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T00:56:35.76Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "WorkoutVideo.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\WorkoutVideo.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\WorkoutVideo.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\WorkoutVideo.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\WorkoutVideo.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:07:12.511Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Setting.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Setting.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Setting.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Setting.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Setting.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:05:05.621Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "RolePermission.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\RolePermission.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\RolePermission.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\RolePermission.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\RolePermission.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:04:45.557Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Role.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Role.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Role.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Role.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Role.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:04:22.258Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "RefreshToken.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\RefreshToken.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\RefreshToken.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\RefreshToken.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\RefreshToken.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:04:06.59Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "RecipeAllergenInfo.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\RecipeAllergenInfo.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\RecipeAllergenInfo.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\RecipeAllergenInfo.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\RecipeAllergenInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:03:51.41Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "Recipe.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Recipe.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Recipe.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Recipe.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Recipe.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:03:34.103Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "QuickFixTip.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\QuickFixTip.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\QuickFixTip.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\QuickFixTip.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\QuickFixTip.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:03:15.914Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Permission.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Permission.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Permission.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Permission.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Permission.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:02:57.307Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "Notification.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Notification.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Notification.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Notification.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Notification.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:02:28.582Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "Goal.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Goal.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Goal.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Goal.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Goal.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:02:10.135Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "FileEntity.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\FileEntity.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\FileEntity.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\FileEntity.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\FileEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:01:53.68Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "ExerciseCategory.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\ExerciseCategory.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\ExerciseCategory.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\ExerciseCategory.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\ExerciseCategory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T01:01:37.558Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "BaseEntity.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\BaseEntity.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\BaseEntity.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\BaseEntity.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\BaseEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T00:56:09.395Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "Badge.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Badge.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Badge.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Badge.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Badge.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T00:59:52.864Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "Allergy.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Allergy.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Entities\\Allergy.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Domain\\Entities\\Allergy.cs",
+              "RelativeToolTip": "EliteFit.Domain\\Entities\\Allergy.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-06T00:59:11.22Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "EliteFit.Infrastructure.csproj",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+              "RelativeDocumentMoniker": "EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+              "RelativeToolTip": "EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-05T23:46:44.35Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "EliteFit.Application.csproj",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
+              "RelativeDocumentMoniker": "EliteFit.Application\\EliteFit.Application.csproj",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteFit\\EliteFit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
+              "RelativeToolTip": "EliteFit.Application\\EliteFit.Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-05T23:37:49.883Z",
+              "EditorCaption": ""
             }
           ]
         },

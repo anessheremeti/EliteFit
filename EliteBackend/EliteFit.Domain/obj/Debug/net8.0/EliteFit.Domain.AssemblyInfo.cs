@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EliteFit.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e04ec556dd9674e597e1fddb44b8db72d446ceb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3df42633065a42d6a22da51bfe294f8f8a2120e4")]
 [assembly: System.Reflection.AssemblyProductAttribute("EliteFit.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EliteFit.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
