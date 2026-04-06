@@ -1,0 +1,6 @@
+@EliteFit_HostAddress = http://localhost:5193
+
+GET {{EliteFit_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
