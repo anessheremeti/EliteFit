@@ -10,3 +10,15 @@ C:\Users\lendr\OneDrive\Desktop\EliteFit\EliteFit\EliteBackend\EliteFit.Domain\o
 C:\Users\lendr\OneDrive\Desktop\EliteFit\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\refint\EliteFit.Domain.dll
 C:\Users\lendr\OneDrive\Desktop\EliteFit\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.pdb
 C:\Users\lendr\OneDrive\Desktop\EliteFit\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\ref\EliteFit.Domain.dll
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\bin\Debug\net8.0\EliteFit.Domain.deps.json
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\bin\Debug\net8.0\EliteFit.Domain.dll
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\bin\Debug\net8.0\EliteFit.Domain.pdb
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.AssemblyInfoInputs.cache
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.AssemblyInfo.cs
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.sourcelink.json
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.dll
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\refint\EliteFit.Domain.dll
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\EliteFit.Domain.pdb
+C:\Users\Jahir\Desktop\server04\room-2-active\server01-active\EliteFit\EliteBackend\EliteFit.Domain\obj\Debug\net8.0\ref\EliteFit.Domain.dll

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EliteFit.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3df42633065a42d6a22da51bfe294f8f8a2120e4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3149d7041daedc6991178a3f97c05d77e35d9558")]
 [assembly: System.Reflection.AssemblyProductAttribute("EliteFit.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EliteFit.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

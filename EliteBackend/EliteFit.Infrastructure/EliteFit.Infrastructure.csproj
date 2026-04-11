@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EliteFit.Application\EliteFit.Application.csproj" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\EliteFit.Domain\EliteFit.Domain.csproj" />
   </ItemGroup>
 
 </Project>

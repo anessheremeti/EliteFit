@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EliteFit.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e04ec556dd9674e597e1fddb44b8db72d446ceb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3149d7041daedc6991178a3f97c05d77e35d9558")]
 [assembly: System.Reflection.AssemblyProductAttribute("EliteFit.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EliteFit.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
