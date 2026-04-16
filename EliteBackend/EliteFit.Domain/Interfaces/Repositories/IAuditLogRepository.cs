@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EliteFit.Domain.Entities.Mongo;
 
-namespace EliteFit.Domain.Interfaces
+namespace EliteFit.Domain.Interfaces.Repositories
 {
     public interface IAuditLogRepository
     {

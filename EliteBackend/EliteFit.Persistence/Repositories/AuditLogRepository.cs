@@ -1,14 +1,14 @@
 ﻿using EliteFit.Domain.Entities.Mongo;
-using EliteFit.Domain.Interfaces;
-using EliteFit.Persistence.Context;
+using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Persistence.Persistence.Context;
 using MongoDB.Driver;
 
 namespace EliteFit.Persistence.Repositories
 {
-    public class AuditLogRepository : IAuditLogRepository
+    // Primary Constructor merr 'context' direkt këtu
+    public class AuditLogRepository(MongoDbContext context) : IAuditLogRepository
     {
-        private readonly MongoDbContext _context;
-        public AuditLogRepository(MongoDbContext context) => _context = context;
+        private readonly MongoDbContext _context = context;
 
         public async Task AddLogAsync(AuditLog log) =>
             await _context.AuditLogs.InsertOneAsync(log);

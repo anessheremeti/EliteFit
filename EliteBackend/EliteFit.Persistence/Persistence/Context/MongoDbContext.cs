@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using EliteFit.Domain.Entities.Mongo;
 
-namespace EliteFit.Persistence.Context
+namespace EliteFit.Persistence.Persistence.Context
 {
     public class MongoDbContext
     {

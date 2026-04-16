@@ -1,4 +1,4 @@
-using EliteFit.Domain.Interfaces;
+using EliteFit.Domain.Interfaces.Repositories;
 using EliteFit.Persistence.Context;
 using EliteFit.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;

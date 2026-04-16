@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Reflection.Emit;
-using EliteFit.Domain.Entities;
+﻿using EliteFit.Domain.Entities;
+using EliteFit.Domain.Entities.Mongo;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 
-namespace EliteFit.Persistence.Context
+namespace EliteFit.Persistence.Persistence.Context
 {
-    public class ApplicationDbContext : DbContext
+    // Parametri (options) vendoset direkt këtu
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : DbContext(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-
         // Regjistrimi i tabelave
         public DbSet<User> Users { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
@@ -25,6 +23,7 @@ namespace EliteFit.Persistence.Context
         public DbSet<WorkoutVideo> WorkoutVideos { get; set; }
         public DbSet<UserStreak> UserStreaks { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
@@ -41,7 +40,7 @@ namespace EliteFit.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            // Këtu do të vendosim konfigurimet për Primary Keys që nuk janë "Id"
+            // Konfigurimet për Primary Keys që nuk janë "Id"
             modelBuilder.Entity<UserProfile>().HasKey(up => up.UserId);
             modelBuilder.Entity<UserStreak>().HasKey(us => us.UserId);
         }

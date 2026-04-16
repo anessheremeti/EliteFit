@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteFit.Api", "EliteFit\EliteFit.Api.csproj", "{416DD8F6-D857-4CFE-A798-55AE5EDB282E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteFit.Domain", "EliteFit.Domain\EliteFit.Domain.csproj", "{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteFit.Application", "EliteFit.Application\EliteFit.Application.csproj", "{165848EA-F2E9-4F51-94F4-052CDB7B9D29}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteFit.Infrastructure", "EliteFit.Infrastructure\EliteFit.Infrastructure.csproj", "{06332A85-2B1B-45D0-A3F3-CEA008E52509}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteFit.Persistence", "EliteFitPersistence\EliteFit.Persistence.csproj", "{B209D427-1972-440D-B706-6F561185BCDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteFit.Persistence", "EliteFit.Persistence\EliteFit.Persistence.csproj", "{B209D427-1972-440D-B706-6F561185BCDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteFit.Api", "EliteFit.Api\EliteFit.Api.csproj", "{CDD34877-5CBE-759C-26A0-FA65A2788C44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{416DD8F6-D857-4CFE-A798-55AE5EDB282E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{416DD8F6-D857-4CFE-A798-55AE5EDB282E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{416DD8F6-D857-4CFE-A798-55AE5EDB282E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{416DD8F6-D857-4CFE-A798-55AE5EDB282E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{B209D427-1972-440D-B706-6F561185BCDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B209D427-1972-440D-B706-6F561185BCDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B209D427-1972-440D-B706-6F561185BCDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDD34877-5CBE-759C-26A0-FA65A2788C44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDD34877-5CBE-759C-26A0-FA65A2788C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDD34877-5CBE-759C-26A0-FA65A2788C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDD34877-5CBE-759C-26A0-FA65A2788C44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
