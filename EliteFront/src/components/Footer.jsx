@@ -1,19 +1,24 @@
 import { Zap, Globe, Share2, Video, Users2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom';
 
-const links = {
+export default function Footer() {
+  const links = {
   Product: ['Features', 'Workouts', 'Trainers', 'Pricing', 'Mobile App'],
   Company: ['About Us', 'Blog', 'Careers', 'Press Kit', 'Affiliates'],
   Support: ['Help Center', 'Community', 'Privacy Policy', 'Terms of Service', 'Contact'],
 }
-
 const socials = [
   { Icon: Globe, label: 'Website' },
   { Icon: Share2, label: 'Social' },
   { Icon: Video, label: 'YouTube' },
   { Icon: Users2, label: 'Community' },
 ]
+  const navigate = useNavigate();
 
-export default function Footer() {
+  if(links.Company[3] === 'Press Kit') {
+    links.Company[3] = <a onClick={() => navigate('/press-kit')}>Press Kit</a>;
+  }
+ 
   return (
     <footer className="bg-white border-t border-black/5">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
