@@ -1,35 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-sky: #4FC3F7;
-  --color-pink: #F06292;
-  --color-dark: #1A1C1E;
-  --color-surface: #F5F7FA;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  
+  --color-brand-primary: #4FC3F7;
+  --color-brand-accent: #F06292;
+  --color-brand-dark: #1A1C1E;
+  --color-brand-surface: #F5F7FA;
+  --color-brand-border: rgba(0, 0, 0, 0.05);
+
+  --animate-bounce-slow: bounce-slow 4s ease-in-out infinite;
+
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(-5%); }
+    50% { transform: translateY(0); }
+  }
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+@layer base {
+  body {
+    @apply bg-brand-surface text-brand-dark font-sans antialiased selection:bg-brand-primary selection:text-white;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+.glass {
+  @apply backdrop-blur-xl bg-white/80 border border-black/5 shadow-sm;
 }
 
-body {
-  margin: 0;
-  background-color: #F5F7FA;
-  color: #1A1C1E;
-  overflow-x: hidden;
-  font-family: 'Inter', system-ui, sans-serif;
+.text-gradient {
+  @apply bg-gradient-to-br from-brand-dark to-brand-dark/70 bg-clip-text text-transparent;
 }
 
-#root {
-  width: 100%;
-  max-width: 100%;
-  min-height: 100vh;
-  text-align: left;
-  border: none;
+.card-shadow {
+  @apply shadow-[0_8px_30px_rgb(0,0,0,0.04)];
 }

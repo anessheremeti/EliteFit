@@ -31,19 +31,6 @@ const AssetCard = ({ title, type, description, icon: Icon }) => (
 );
 
 export const PressKit = () => {
-  
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
 
   const factSheet = [
     { label: "Founded", value: "January 2024" },
