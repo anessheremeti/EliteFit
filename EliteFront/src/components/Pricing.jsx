@@ -1,175 +1,158 @@
-import { motion } from 'framer-motion'
-import { Check, Zap } from 'lucide-react'
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-const plans = [
-  {
-    name: 'Free',
-    price: '$0',
-    period: '/month',
-    desc: 'Perfect for getting started on your fitness journey.',
-    features: [
-      '10 workouts / month',
-      'Basic progress tracking',
-      '2 trainer profiles',
-      'Community access',
-      'Mobile app',
-    ],
-    cta: 'Get Started',
-    highlight: false,
-  },
-  {
-    name: 'Pro',
-    price: '$19',
-    period: '/month',
-    desc: 'For serious athletes who demand elite performance tools.',
-    features: [
-      'Unlimited workouts',
-      'Advanced analytics',
-      'All trainer profiles',
-      'Live sessions (4/mo)',
-      'Nutrition planner',
-      'Priority support',
-      'Offline downloads',
-    ],
-    cta: 'Start Pro Trial',
-    highlight: true,
-    badge: 'Most Popular',
-  },
-  {
-    name: 'Elite',
-    price: '$49',
-    period: '/month',
-    desc: 'The ultimate package for peak performance and coaching.',
-    features: [
-      'Everything in Pro',
-      '1-on-1 coaching (2/mo)',
-      'Custom meal plans',
-      'Biometric integration',
-      'Unlimited live sessions',
-      'Dedicated trainer',
-      'White-glove onboarding',
-    ],
-    cta: 'Go Elite',
-    highlight: false,
-  },
-]
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Check, Zap } from "lucide-react";
+import { Section, SectionHeader } from "./Layout";
+import { Button } from "./Button";
 
-const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }
+export const Pricing = () => {
+  const [isAnnual, setIsAnnual] = useState(true);
 
-export default function Pricing() {
+  const plans = [
+    { 
+      name: "Free", 
+      price: { monthly: 0, annual: 0 },
+      desc: "Perfect for starting your fitness journey", 
+      features: ["Basic Workouts", "Community Access", "Limited Nutrition", "Standard Support", "Mobile App Access"],
+      cta: "Get Started",
+      popular: false,
+      color: "brand-primary"
+    },
+    { 
+      name: "Pro", 
+      price: { monthly: 19, annual: 14 },
+      desc: "Most popular choice for serious results", 
+      features: ["All Workouts", "Personalized Plans", "Full Nutrition Guide", "Priority Support", "Live Classes", "Offline Downloads"],
+      cta: "Go Pro",
+      popular: true,
+      color: "brand-primary"
+    },
+    { 
+      name: "Elite", 
+      price: { monthly: 49, annual: 39 },
+      desc: "The ultimate 1-on-1 experience", 
+      features: ["1-on-1 Coaching", "Custom Meal Prep", "Wearable Integration", "Exclusive Events", "VIP Support", "Pro Feature Set"],
+      cta: "Join Elite",
+      popular: false,
+      color: "brand-accent"
+    },
+  ];
+
   return (
-    <section id="pricing" className="py-24 px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="text-sky text-sm font-sans font-medium tracking-widest uppercase">
-            Pricing
-          </span>
-          <h2 className="font-heading font-bold text-4xl text-dark mt-3">Choose Your Plan</h2>
-          <p className="text-dark/50 font-sans mt-4 max-w-md mx-auto">
-            Start for free, upgrade when you're ready. No hidden fees, cancel anytime.
-          </p>
-        </motion.div>
+    <Section id="pricing" className="bg-white">
+      <SectionHeader 
+        title="Pricing Plans" 
+        subtitle="Choose the plan that fits your lifestyle. No hidden fees, cancel anytime."
+        centered
+      />
 
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          className="grid md:grid-cols-3 gap-6 items-stretch"
-        >
-          {plans.map((plan) => (
-            <motion.div
-              key={plan.name}
-              variants={fadeUp}
-              className={`relative rounded-[2rem] p-8 flex flex-col ${
-                plan.highlight
-                  ? 'bg-dark text-white shadow-2xl md:scale-[1.03] z-10'
-                  : 'bg-surface border border-black/5'
-              }`}
-            >
-              {plan.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="bg-sky text-dark text-xs font-sans font-bold px-4 py-1.5 rounded-full flex items-center gap-1.5 whitespace-nowrap">
-                    <Zap size={11} fill="currentColor" /> {plan.badge}
-                  </span>
-                </div>
-              )}
-
-              <div className="mb-6">
-                <h3
-                  className={`font-heading font-bold text-xl mb-1 ${
-                    plan.highlight ? 'text-white' : 'text-dark'
-                  }`}
-                >
-                  {plan.name}
-                </h3>
-                <p
-                  className={`text-sm font-sans ${
-                    plan.highlight ? 'text-white/60' : 'text-dark/50'
-                  }`}
-                >
-                  {plan.desc}
-                </p>
-              </div>
-
-              <div className="mb-8">
-                <span
-                  className={`font-heading font-bold text-5xl ${
-                    plan.highlight ? 'text-white' : 'text-dark'
-                  }`}
-                >
-                  {plan.price}
-                </span>
-                <span
-                  className={`text-sm font-sans ml-1 ${
-                    plan.highlight ? 'text-white/50' : 'text-dark/40'
-                  }`}
-                >
-                  {plan.period}
-                </span>
-              </div>
-
-              <ul className="flex flex-col gap-3 mb-8 flex-1">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3">
-                    <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                        plan.highlight ? 'bg-sky/25' : 'bg-sky/10'
-                      }`}
-                    >
-                      <Check size={11} className="text-sky" />
-                    </div>
-                    <span
-                      className={`text-sm font-sans ${
-                        plan.highlight ? 'text-white/80' : 'text-dark/70'
-                      }`}
-                    >
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                className={`w-full py-3.5 rounded-full font-sans font-medium text-sm transition-all ${
-                  plan.highlight
-                    ? 'bg-pink text-white hover:opacity-90'
-                    : 'bg-dark text-white hover:bg-dark/85'
-                }`}
-              >
-                {plan.cta}
-              </button>
-            </motion.div>
-          ))}
-        </motion.div>
+      {/* Billing Toggle */}
+      <div className="flex flex-col items-center mb-16">
+        <div className="flex items-center gap-4 bg-brand-surface p-1.5 rounded-full border border-brand-border">
+          <button 
+            onClick={() => setIsAnnual(false)}
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${!isAnnual ? "bg-white text-brand-dark shadow-sm" : "text-brand-dark/40 hover:text-brand-dark"}`}
+          >
+            Monthly
+          </button>
+          <button 
+            onClick={() => setIsAnnual(true)}
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all relative ${isAnnual ? "bg-white text-brand-dark shadow-sm" : "text-brand-dark/40 hover:text-brand-dark"}`}
+          >
+            Annual
+            {isAnnual && (
+              <motion.span 
+                layoutId="toggle-pill"
+                className="absolute inset-0 bg-white rounded-full -z-10"
+              />
+            )}
+          </button>
+        </div>
+        <div className="mt-4 flex items-center gap-2">
+          <span className="text-[10px] font-bold text-brand-accent uppercase tracking-widest bg-brand-accent/10 px-2 py-0.5 rounded">Save up to 25%</span>
+          <span className="text-xs text-brand-dark/40 font-medium">with yearly billing</span>
+        </div>
       </div>
-    </section>
-  )
-}
+
+      <div className="grid md:grid-cols-3 gap-8 items-stretch">
+        {plans.map((plan, idx) => (
+          <motion.div 
+            key={idx}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1 }}
+            whileHover={{ y: -10 }}
+            className={`
+              relative p-10 rounded-[3.5rem] border flex flex-col transition-all duration-500
+              ${plan.popular 
+                ? "border-brand-primary bg-white shadow-[0_32px_64px_-16px_rgba(79,195,247,0.15)] scale-105 z-10" 
+                : "border-brand-border bg-white hover:border-brand-primary/30 hover:shadow-xl"}
+            `}
+          >
+            {plan.popular && (
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 bg-brand-primary text-white text-[10px] font-bold rounded-full uppercase tracking-widest shadow-xl flex items-center gap-2">
+                <Zap className="w-3 h-3 fill-current" />
+                Most Popular
+              </div>
+            )}
+
+            <div className="mb-10 text-center md:text-left">
+              <h3 className={`text-2xl font-display font-bold mb-4 ${plan.popular ? "text-brand-primary" : "text-brand-dark"}`}>
+                {plan.name}
+              </h3>
+              
+              <div className="mb-6">
+                <div className="flex items-baseline justify-center md:justify-start gap-1">
+                  <span className="text-sm font-bold text-brand-dark/40 transform -translate-y-4">$</span>
+                  <AnimatePresence mode="wait">
+                    <motion.span 
+                      key={isAnnual ? "annual" : "monthly"}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-6xl font-display font-bold text-brand-dark"
+                    >
+                      {isAnnual ? plan.price.annual : plan.price.monthly}
+                    </motion.span>
+                  </AnimatePresence>
+                  <span className="text-brand-dark/40 text-sm font-bold uppercase tracking-widest">/mo</span>
+                </div>
+                {isAnnual && plan.price.annual > 0 && (
+                  <p className="text-[10px] text-brand-primary font-bold uppercase tracking-wider mt-1">Billed annually</p>
+                )}
+              </div>
+
+              <p className="text-brand-dark/60 text-sm leading-relaxed font-medium">
+                {plan.desc}
+              </p>
+            </div>
+
+            <div className="space-y-4 mb-12 flex-grow">
+              {plan.features.map((feature, fIdx) => (
+                <div key={fIdx} className="flex items-start gap-4 text-sm font-medium text-brand-dark/80 group">
+                  <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${plan.popular ? "bg-brand-primary/10 text-brand-primary" : "bg-brand-surface text-brand-dark/20"}`}>
+                    <Check className="w-3 h-3" />
+                  </div>
+                  <span className="leading-tight">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            <Button 
+              variant={plan.popular ? "primary" : "secondary"} 
+              className={`w-full py-5 text-sm uppercase tracking-widest ${plan.popular ? "shadow-brand-primary/20" : ""}`}
+            >
+              {plan.cta}
+            </Button>
+          </motion.div>
+        ))}
+      </div>
+    </Section>
+  );
+};
+export default Pricing;

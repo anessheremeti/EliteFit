@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Zap } from 'lucide-react'
+import {  AnimatePresence } from 'framer-motion'
+import { Menu, X, Dumbbell } from 'lucide-react'
 
 const links = [
   { href: '#features', label: 'Features' },
@@ -9,6 +9,9 @@ const links = [
   { href: '#faq', label: 'FAQ' },
 ]
 
+if(links[0].label === 'Features') {
+  links[0].href = '/features';
+}
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -29,13 +32,18 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-sky flex items-center justify-center">
-              <Zap size={16} className="text-white" fill="white" />
+          <a href="/" className="group flex items-center gap-3 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky focus-visible:ring-offset-2 rounded-lg px-1 -ml-1">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all duration-300">
+              <Dumbbell size={18} className="" fill="white" strokeWidth={2.5} />
             </div>
-            <span className="font-heading font-bold text-xl text-dark">
-              EliteFit<span className="text-pink">Pro</span>
-            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="font-heading font-bold text-lg text-dark group-hover:text-sky transition-colors duration-300">
+                EliteFit
+              </span>
+              <span className="font-heading font-bold text-xs text-pink tracking-wider">
+                PRO
+              </span>
+            </div>
           </a>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -54,7 +62,7 @@ export default function Navbar() {
             <button className="text-sm text-dark/60 hover:text-dark transition-colors px-4 py-2 font-sans">
               Sign in
             </button>
-            <button className="bg-pink text-white text-sm font-sans font-medium px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity">
+            <button className="bg-pink text-dark/60 text-sm font-sans font-medium px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity">
               Start Free
             </button>
           </div>
@@ -87,9 +95,19 @@ export default function Navbar() {
               className="fixed right-0 top-0 bottom-0 z-50 w-72 bg-white flex flex-col p-6 shadow-2xl"
             >
               <div className="flex items-center justify-between mb-10">
-                <span className="font-heading font-bold text-xl text-dark">
-                  EliteFit<span className="text-pink">Pro</span>
-                </span>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm">
+                    <Dumbbell size={16} className="text-white" fill="white" strokeWidth={2.5} />
+                  </div>
+                  <div className="flex flex-col leading-tight">
+                    <span className="font-heading font-bold text-base text-dark">
+                      EliteFit
+                    </span>
+                    <span className="font-heading font-bold text-xs text-pink tracking-wider">
+                      PRO
+                    </span>
+                  </div>
+                </div>
                 <button onClick={() => setOpen(false)} className="p-1 text-dark/60 hover:text-dark">
                   <X size={20} />
                 </button>

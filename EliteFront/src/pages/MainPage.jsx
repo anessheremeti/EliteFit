@@ -6,7 +6,6 @@ import HowItWorks from '../components/HowItWorks'
 //import Nutrition from '../components/Nutrition'
 import Pricing from '../components/Pricing'
 import FAQ from '../components/FAQ'
-import MobileAppCTA from '../components/MobileAppCTA'
 import Footer from '../components/Footer'
 
 export default function MainPage() {
@@ -19,7 +18,6 @@ export default function MainPage() {
         <HowItWorks />
         <Pricing />
         <FAQ />
-        <MobileAppCTA />
       </main>
       <Footer />
     </>
