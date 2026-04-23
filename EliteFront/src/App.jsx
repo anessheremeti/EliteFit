@@ -1,5 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import { PressKit } from './pages/PressKit';
 import Affiliate from './pages/Affiliate';
 import Features from './pages/Features';
@@ -35,6 +37,8 @@ export default function App() {
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-conditions" element={<TermsConditions />} />
       <Route path="/cookies" element={<Cookies />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
     </Routes>
     </>
   );

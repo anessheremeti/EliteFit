@@ -6,11 +6,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Check, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Section, SectionHeader } from "./Layout";
 import { Button } from "./Button";
 
 export const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+  const navigate = useNavigate();
 
   const plans = [
     { 
@@ -143,9 +145,10 @@ export const Pricing = () => {
               ))}
             </div>
 
-            <Button 
-              variant={plan.popular ? "primary" : "secondary"} 
+            <Button
+              variant={plan.popular ? "primary" : "secondary"}
               className={`w-full py-5 text-sm uppercase tracking-widest ${plan.popular ? "shadow-brand-primary/20" : ""}`}
+              onClick={() => navigate('/signup')}
             >
               {plan.cta}
             </Button>
