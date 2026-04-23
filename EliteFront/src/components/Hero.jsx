@@ -5,9 +5,11 @@
 
 import { motion } from "motion/react";
 import { Zap, Play, ArrowUpRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./Button";
 
 export const Hero = () => {
+  const navigate = useNavigate();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -54,7 +56,7 @@ export const Hero = () => {
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5">
-            <Button variant="primary" icon={ArrowUpRight}>
+            <Button variant="primary" icon={ArrowUpRight} onClick={() => navigate('/signup')}>
               Start Your Journey
             </Button>
             <Button variant="secondary">

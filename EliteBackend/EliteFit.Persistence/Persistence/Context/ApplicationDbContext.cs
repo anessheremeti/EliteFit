@@ -1,8 +1,6 @@
-﻿using EliteFit.Domain.Entities;
+using EliteFit.Domain.Entities;
 using EliteFit.Domain.Entities.Mongo;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace EliteFit.Persistence.Persistence.Context
 {
@@ -39,6 +37,41 @@ namespace EliteFit.Persistence.Persistence.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Map User entity explicitly to legacy snake_case MySQL schema.
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+                entity.HasKey(u => u.Id);
+
+                entity.Property(u => u.Id).HasColumnName("id");
+                entity.Property(u => u.FirstName).HasColumnName("first_name");
+                entity.Property(u => u.LastName).HasColumnName("last_name");
+                entity.Property(u => u.Email).HasColumnName("email");
+                entity.Property(u => u.PasswordHash).HasColumnName("password_hash");
+                entity.Property(u => u.IsActive).HasColumnName("is_active");
+                entity.Property(u => u.CreatedAt).HasColumnName("created_at");
+                entity.Property(u => u.UpdatedAt).HasColumnName("updated_at");
+            });
+
+            // Current DB schema does not include BaseEntity user tracking columns yet.
+            // Ignore them so EF doesn't generate inserts/updates for missing fields.
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var clrType = entityType.ClrType;
+                if (clrType is null || !typeof(BaseEntity).IsAssignableFrom(clrType))
+                {
+                    continue;
+                }
+
+                if (clrType != typeof(User))
+                {
+                    modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.CreatedAt));
+                    modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.UpdatedAt));
+                }
+                modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.CreatedBy));
+                modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.UpdatedBy));
+            }
 
             // Konfigurimet për Primary Keys që nuk janë "Id"
             modelBuilder.Entity<UserProfile>().HasKey(up => up.UserId);

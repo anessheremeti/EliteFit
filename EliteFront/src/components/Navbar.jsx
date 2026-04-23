@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Dumbbell } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { LogoutModal } from './LogoutModal'
 
 const links = [
   { href: '/features', label: 'Features' },
@@ -13,7 +14,9 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [logoutOpen, setLogoutOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
 
   // Kontrollojmë nëse jemi në Home Page
   const isHomePage = location.pathname === '/'
@@ -24,11 +27,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
-  // Mbyll menunë kur ndryshon faqja
-  useEffect(() => {
-    setOpen(false)
-  }, [location])
-
   // Funksioni për Smooth Scroll nëse klikohet Logoja ose Linku lart
   const scrollToTop = () => {
     window.scrollTo({
@@ -36,6 +34,15 @@ export default function Navbar() {
       behavior: 'smooth'
     });
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('elitefit_user')
+    setLogoutOpen(false)
+    navigate('/login', { replace: true })
+  }
+
+  const data = localStorage.getItem('elitefit_user')
+  const user = data ? JSON.parse(data) : null
 
   return (
     <>
@@ -78,12 +85,34 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <button className="text-sm text-dark/60 hover:text-dark transition-colors px-4 py-2 font-sans">
+            {
+              user ? (
+                
+                <div className='flex flex-row items-center gap-2'>
+                  <span className="text-sm text-dark/60 hover:text-dark transition-colors px-4 py-2 font-sans">
+                    {user.fullName}
+                  </span>
+                  <button
+                    type="button"
+                    className='flex items-center gap-2 rounded-full bg-red-500 px-4 py-2 text-sm font-sans text-white transition hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300'
+                    onClick={() => setLogoutOpen(true)}
+                  >
+                    Log out
+                  </button>
+                </div>
+              
+              ) :  
+              (
+                <>
+                 <Link to="/login" className="text-sm text-dark/60 hover:text-dark transition-colors px-4 py-2 font-sans">
               Sign in
-            </button>
-            <button className="bg-pink text-white text-sm font-sans font-medium px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity">
+            </Link>
+            <Link to="/signup" className="bg-pink text-blaack text-sm font-sans font-medium px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity">
               Start Free
-            </button>
+            </Link></>
+              )
+            }
+           
           </div>
 
           <button
@@ -144,15 +173,36 @@ export default function Navbar() {
                 ))}
               </nav>
               <div className="mt-auto flex flex-col gap-3 pt-6 border-t border-black/5">
-                <button className="text-dark/70 font-sans py-2.5">Sign in</button>
-                <button className="bg-pink text-white font-sans font-medium py-3 rounded-full hover:opacity-90 transition-opacity">
-                  Start Free
-                </button>
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false)
+                      setLogoutOpen(true)
+                    }}
+                    className="w-full rounded-full bg-red-500 px-4 py-3 text-sm font-sans font-medium text-white transition hover:bg-red-600"
+                  >
+                    Log out
+                  </button>
+                ) : (
+                  <>
+                    <Link to="/login" onClick={() => setOpen(false)} className="text-dark/70 font-sans py-2.5 text-center">Sign in</Link>
+                    <Link to="/signup" onClick={() => setOpen(false)} className="bg-pink text-white font-sans font-medium py-3 rounded-full hover:opacity-90 transition-opacity text-center">
+                      Start Free
+                    </Link>
+                  </>
+                )}
               </div>
             </motion.aside>
           </>
         )}
       </AnimatePresence>
+      <LogoutModal
+        open={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        onConfirm={handleLogout}
+        userName={user?.fullName}
+      />
     </>
   )
 }
