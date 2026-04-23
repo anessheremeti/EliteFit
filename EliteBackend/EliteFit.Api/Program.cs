@@ -1,22 +1,54 @@
+using EliteFit.Application;
 using EliteFit.Domain.Interfaces.Repositories;
-using EliteFit.Persistence.Context;
+using EliteFit.Infrastructure;
+using EliteFit.Persistence;
+using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
-using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Shërbime bazë të ASP.NET Core
+// Shërbime bazë
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// Regjistrojmë repository-et në DI (Dependency Injection)
+// Swagger me mbështetje për JWT
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "EliteFit API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } },
+            Array.Empty<string>()
+        }
+    });
+});
+
+// Shtresat e arkitekturës Onion
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddPersistenceServices();
+
+// Repositories ekzistuese
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
-// Lidhja me MySQL përmes Entity Framework Core
-// ServerVersion.AutoDetect e gjen vetë versionin e MySQL-it nga connection string
+// MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -24,15 +56,36 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
-///Lidhja me sql
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
- //   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// -------------------------------------------------------------------
+// ZONA E KOLEGËVE - SQL Server (Entity Framework Core)
+// -------------------------------------------------------------------
+// builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// -------------------------------------------------------------------
 
-// Regjistrojmë MongoDbContext si Singleton (një instancë për gjithë aplikacionin)
-// IMongoClient nuk regjistrohet veçmas sepse MongoDbContext e krijon vetë klientin brenda
+// MongoDB
 builder.Services.AddSingleton<MongoDbContext>();
 
-// CORS - lejojmë kërkesat nga çdo origjinë (i nevojshëm për frontend)
+// JWT Authentication
+var jwtSection = builder.Configuration.GetSection("Jwt");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSection["Issuer"],
+            ValidAudience = jwtSection["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSection["Secret"]!))
+        };
+    });
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -41,43 +94,49 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Endpoint testues për MongoDB - përdorim [FromServices] sepse MongoDbContext
-// merret nga DI, jo nga body i kërkesës
-app.MapGet("/test-mongo", ([FromServices] MongoDbContext mongo) =>
+// Global exception handler — kthen mesazhe të qarta për frontend
+app.UseExceptionHandler(errorApp =>
 {
-    try
+    errorApp.Run(async context =>
     {
-        var _ = mongo.AuditLogs;
-        return "MongoDB Connected ✅";
-    }
-    catch
-    {
-        return "MongoDB Failed ❌";
-    }
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+        context.Response.ContentType = "application/json";
+
+        context.Response.StatusCode = exception switch
+        {
+            InvalidOperationException => StatusCodes.Status400BadRequest,
+            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+            ValidationException => StatusCodes.Status422UnprocessableEntity,
+            _ => StatusCodes.Status500InternalServerError
+        };
+
+        var message = exception is ValidationException ve
+            ? string.Join("; ", ve.Errors.Select(e => e.ErrorMessage))
+            : exception?.Message ?? "An unexpected error occurred.";
+
+        await context.Response.WriteAsJsonAsync(new { message });
+    });
 });
 
-// Endpoint testues për MySQL
-app.MapGet("/test-mysql", async (ApplicationDbContext db) =>
+// Test endpoints
+app.MapGet("/test-mongo", ([Microsoft.AspNetCore.Mvc.FromServices] MongoDbContext mongo) =>
 {
-    return await db.Database.CanConnectAsync()
-        ? "MySQL Connected ✅"
-        : "MySQL Failed ❌";
+    try { var _ = mongo.AuditLogs; return "MongoDB Connected ✅"; }
+    catch { return "MongoDB Failed ❌"; }
 });
+
+app.MapGet("/test-mysql", async (ApplicationDbContext db) =>
+    await db.Database.CanConnectAsync() ? "MySQL Connected ✅" : "MySQL Failed ❌");
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    // Ridrejtojmë "/" te "/swagger" që kur hapim localhost të shohim Swagger UI
-    // (pa këtë, faqja ishte bosh)
     app.MapGet("/", () => Results.Redirect("/swagger"));
 }
 
-// Hequm UseHttpsRedirection() sepse kishte konfigurim të gabuar:
-// HttpsPort ishte vendosur 5193 (porti HTTP), duke shkaktuar loop ridrejtimi
-// dhe faqja nuk ngarkohej fare
-
 app.UseCors("AllowAll");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
