@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\Recipes\" />
     <Folder Include="Middleware\" />
   </ItemGroup>
 
