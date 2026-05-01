@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
+﻿using EliteFit.Domain.Entities;
 using EliteFit.Domain.Entities.Mongo;
+using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 
 namespace EliteFit.Persistence.Persistence.Context
 {
@@ -21,5 +22,6 @@ namespace EliteFit.Persistence.Persistence.Context
         // Kjo na mundëson qasjen te tabela (Collection) e Log-eve
         public IMongoCollection<AuditLog> AuditLogs =>
             _database.GetCollection<AuditLog>("AuditLogs");
+        public IMongoCollection<Recipe> Recipe => _database.GetCollection<Recipe>("Recipes");
     }
 }

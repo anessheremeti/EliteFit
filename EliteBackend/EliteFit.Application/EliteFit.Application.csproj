@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <None Remove="Interfaces\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
@@ -19,11 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Recipes\" />
     <Folder Include="Features\Commands\" />
     <Folder Include="Features\Queries\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Common\" />
+    <Folder Include="Features\Recipes\Commands\" />
+    <Folder Include="Features\Recipes\Query\" />
   </ItemGroup>
 
 </Project>
