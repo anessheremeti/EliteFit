@@ -2,7 +2,9 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import MainLayout from './layouts/guest/MainLayout';
-
+import { path } from 'framer-motion/client';
+import StaffLayout from './layouts/staff/MainLayout.jsx';
+import UserLayout from './layouts/user/MainLayout.jsx';
 /* ==========================================================================
     1. IMPORTET LAZY (Default & Named Exports)
    ========================================================================== */
@@ -14,7 +16,10 @@ const Affiliate = lazy(() => import('./pages/guest/Affiliate'));
 const Features = lazy(() => import('./pages/guest/Features'));
 const Trainers = lazy(() => import('./pages/guest/Trainers'));
 const Aboutus = lazy(() => import('./pages/guest/Aboutus'));
-
+// Staff Pages
+const Dashboard = lazy(() => import('./pages/staff/dashboard'));
+// user pages
+const dashboardUsers = lazy(() => import('./pages/user/dashboard/index.jsx'));
 // Named exports (Për ato që i kishe me kllapa gjarpërore {})
 const PressKit = lazy(() => import('./pages/guest/PressKit').then(m => ({ default: m.PressKit })));
 const MobileAppComingSoon = lazy(() => import('./pages/guest/coomingsoon').then(m => ({ default: m.MobileAppComingSoon })));
@@ -90,6 +95,20 @@ const routes = [
       { path: 'privacy-policy', element: PrivacyPolicy },
       { path: 'terms-conditions', element: TermsConditions },
       { path: 'cookies', element: Cookies },
+    ],    
+  },
+  {
+    path: '/staff',
+    layout: StaffLayout,
+    children: [
+      { index: true, element: Dashboard },
+    ],
+  },
+  {
+    path: '/users',
+    layout: UserLayout,
+    children: [
+      { index: true, element: dashboardUsers },
     ],
   }
 ];
