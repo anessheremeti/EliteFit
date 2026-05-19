@@ -1,9 +1,9 @@
 // src/routes.jsx
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
-import MainLayout from './layouts/guest/MainLayout';
-import StaffLayout from './layouts/staff/MainLayout.jsx';
-import UserLayout from './layouts/user/MainLayout.jsx';
+import MainLayout from './Layouts/guest/MainLayout';
+import StaffLayout from './Layouts/staff/MainLayout.jsx';
+import UserLayout from './Layouts/user/MainLayout.jsx';
 /* ==========================================================================
     1. IMPORTET LAZY (Default & Named Exports)
    ========================================================================== */
