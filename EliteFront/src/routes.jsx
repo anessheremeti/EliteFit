@@ -2,7 +2,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import MainLayout from './layouts/guest/MainLayout';
-import { path } from 'framer-motion/client';
 import StaffLayout from './layouts/staff/MainLayout.jsx';
 import UserLayout from './layouts/user/MainLayout.jsx';
 /* ==========================================================================
@@ -34,7 +33,12 @@ const Contact = lazy(() => import('./pages/guest/Contact').then(m => ({ default:
 const PrivacyPolicy = lazy(() => import('./pages/guest/privacypolicy').then(m => ({ default: m.PrivacyPolicy })));
 const TermsConditions = lazy(() => import('./pages/guest/termsandconditions').then(m => ({ default: m.TermsConditions })));
 const Cookies = lazy(() => import('./pages/guest/Cookies').then(m => ({ default: m.Cookies })));
-
+const ForgotPassword = lazy(() => import('./pages/user/forgot-password'));
+const ResetPassword = lazy(() => import('./pages/user/reset-password'));
+const OnboardingAllergies = lazy(() => import('./pages/user/onboarding/AllergiesPage'));
+const OnboardingGoals     = lazy(() => import('./pages/user/onboarding/GoalsPage'));
+const OnboardingProfile   = lazy(() => import('./pages/user/onboarding/ProfilePage'));
+const OnboardingActivity  = lazy(() => import('./pages/user/onboarding/ActivityPage'));
 /* ==========================================================================
     2. RENDER ROUTES LOGIC
    ========================================================================== */
@@ -98,7 +102,13 @@ const routes = [
       { path: 'privacy-policy', element: PrivacyPolicy },
       { path: 'terms-conditions', element: TermsConditions },
       { path: 'cookies', element: Cookies },
-    ],    
+      { path: 'forgot-password', element: ForgotPassword },
+      { path: 'reset-password', element: ResetPassword },
+      { path: 'onboarding',          element: OnboardingAllergies },
+      { path: 'onboarding/goals',    element: OnboardingGoals },
+      { path: 'onboarding/profile',  element: OnboardingProfile },
+      { path: 'onboarding/activity', element: OnboardingActivity },
+    ],
   },
   {
     path: '/staff',

@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Check, X, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../Layouts/auth/AuthLayout';
-
 const API_URL = 'http://localhost:5193/api';
 
 function getPasswordStrength(password) {
@@ -79,7 +78,7 @@ export default function SignupPage() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('elitefit_user', JSON.stringify({ email: data.email, fullName: data.fullName }));
       setSuccess('Account created! Redirecting...');
-      setTimeout(() => navigate('/'), 1500);
+      ///setTimeout(() => navigate('/'), 1500);
     } catch (err) {
       setServerError(err.message);
     } finally {
@@ -90,7 +89,6 @@ export default function SignupPage() {
   const strengthScore = getPasswordStrength(form.password);
   const strengthLabels = ['', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
   const strengthColors = ['', '#ef4444', '#f97316', '#eab308', '#22c55e', '#4FC3F7'];
-
   return (
     <AuthLayout>
       <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
@@ -221,8 +219,9 @@ function Field({ label, error, right, ...props }) {
 }
 
 function SubmitBtn({ loading, label }) {
+  const navigate = useNavigate();
   return (
-    <button type="submit" disabled={loading}
+    <button type="submit" onClick={() => navigate('/onboarding')} disabled={loading}
       className="w-full py-2.5 rounded-lg font-bold text-white text-sm transition-all duration-200 flex items-center justify-center gap-2"
       style={{
         background: loading ? 'rgba(79,195,247,0.4)' : 'linear-gradient(135deg, #4FC3F7, #38b2e8)',

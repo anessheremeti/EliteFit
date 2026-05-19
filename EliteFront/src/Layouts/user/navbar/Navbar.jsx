@@ -10,7 +10,8 @@ import {
   LogOut,
   User,
   CreditCard,
-  Trophy
+  Trophy,
+  Apple
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogoutModal } from '../../../components/modal/LogoutModal';
@@ -18,14 +19,14 @@ import { LogoutModal } from '../../../components/modal/LogoutModal';
 // Lidhjet specifike për anëtarët (Users)
 const links = [
   { href: '/users', label: 'My Progress', icon: LayoutDashboard },
-  { href: '/user/workouts', label: 'My Workouts', icon: Dumbbell },
-  { href: '/user/classes', label: 'Book Classes', icon: CalendarDays },
-  { href: '/user/achievements', label: 'Achievements', icon: Trophy },
-  { href: '/user/membership', label: 'Membership', icon: CreditCard },
-  { href: '/user/settings', label: 'Profile Settings', icon: Settings },
+  { href: '/user/workouts', label: ' Workouts', icon: Dumbbell },
+  { href: '/user/nutrition', label: 'Nutrition', icon: Apple },
+  { href: '/user/goals', label: 'Goals', icon: Trophy },
+  { href: '/user/profile', label: 'Profile', icon: CreditCard },
+  { href: '/user/settings', label: ' Settings', icon: Settings },
 ];
 
-export default function UserSidebar() {
+export function UserSidebar() {
   const [open, setOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const location = useLocation();
