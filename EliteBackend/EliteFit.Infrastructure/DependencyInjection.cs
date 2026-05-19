@@ -11,8 +11,10 @@ namespace EliteFit.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+            services.Configure<EmailSettings>(configuration.GetSection("Email"));
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
     }

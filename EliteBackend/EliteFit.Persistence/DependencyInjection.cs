@@ -9,6 +9,10 @@ namespace EliteFit.Persistence
         public static IServiceCollection AddPersistenceServices(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+            services.AddScoped<IAllergyRepository, AllergyRepository>();
+            services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             return services;
         }
     }

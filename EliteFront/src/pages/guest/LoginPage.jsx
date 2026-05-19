@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Check, X, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../Layouts/auth/AuthLayout';
-
 const API_URL = 'http://localhost:5193/api';
 
 function validate(email, password) {
@@ -43,7 +42,7 @@ export default function LoginPage() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('elitefit_user', JSON.stringify({ email: data.email, fullName: data.fullName }));
       setSuccess('Logged in successfully! Redirecting...');
-      setTimeout(() => navigate('/'), 1500);
+      setTimeout(() => navigate('/users'), 1500);
     } catch (err) {
       setServerError(err.message);
     } finally {
@@ -92,7 +91,7 @@ export default function LoginPage() {
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           } />
-
+          <p onClick={() => navigate('/forgot-password')}  style={{ color: '#4FC3F7' }} className='font-semibold transition-colors text-right hover:cursor-pointer  hover:opacity-80'>Forgot Password</p>
         <SubmitBtn loading={loading} label="Sign In" />
       </form>
 
