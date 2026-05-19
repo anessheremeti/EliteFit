@@ -17,6 +17,9 @@ namespace EliteFit.Persistence.Repositories
         public async Task<User?> GetByEmailAsync(string email)
             => await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
+        public async Task<User?> GetByIdAsync(int id)
+            => await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+
         public async Task<bool> EmailExistsAsync(string email)
             => await _context.Users.AnyAsync(u => u.Email == email);
 

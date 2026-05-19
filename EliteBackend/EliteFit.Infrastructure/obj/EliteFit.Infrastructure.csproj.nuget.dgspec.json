@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {}
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
         "projectName": "EliteFit.Domain",
-        "projectPath": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
-        "packagesPath": "C:\\Users\\Jahir\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Domain\\obj\\",
+        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
+        "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jahir\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -63,15 +57,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.20, 8.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.20, 8.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.20, 8.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             }
           ],
           "frameworkReferences": {
@@ -79,40 +73,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
         "projectName": "EliteFit.Infrastructure",
-        "projectPath": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Jahir\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\obj\\",
+        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jahir\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
-                "projectPath": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
+              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
               }
             }
           }
@@ -127,7 +115,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -138,6 +126,10 @@
               "version": "[8.0.0, )"
             },
             "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
               "version": "[8.0.0, )"
             },
@@ -168,15 +160,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.20, 8.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.20, 8.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.20, 8.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             }
           ],
           "frameworkReferences": {
@@ -184,7 +176,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
