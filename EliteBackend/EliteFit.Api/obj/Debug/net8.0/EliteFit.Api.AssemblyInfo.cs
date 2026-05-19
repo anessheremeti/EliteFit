@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EliteFit.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f0ba0feaaac079456e244e9eebf5aeeda0b44acd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+933842edc7cfaff2aab2e45b92819e23d7c1e4c2")]
 [assembly: System.Reflection.AssemblyProductAttribute("EliteFit.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EliteFit.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
