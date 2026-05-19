@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iYAow2xXBEo=",
+  "dgSpecHash": "KTIEuLX57M0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
+  "projectFilePath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\anes\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\anes\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",
