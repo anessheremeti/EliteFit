@@ -1,4 +1,18 @@
 # Build output
-**/bin/Debug/
-**/obj/Debug/
+**/bin/
+**/obj/
 **/Debug/
+
+# Secrets - never commit these
+**/appsettings.Development.json
+**/appsettings.*.json
+!**/appsettings.json
+
+# .NET user secrets
+**/secrets.json
+
+# Node
+**/node_modules/
+**/.env
+**/.env.local
+**/.env.*.local
