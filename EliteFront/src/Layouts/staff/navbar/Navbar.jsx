@@ -23,7 +23,7 @@ const links = [
   { href: '/staff/engagement', label: 'Engagement', icon: BellRing },
 ];
 
-export default function StaffSidebar() {
+export function StaffSidebar() {
   const [open, setOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const location = useLocation();
