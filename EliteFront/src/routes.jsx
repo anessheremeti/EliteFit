@@ -18,6 +18,9 @@ const Trainers = lazy(() => import('./pages/guest/Trainers'));
 const Aboutus = lazy(() => import('./pages/guest/Aboutus'));
 // Staff Pages
 const Dashboard = lazy(() => import('./pages/staff/dashboard'));
+const Managment = lazy(() => import('./pages/staff/user_management/index.jsx'));
+const Cms = lazy(() => import('./pages/staff/cms/index.jsx'));
+const Engagement = lazy(() => import('./pages/staff/engagement/index.jsx'));
 // user pages
 const dashboardUsers = lazy(() => import('./pages/user/dashboard/index.jsx'));
 // Named exports (Për ato që i kishe me kllapa gjarpërore {})
@@ -102,6 +105,9 @@ const routes = [
     layout: StaffLayout,
     children: [
       { index: true, element: Dashboard },
+      {path: 'management', element: Managment },
+      {path: 'Cms', element: Cms },
+      {path: 'engagement', element: Engagement },
     ],
   },
   {

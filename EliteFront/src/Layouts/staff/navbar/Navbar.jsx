@@ -7,6 +7,8 @@ import {
   LayoutDashboard, 
   Users, 
   CalendarDays, 
+  FileCog,
+  BellRing,
   Settings, 
   LogOut 
 } from 'lucide-react';
@@ -16,9 +18,9 @@ import { LogoutModal } from '../../../components/modal/LogoutModal';
 // Lidhjet për panelin e stafit me ikona përkatëse
 const links = [
   { href: '/staff', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/members', label: 'Members', icon: Users },
-  { href: '/schedule', label: 'Schedule', icon: CalendarDays },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/staff/management', label: 'Management', icon: Users },
+  { href: '/staff/Cms', label: 'Content Management', icon: FileCog },
+  { href: '/staff/engagement', label: 'Engagement', icon: BellRing },
 ];
 
 export default function StaffSidebar() {
