@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Api\\EliteFit.Api.csproj": {}
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Api\\EliteFit.Api.csproj": {
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Api\\EliteFit.Api.csproj",
+        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj",
         "projectName": "EliteFit.Api",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Api\\EliteFit.Api.csproj",
+        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj",
         "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Api\\obj\\",
+        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,14 +26,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Application\\EliteFit.Application.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Application\\EliteFit.Application.csproj"
+              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj": {
+                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj"
               },
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj"
+              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj"
               },
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj"
+              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
+                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj"
               }
             }
           }
@@ -114,14 +114,14 @@
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Application\\EliteFit.Application.csproj": {
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Application\\EliteFit.Application.csproj",
+        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
         "projectName": "EliteFit.Application",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Application\\EliteFit.Application.csproj",
+        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
         "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Application\\obj\\",
+        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -136,8 +136,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
+              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
               }
             }
           }
@@ -213,14 +213,14 @@
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
         "projectName": "EliteFit.Domain",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
+        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
         "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\obj\\",
+        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -286,14 +286,14 @@
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
         "projectName": "EliteFit.Infrastructure",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -308,8 +308,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
+              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
               }
             }
           }
@@ -389,14 +389,14 @@
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
+    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
         "projectName": "EliteFit.Persistence",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
+        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
         "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Persistence\\obj\\",
+        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -411,8 +411,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\Elitebackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
+              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
               }
             }
           }
