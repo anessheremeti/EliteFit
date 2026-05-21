@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EliteFit.Domain.Entities
 {
     public class ExerciseCategory : BaseEntity
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
-        public ICollection<WorkoutVideo> WorkoutVideos { get; set; }
+        public ICollection<WorkoutVideo> WorkoutVideos { get; set; } = new List<WorkoutVideo>();
+        public ICollection<Workout> Workouts { get; set; } = new List<Workout>();
     }
-
 }
