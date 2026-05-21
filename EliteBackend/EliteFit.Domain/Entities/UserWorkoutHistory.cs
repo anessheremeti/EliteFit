@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+// This entity has been refactored into ExerciseLog.
+// Kept as a type alias so any external code referencing the old name continues to compile
+// while emitting a deprecation warning. Remove once all consumers are migrated.
 namespace EliteFit.Domain.Entities
 {
-    public class UserWorkoutHistory : BaseEntity
-    {
-        public int UserId { get; set; }
-        public int VideoId { get; set; }
-        public int? CaloriesBurned { get; set; }
-        public int? TimeWatchedSeconds { get; set; }
-        public DateTime? CompletedAt { get; set; }
-
-        public User? User { get; set; }
-        public WorkoutVideo? Video { get; set; }
-    }
+    [Obsolete("Use ExerciseLog instead. This alias will be removed in a future release.")]
+    public sealed class UserWorkoutHistory : ExerciseLog { }
 }
