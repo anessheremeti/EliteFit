@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EliteFit.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+933842edc7cfaff2aab2e45b92819e23d7c1e4c2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af7a4b8186baa72b0532eb15e5a6e504b0923e6f")]
 [assembly: System.Reflection.AssemblyProductAttribute("EliteFit.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EliteFit.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
