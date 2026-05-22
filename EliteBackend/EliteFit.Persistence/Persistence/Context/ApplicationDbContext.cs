@@ -307,6 +307,46 @@ namespace EliteFit.Persistence.Persistence.Context
                     .HasDatabaseName("UX_recipe_allergens_recipe_allergy");
             });
 
+            // ── badges / user_badges ─────────────────────────────────────────────
+            modelBuilder.Entity<Badge>(entity =>
+            {
+                entity.ToTable("badges");
+                entity.HasKey(b => b.Id);
+                entity.Property(b => b.Id).HasColumnName("id");
+                entity.Property(b => b.Name).HasColumnName("name").HasMaxLength(100).IsRequired();
+                entity.Property(b => b.Description).HasColumnName("description").HasMaxLength(500);
+                entity.Property(b => b.Category).HasColumnName("category").HasMaxLength(50).HasDefaultValue("Milestone");
+                entity.Property(b => b.Tier).HasColumnName("tier").HasMaxLength(20).HasDefaultValue("Bronze");
+                entity.Property(b => b.TriggerType).HasColumnName("trigger_type").HasMaxLength(50).HasDefaultValue("Manual");
+                entity.Property(b => b.TriggerThreshold).HasColumnName("trigger_threshold").HasDefaultValue(1);
+                entity.Property(b => b.Points).HasColumnName("points").HasDefaultValue(0);
+                entity.Property(b => b.IconEmoji).HasColumnName("icon_emoji").HasMaxLength(20);
+                entity.Property(b => b.Color).HasColumnName("color").HasMaxLength(7);
+                entity.Property(b => b.IsSecret).HasColumnName("is_secret").HasDefaultValue(false);
+                entity.Property(b => b.IsActive).HasColumnName("is_active").HasDefaultValue(true);
+                entity.Property(b => b.SortOrder).HasColumnName("sort_order").HasDefaultValue(0);
+                entity.Property(b => b.BadgeIconId).HasColumnName("badge_icon_id");
+                entity.HasOne(b => b.BadgeIcon).WithMany().HasForeignKey(b => b.BadgeIconId).OnDelete(DeleteBehavior.SetNull);
+                entity.HasIndex(b => b.Category).HasDatabaseName("IX_badges_category");
+                entity.HasIndex(b => b.IsActive).HasDatabaseName("IX_badges_is_active");
+                entity.HasIndex(b => b.SortOrder).HasDatabaseName("IX_badges_sort_order");
+            });
+
+            modelBuilder.Entity<UserBadge>(entity =>
+            {
+                entity.ToTable("user_badges");
+                entity.HasKey(ub => ub.Id);
+                entity.Property(ub => ub.Id).HasColumnName("id");
+                entity.Property(ub => ub.UserId).HasColumnName("user_id");
+                entity.Property(ub => ub.BadgeId).HasColumnName("badge_id");
+                entity.Property(ub => ub.EarnedAt).HasColumnName("earned_at");
+                entity.Property(ub => ub.ProgressCount).HasColumnName("progress_count").HasDefaultValue(0);
+                entity.HasOne(ub => ub.User).WithMany(u => u.UserBadges).HasForeignKey(ub => ub.UserId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(ub => ub.Badge).WithMany(b => b.UserBadges).HasForeignKey(ub => ub.BadgeId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(ub => ub.UserId).HasDatabaseName("IX_user_badges_user_id");
+                entity.HasIndex(ub => new { ub.UserId, ub.BadgeId }).IsUnique().HasDatabaseName("UX_user_badges_user_badge");
+            });
+
             // ── exercise_logs ────────────────────────────────────────────────────
             modelBuilder.Entity<ExerciseLog>(entity =>
             {
