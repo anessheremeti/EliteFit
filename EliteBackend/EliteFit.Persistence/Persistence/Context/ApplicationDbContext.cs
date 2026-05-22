@@ -246,6 +246,67 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.HasOne(f => f.Workout).WithMany(w => w.Favorites).HasForeignKey(f => f.WorkoutId).OnDelete(DeleteBehavior.Cascade);
             });
 
+            // ── recipes / recipe_allergens ───────────────────────────────────────
+            modelBuilder.Entity<Recipe>(entity =>
+            {
+                entity.ToTable("recipes");
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Id).HasColumnName("id");
+                entity.Property(r => r.Title).HasColumnName("title").HasMaxLength(200).IsRequired();
+                entity.Property(r => r.Description).HasColumnName("description").HasMaxLength(1000);
+                entity.Property(r => r.Instructions).HasColumnName("instructions");
+                entity.Property(r => r.Calories).HasColumnName("calories");
+                entity.Property(r => r.ProteinG).HasColumnName("protein_g").HasColumnType("decimal(6,2)");
+                entity.Property(r => r.CarbsG).HasColumnName("carbs_g").HasColumnType("decimal(6,2)");
+                entity.Property(r => r.FatG).HasColumnName("fat_g").HasColumnType("decimal(6,2)");
+                entity.Property(r => r.PrepTimeMin).HasColumnName("prep_time_min");
+                entity.Property(r => r.CookTimeMin).HasColumnName("cook_time_min");
+                entity.Property(r => r.ServingsCount).HasColumnName("servings_count");
+                entity.Property(r => r.DietType).HasColumnName("diet_type").HasMaxLength(50);
+                entity.Property(r => r.Category).HasColumnName("category").HasMaxLength(100);
+                entity.Property(r => r.ImageUrl).HasColumnName("image_url").HasMaxLength(512);
+                entity.Property(r => r.IsFeatured).HasColumnName("is_featured");
+                entity.Property(r => r.SortOrder).HasColumnName("sort_order");
+                entity.Property(r => r.ImageFileId).HasColumnName("image_file_id");
+                entity.Property(r => r.DifficultyLevel).HasColumnName("difficulty_level").HasMaxLength(20);
+                entity.Property(r => r.IngredientsJson).HasColumnName("ingredients_json").HasColumnType("text");
+                entity.Property(r => r.StepsJson).HasColumnName("steps_json").HasColumnType("text");
+
+                entity.HasOne(r => r.ImageFile)
+                    .WithMany()
+                    .HasForeignKey(r => r.ImageFileId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasIndex(r => r.Category).HasDatabaseName("IX_recipes_category");
+                entity.HasIndex(r => r.DietType).HasDatabaseName("IX_recipes_diet_type");
+                entity.HasIndex(r => r.SortOrder).HasDatabaseName("IX_recipes_sort_order");
+            });
+
+            modelBuilder.Entity<RecipeAllergenInfo>(entity =>
+            {
+                entity.ToTable("recipe_allergens");
+                entity.HasKey(ra => ra.Id);
+                entity.Property(ra => ra.Id).HasColumnName("id");
+                entity.Property(ra => ra.RecipeId).HasColumnName("recipe_id");
+                entity.Property(ra => ra.AllergyId).HasColumnName("allergy_id");
+
+                entity.HasOne(ra => ra.Recipe)
+                    .WithMany(r => r.Allergens)
+                    .HasForeignKey(ra => ra.RecipeId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ra => ra.Allergy)
+                    .WithMany()
+                    .HasForeignKey(ra => ra.AllergyId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(ra => ra.RecipeId).HasDatabaseName("IX_recipe_allergens_recipe_id");
+                entity.HasIndex(ra => ra.AllergyId).HasDatabaseName("IX_recipe_allergens_allergy_id");
+                entity.HasIndex(ra => new { ra.RecipeId, ra.AllergyId })
+                    .IsUnique()
+                    .HasDatabaseName("UX_recipe_allergens_recipe_allergy");
+            });
+
             // ── exercise_logs ────────────────────────────────────────────────────
             modelBuilder.Entity<ExerciseLog>(entity =>
             {
