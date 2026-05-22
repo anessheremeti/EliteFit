@@ -115,6 +115,7 @@ using (var scope = app.Services.CreateScope())
     await seeder.SeedAsync();
 }
 
+
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
