@@ -246,6 +246,107 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.HasOne(f => f.Workout).WithMany(w => w.Favorites).HasForeignKey(f => f.WorkoutId).OnDelete(DeleteBehavior.Cascade);
             });
 
+            // ── recipes / recipe_allergens ───────────────────────────────────────
+            modelBuilder.Entity<Recipe>(entity =>
+            {
+                entity.ToTable("recipes");
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Id).HasColumnName("id");
+                entity.Property(r => r.Title).HasColumnName("title").HasMaxLength(200).IsRequired();
+                entity.Property(r => r.Description).HasColumnName("description").HasMaxLength(1000);
+                entity.Property(r => r.Instructions).HasColumnName("instructions");
+                entity.Property(r => r.Calories).HasColumnName("calories");
+                entity.Property(r => r.ProteinG).HasColumnName("protein_g").HasColumnType("decimal(6,2)");
+                entity.Property(r => r.CarbsG).HasColumnName("carbs_g").HasColumnType("decimal(6,2)");
+                entity.Property(r => r.FatG).HasColumnName("fat_g").HasColumnType("decimal(6,2)");
+                entity.Property(r => r.PrepTimeMin).HasColumnName("prep_time_min");
+                entity.Property(r => r.CookTimeMin).HasColumnName("cook_time_min");
+                entity.Property(r => r.ServingsCount).HasColumnName("servings_count");
+                entity.Property(r => r.DietType).HasColumnName("diet_type").HasMaxLength(50);
+                entity.Property(r => r.Category).HasColumnName("category").HasMaxLength(100);
+                entity.Property(r => r.ImageUrl).HasColumnName("image_url").HasMaxLength(512);
+                entity.Property(r => r.IsFeatured).HasColumnName("is_featured");
+                entity.Property(r => r.SortOrder).HasColumnName("sort_order");
+                entity.Property(r => r.ImageFileId).HasColumnName("image_file_id");
+                entity.Property(r => r.DifficultyLevel).HasColumnName("difficulty_level").HasMaxLength(20);
+                entity.Property(r => r.IngredientsJson).HasColumnName("ingredients_json").HasColumnType("text");
+                entity.Property(r => r.StepsJson).HasColumnName("steps_json").HasColumnType("text");
+
+                entity.HasOne(r => r.ImageFile)
+                    .WithMany()
+                    .HasForeignKey(r => r.ImageFileId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasIndex(r => r.Category).HasDatabaseName("IX_recipes_category");
+                entity.HasIndex(r => r.DietType).HasDatabaseName("IX_recipes_diet_type");
+                entity.HasIndex(r => r.SortOrder).HasDatabaseName("IX_recipes_sort_order");
+            });
+
+            modelBuilder.Entity<RecipeAllergenInfo>(entity =>
+            {
+                entity.ToTable("recipe_allergens");
+                entity.HasKey(ra => ra.Id);
+                entity.Property(ra => ra.Id).HasColumnName("id");
+                entity.Property(ra => ra.RecipeId).HasColumnName("recipe_id");
+                entity.Property(ra => ra.AllergyId).HasColumnName("allergy_id");
+
+                entity.HasOne(ra => ra.Recipe)
+                    .WithMany(r => r.Allergens)
+                    .HasForeignKey(ra => ra.RecipeId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ra => ra.Allergy)
+                    .WithMany()
+                    .HasForeignKey(ra => ra.AllergyId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(ra => ra.RecipeId).HasDatabaseName("IX_recipe_allergens_recipe_id");
+                entity.HasIndex(ra => ra.AllergyId).HasDatabaseName("IX_recipe_allergens_allergy_id");
+                entity.HasIndex(ra => new { ra.RecipeId, ra.AllergyId })
+                    .IsUnique()
+                    .HasDatabaseName("UX_recipe_allergens_recipe_allergy");
+            });
+
+            // ── badges / user_badges ─────────────────────────────────────────────
+            modelBuilder.Entity<Badge>(entity =>
+            {
+                entity.ToTable("badges");
+                entity.HasKey(b => b.Id);
+                entity.Property(b => b.Id).HasColumnName("id");
+                entity.Property(b => b.Name).HasColumnName("name").HasMaxLength(100).IsRequired();
+                entity.Property(b => b.Description).HasColumnName("description").HasMaxLength(500);
+                entity.Property(b => b.Category).HasColumnName("category").HasMaxLength(50).HasDefaultValue("Milestone");
+                entity.Property(b => b.Tier).HasColumnName("tier").HasMaxLength(20).HasDefaultValue("Bronze");
+                entity.Property(b => b.TriggerType).HasColumnName("trigger_type").HasMaxLength(50).HasDefaultValue("Manual");
+                entity.Property(b => b.TriggerThreshold).HasColumnName("trigger_threshold").HasDefaultValue(1);
+                entity.Property(b => b.Points).HasColumnName("points").HasDefaultValue(0);
+                entity.Property(b => b.IconEmoji).HasColumnName("icon_emoji").HasMaxLength(20);
+                entity.Property(b => b.Color).HasColumnName("color").HasMaxLength(7);
+                entity.Property(b => b.IsSecret).HasColumnName("is_secret").HasDefaultValue(false);
+                entity.Property(b => b.IsActive).HasColumnName("is_active").HasDefaultValue(true);
+                entity.Property(b => b.SortOrder).HasColumnName("sort_order").HasDefaultValue(0);
+                entity.Property(b => b.BadgeIconId).HasColumnName("badge_icon_id");
+                entity.HasOne(b => b.BadgeIcon).WithMany().HasForeignKey(b => b.BadgeIconId).OnDelete(DeleteBehavior.SetNull);
+                entity.HasIndex(b => b.Category).HasDatabaseName("IX_badges_category");
+                entity.HasIndex(b => b.IsActive).HasDatabaseName("IX_badges_is_active");
+                entity.HasIndex(b => b.SortOrder).HasDatabaseName("IX_badges_sort_order");
+            });
+
+            modelBuilder.Entity<UserBadge>(entity =>
+            {
+                entity.ToTable("user_badges");
+                entity.HasKey(ub => ub.Id);
+                entity.Property(ub => ub.Id).HasColumnName("id");
+                entity.Property(ub => ub.UserId).HasColumnName("user_id");
+                entity.Property(ub => ub.BadgeId).HasColumnName("badge_id");
+                entity.Property(ub => ub.EarnedAt).HasColumnName("earned_at");
+                entity.Property(ub => ub.ProgressCount).HasColumnName("progress_count").HasDefaultValue(0);
+                entity.HasOne(ub => ub.User).WithMany(u => u.UserBadges).HasForeignKey(ub => ub.UserId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(ub => ub.Badge).WithMany(b => b.UserBadges).HasForeignKey(ub => ub.BadgeId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasIndex(ub => ub.UserId).HasDatabaseName("IX_user_badges_user_id");
+                entity.HasIndex(ub => new { ub.UserId, ub.BadgeId }).IsUnique().HasDatabaseName("UX_user_badges_user_badge");
+            });
+
             // ── exercise_logs ────────────────────────────────────────────────────
             modelBuilder.Entity<ExerciseLog>(entity =>
             {

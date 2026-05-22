@@ -10,18 +10,20 @@ import {
   LogOut,
   User,
   Trophy,
-  Apple
+  Apple,
+  Medal,
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogoutModal } from '../../../components/modal/LogoutModal';
 
 const links = [
-  { href: '/users',            label: 'My Progress', icon: LayoutDashboard },
-  { href: '/user/workouts',    label: 'Workouts',    icon: Dumbbell },
-  { href: '/user/nutrition',   label: 'Nutrition',   icon: Apple },
-  { href: '/user/goals',       label: 'Goals',       icon: Trophy },
-  { href: '/user/profile',     label: 'Profile',     icon: User },
-  { href: '/user/settings',    label: 'Settings',    icon: Settings },
+  { href: '/users',                label: 'My Progress',  icon: LayoutDashboard },
+  { href: '/user/workouts',        label: 'Workouts',     icon: Dumbbell },
+  { href: '/user/nutrition',       label: 'Nutrition',    icon: Apple },
+  { href: '/user/achievements',    label: 'Achievements', icon: Medal },
+  { href: '/user/goals',           label: 'Goals',        icon: Trophy },
+  { href: '/user/profile',         label: 'Profile',      icon: User },
+  { href: '/user/settings',        label: 'Settings',     icon: Settings },
 ];
 
 function NavLinks({ location, onLinkClick }) {
