@@ -97,6 +97,15 @@ using (var scope = app.Services.CreateScope())
     await seeder.SeedAsync();
 }
 
+// Seed recipes with allergen tags
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var seedLogger = scope.ServiceProvider.GetRequiredService<ILogger<RecipeSeedService>>();
+    var seeder = new RecipeSeedService(db, seedLogger);
+    await seeder.SeedAsync();
+}
+
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
