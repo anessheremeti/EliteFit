@@ -23,6 +23,7 @@ namespace EliteFit.Persistence
             services.AddScoped<IRecipesCommandRepositories, RecipesCommandRepositories>();
             services.AddScoped<IExerciseLogRepository, ExerciseLogRepository>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IBadgeRepository, BadgeRepository>();
             return services;
         }
     }

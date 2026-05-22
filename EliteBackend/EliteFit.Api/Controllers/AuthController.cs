@@ -30,6 +30,8 @@ namespace EliteFit.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var result = await _mediator.Send(new LoginQuery(request));
+            if (result is null)
+                return Unauthorized(new { message = "Invalid email or password." });
             return Ok(result);
         }
 
