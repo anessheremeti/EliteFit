@@ -13,6 +13,8 @@ namespace EliteFit.Persistence
             services.AddScoped<IAllergyRepository, AllergyRepository>();
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+
+            services.AddScoped<IWorkoutRepository, WorkoutRepository>();
             return services;
         }
     }

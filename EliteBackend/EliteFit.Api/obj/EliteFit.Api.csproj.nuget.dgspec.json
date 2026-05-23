@@ -1,39 +1,45 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj": {}
+    "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj": {
+    "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj",
+        "projectUniqueName": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj",
         "projectName": "EliteFit.Api",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj",
-        "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Api\\obj\\",
+        "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Api\\EliteFit.Api.csproj",
+        "packagesPath": "C:\\Users\\lendr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Api\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lendr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj"
+              "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj": {
+                "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj"
               },
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj"
+              "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj"
               },
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj"
+              "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
+                "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj"
               }
             }
           }
@@ -48,7 +54,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -64,9 +70,19 @@
               "target": "Package",
               "version": "[8.0.25, )"
             },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -84,24 +100,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -110,34 +108,40 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj": {
+    "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
+        "projectUniqueName": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
         "projectName": "EliteFit.Application",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
-        "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Application\\obj\\",
+        "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\EliteFit.Application.csproj",
+        "packagesPath": "C:\\Users\\lendr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lendr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
+              "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+                "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
               }
             }
           }
@@ -152,7 +156,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -174,9 +178,27 @@
               "target": "Package",
               "version": "[11.0.0, )"
             },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
             "Microsoft.Extensions.DependencyInjection.Abstractions": {
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.2, )"
             }
           },
           "imports": [
@@ -190,45 +212,37 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+    "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
         "projectName": "EliteFit.Domain",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
-        "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\obj\\",
+        "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj",
+        "packagesPath": "C:\\Users\\lendr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lendr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -247,11 +261,31 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -263,53 +297,45 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
+    "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
         "projectName": "EliteFit.Infrastructure",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Infrastructure\\obj\\",
+        "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\EliteFit.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\lendr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lendr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
+              "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+                "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
               }
             }
           }
@@ -324,12 +350,26 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -350,6 +390,10 @@
               "target": "Package",
               "version": "[7.6.0, )"
             },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[7.6.0, )"
@@ -366,53 +410,45 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
+    "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
         "projectName": "EliteFit.Persistence",
-        "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
-        "packagesPath": "C:\\Users\\anes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Persistence\\obj\\",
+        "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
+        "packagesPath": "C:\\Users\\lendr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\anes\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lendr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
-                "projectPath": "C:\\Users\\anes\\Desktop\\Projects\\elite-fit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
+              "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj": {
+                "projectPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\EliteFit.Domain.csproj"
               }
             }
           }
@@ -427,7 +463,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -464,6 +500,10 @@
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.24.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.2, )"
             }
           },
           "imports": [
@@ -477,26 +517,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

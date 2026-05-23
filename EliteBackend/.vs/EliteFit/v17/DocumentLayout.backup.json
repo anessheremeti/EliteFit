@@ -1,7 +1,48 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Jahir\\Desktop\\server04\\room-2-active\\server01-active\\EliteFit\\EliteBackend\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CDD34877-5CBE-759C-26A0-FA65A2788C44}|EliteFit.Api\\EliteFit.Api.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.api\\controllers\\workoutscon\\workoutscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CDD34877-5CBE-759C-26A0-FA65A2788C44}|EliteFit.Api\\EliteFit.Api.csproj|solutionrelative:elitefit.api\\controllers\\workoutscon\\workoutscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.application\\validators\\createworkoutvideovalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|solutionrelative:elitefit.application\\validators\\createworkoutvideovalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.application\\features\\commands\\workouts\\createworkoutvideocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|solutionrelative:elitefit.application\\features\\commands\\workouts\\createworkoutvideocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.persistence\\repositories\\workoutrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|solutionrelative:elitefit.persistence\\repositories\\workoutrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.domain\\interfaces\\repositories\\iworkoutrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9DD2BD26-BB71-441A-B5CC-0E7BBD581ABF}|EliteFit.Domain\\EliteFit.Domain.csproj|solutionrelative:elitefit.domain\\interfaces\\repositories\\iworkoutrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.persistence\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|solutionrelative:elitefit.persistence\\dependencyinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.application\\features\\queries\\workouts\\getworkoutvideosquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|solutionrelative:elitefit.application\\features\\queries\\workouts\\getworkoutvideosquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.application\\dtos\\workout\\workoutvideodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{165848EA-F2E9-4F51-94F4-052CDB7B9D29}|EliteFit.Application\\EliteFit.Application.csproj|solutionrelative:elitefit.application\\dtos\\workout\\workoutvideodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.persistence\\elitefit.persistence.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|solutionrelative:elitefit.persistence\\elitefit.persistence.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|c:\\users\\lendr\\onedrive\\desktop\\elitebackend\\elitefit\\elitebackend\\elitefit.persistence\\migrations\\20260520181024_i1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B209D427-1972-440D-B706-6F561185BCDC}|EliteFit.Persistence\\EliteFit.Persistence.csproj|solutionrelative:elitefit.persistence\\migrations\\20260520181024_i1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -24,8 +65,130 @@
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CreateWorkoutVideoValidator.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\Validators\\CreateWorkoutVideoValidator.cs",
+              "RelativeDocumentMoniker": "EliteFit.Application\\Validators\\CreateWorkoutVideoValidator.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\Validators\\CreateWorkoutVideoValidator.cs",
+              "RelativeToolTip": "EliteFit.Application\\Validators\\CreateWorkoutVideoValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-21T17:38:39.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CreateWorkoutVideoCommand.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\Features\\Commands\\Workouts\\CreateWorkoutVideoCommand.cs",
+              "RelativeDocumentMoniker": "EliteFit.Application\\Features\\Commands\\Workouts\\CreateWorkoutVideoCommand.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\Features\\Commands\\Workouts\\CreateWorkoutVideoCommand.cs",
+              "RelativeToolTip": "EliteFit.Application\\Features\\Commands\\Workouts\\CreateWorkoutVideoCommand.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAA1wC8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-21T17:38:08.328Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DependencyInjection.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\DependencyInjection.cs",
+              "RelativeDocumentMoniker": "EliteFit.Persistence\\DependencyInjection.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\DependencyInjection.cs",
+              "RelativeToolTip": "EliteFit.Persistence\\DependencyInjection.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T19:43:34.89Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WorkoutsController.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Api\\Controllers\\WorkoutsCon\\WorkoutsController.cs",
+              "RelativeDocumentMoniker": "EliteFit.Api\\Controllers\\WorkoutsCon\\WorkoutsController.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Api\\Controllers\\WorkoutsCon\\WorkoutsController.cs*",
+              "RelativeToolTip": "EliteFit.Api\\Controllers\\WorkoutsCon\\WorkoutsController.cs*",
+              "ViewState": "AgIAABUAAAAAAAAAAAAYwCEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T19:33:37.257Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WorkoutRepository.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\Repositories\\WorkoutRepository.cs",
+              "RelativeDocumentMoniker": "EliteFit.Persistence\\Repositories\\WorkoutRepository.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\Repositories\\WorkoutRepository.cs",
+              "RelativeToolTip": "EliteFit.Persistence\\Repositories\\WorkoutRepository.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAYwCYAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T19:32:06.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IWorkoutRepository.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\Interfaces\\Repositories\\IWorkoutRepository.cs",
+              "RelativeDocumentMoniker": "EliteFit.Domain\\Interfaces\\Repositories\\IWorkoutRepository.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Domain\\Interfaces\\Repositories\\IWorkoutRepository.cs*",
+              "RelativeToolTip": "EliteFit.Domain\\Interfaces\\Repositories\\IWorkoutRepository.cs*",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T19:31:31.331Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GetWorkoutVideosQuery.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\Features\\Queries\\Workouts\\GetWorkoutVideosQuery.cs",
+              "RelativeDocumentMoniker": "EliteFit.Application\\Features\\Queries\\Workouts\\GetWorkoutVideosQuery.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\Features\\Queries\\Workouts\\GetWorkoutVideosQuery.cs",
+              "RelativeToolTip": "EliteFit.Application\\Features\\Queries\\Workouts\\GetWorkoutVideosQuery.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAYwCsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T19:30:32.333Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "WorkoutVideoDto.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\DTOs\\Workout\\WorkoutVideoDto.cs",
+              "RelativeDocumentMoniker": "EliteFit.Application\\DTOs\\Workout\\WorkoutVideoDto.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Application\\DTOs\\Workout\\WorkoutVideoDto.cs",
+              "RelativeToolTip": "EliteFit.Application\\DTOs\\Workout\\WorkoutVideoDto.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAswBQAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T19:24:26.39Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "20260520181024_I1.cs",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\Migrations\\20260520181024_I1.cs",
+              "RelativeDocumentMoniker": "EliteFit.Persistence\\Migrations\\20260520181024_I1.cs",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\Migrations\\20260520181024_I1.cs",
+              "RelativeToolTip": "EliteFit.Persistence\\Migrations\\20260520181024_I1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T18:10:25.151Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "EliteFit.Persistence.csproj",
+              "DocumentMoniker": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
+              "RelativeDocumentMoniker": "EliteFit.Persistence\\EliteFit.Persistence.csproj",
+              "ToolTip": "C:\\Users\\lendr\\OneDrive\\Desktop\\EliteBackend\\EliteFit\\EliteBackend\\EliteFit.Persistence\\EliteFit.Persistence.csproj",
+              "RelativeToolTip": "EliteFit.Persistence\\EliteFit.Persistence.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-20T18:05:11.375Z"
             }
           ]
         },
