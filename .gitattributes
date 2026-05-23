@@ -1,0 +1,5 @@
+# Always use our version for build artifacts on merge conflicts.
+# These files are gitignored but were previously tracked in origin/master.
+# This prevents recurring modify/delete conflicts on git pull/merge.
+EliteBackend/**/bin/**  merge=ours
+EliteBackend/**/obj/**  merge=ours

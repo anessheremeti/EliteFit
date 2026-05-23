@@ -1,5 +1,9 @@
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
 using EliteFit.Persistence.Repositories;
+using EliteFit.Persistence.Repositories.Recipes.Command;
+using EliteFit.Persistence.Repositories.Recipes.Query;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EliteFit.Persistence
@@ -15,6 +19,14 @@ namespace EliteFit.Persistence
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 
             services.AddScoped<IWorkoutRepository, WorkoutRepository>();
+
+            services.AddScoped<IWorkoutRepository, WorkoutRepository>();
+            services.AddScoped<IWorkoutVideoRepository, WorkoutVideoRepository>();
+            services.AddScoped<IRecipesQueryRepositories, RecipesQueryRepositories>();
+            services.AddScoped<IRecipesCommandRepositories, RecipesCommandRepositories>();
+            services.AddScoped<IExerciseLogRepository, ExerciseLogRepository>();
+            services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IBadgeRepository, BadgeRepository>();
             return services;
         }
     }

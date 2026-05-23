@@ -5,9 +5,9 @@ using MediatR;
 
 namespace EliteFit.Application.Features.Queries.Auth
 {
-    public record LoginQuery(LoginRequest Request) : IRequest<AuthResponse>;
+    public record LoginQuery(LoginRequest Request) : IRequest<AuthResponse?>;
 
-    public class LoginQueryHandler : IRequestHandler<LoginQuery, AuthResponse>
+    public class LoginQueryHandler : IRequestHandler<LoginQuery, AuthResponse?>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
@@ -23,16 +23,16 @@ namespace EliteFit.Application.Features.Queries.Auth
             _jwtService = jwtService;
         }
 
-        public async Task<AuthResponse> Handle(LoginQuery query, CancellationToken cancellationToken)
+        public async Task<AuthResponse?> Handle(LoginQuery query, CancellationToken cancellationToken)
         {
             var req = query.Request;
             var user = await _userRepository.GetByEmailAsync(req.Email.ToLowerInvariant());
 
             if (user is null || !_passwordService.Verify(req.Password, user.PasswordHash!))
-                throw new UnauthorizedAccessException("Invalid email or password.");
+                return null;
 
             if (!user.IsActive)
-                throw new UnauthorizedAccessException("Your account has been deactivated.");
+                return null;
 
             var token = _jwtService.GenerateToken(user.Id, user.Email!, $"{user.FirstName} {user.LastName}");
             return new AuthResponse(token, user.Email!, $"{user.FirstName} {user.LastName}", DateTime.UtcNow.AddHours(1));

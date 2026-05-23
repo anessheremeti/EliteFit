@@ -21,7 +21,12 @@ const Managment = lazy(() => import('./pages/staff/user_management/index.jsx'));
 const Cms = lazy(() => import('./pages/staff/cms/index.jsx'));
 const Engagement = lazy(() => import('./pages/staff/engagement/index.jsx'));
 // user pages
-const dashboardUsers = lazy(() => import('./pages/user/dashboard/index.jsx'));
+const dashboardUsers     = lazy(() => import('./pages/user/dashboard/index.jsx'));
+const WorkoutsPage       = lazy(() => import('./pages/user/workouts/index.jsx'));
+const WorkoutDetailPage  = lazy(() => import('./pages/user/workouts/detail/WorkoutDetailPage'));
+const RecipeFeedPage     = lazy(() => import('./pages/user/nutrition/index.jsx'));
+const RecipeDetailPage   = lazy(() => import('./pages/user/nutrition/detail/RecipeDetailPage.jsx'));
+const AchievementsPage   = lazy(() => import('./pages/user/achievements/index.jsx'));
 // Named exports (Për ato që i kishe me kllapa gjarpërore {})
 const PressKit = lazy(() => import('./pages/guest/PressKit').then(m => ({ default: m.PressKit })));
 const MobileAppComingSoon = lazy(() => import('./pages/guest/coomingsoon').then(m => ({ default: m.MobileAppComingSoon })));
@@ -126,7 +131,18 @@ const routes = [
     children: [
       { index: true, element: dashboardUsers },
     ],
-  }
+  },
+  {
+    path: '/user',
+    layout: UserLayout,
+    children: [
+      { path: 'workouts',       element: WorkoutsPage },
+      { path: 'workouts/:id',   element: WorkoutDetailPage },
+      { path: 'nutrition',      element: RecipeFeedPage },
+      { path: 'nutrition/:id',  element: RecipeDetailPage },
+      { path: 'achievements',   element: AchievementsPage },
+    ],
+  },
 ];
 
 export default routes;

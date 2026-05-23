@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,4 +20,19 @@ namespace EliteFit.Application.DTOs.Workout
         public string MuscleGroup { get; set; } = string.Empty;
         public int? EstimatedCaloriesBurned { get; set; }
     }
+=======
+namespace EliteFit.Application.DTOs.Workout
+{
+    public record WorkoutVideoDto(
+        int Id,
+        string Title,
+        string ExerciseName,
+        string? Category,
+        string? MuscleGroup,
+        string? DifficultyLevel,
+        int? DurationSeconds,
+        int? EstimatedCaloriesBurned,
+        string VideoUrl
+    );
+>>>>>>> master
 }

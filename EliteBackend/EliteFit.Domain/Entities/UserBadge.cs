@@ -11,6 +11,7 @@ namespace EliteFit.Domain.Entities
         public int UserId { get; set; }
         public int BadgeId { get; set; }
         public DateTime? EarnedAt { get; set; }
+        public int ProgressCount { get; set; }     // Raw progress toward TriggerThreshold
 
         public User? User { get; set; }
         public Badge? Badge { get; set; }
