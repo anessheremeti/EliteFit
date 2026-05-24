@@ -1,3 +1,4 @@
+using EliteFit.Domain.Interfaces.services;
 using EliteFit.Domain.Interfaces.Services;
 using EliteFit.Infrastructure.Services;
 using EliteFit.Infrastructure.Settings;
@@ -15,6 +16,8 @@ namespace EliteFit.Infrastructure
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IEmailService, EmailService>();
+
+            services.AddScoped<IFileStorageService, FileStorageService>();
             return services;
         }
     }
