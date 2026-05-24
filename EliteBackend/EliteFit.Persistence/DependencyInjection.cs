@@ -1,4 +1,5 @@
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Domain.Interfaces.Repositories.Workout;
 using EliteFit.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,8 @@ namespace EliteFit.Persistence
             services.AddScoped<IAllergyRepository, AllergyRepository>();
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+
+            services.AddScoped<IWorkoutVideoRepository, WorkoutVideoRepository>();
             return services;
         }
     }

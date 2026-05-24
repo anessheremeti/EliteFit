@@ -17,6 +17,7 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
@@ -26,8 +27,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Recipes\" />
-    <Folder Include="Features\Commands\" />
-    <Folder Include="Features\Queries\" />
     <Folder Include="Common\" />
     <Folder Include="Features\Recipes\Commands\" />
     <Folder Include="Features\Recipes\Query\" />
