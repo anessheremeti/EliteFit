@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EliteFit.Application.DTOs.Workouts;
-using EliteFit.Domain.Interfaces.Repositories.Workout; // Thirrja e Repository
+using EliteFit.Domain.Interfaces.Repositories.Workout;
 
-namespace EliteFit.Application.Features.Queries.Workouts;
+namespace EliteFit.Application.Features.Workouts.Queries;
 
 public class GetWorkoutVideosQuery : IRequest<List<WorkoutVideoDto>>
 {
