@@ -17,6 +17,11 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
         _context = context;
     }
 
+    public async Task<WorkoutVideo?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return await _context.WorkoutVideos
+            .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
+    }
     // 1. Implementimi i Query-t (Leximi me filtra)
     public async Task<List<WorkoutVideo>> GetFilteredVideosAsync(int? categoryId, string? difficultyLevel, CancellationToken cancellationToken)
     {
@@ -47,5 +52,15 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
 
         // Kthehet ID-ja që sapo u gjenerua nga databaza
         return workoutVideo.Id;
+    }
+
+    public async Task AddHistoryAsync(UserWorkoutHistory history,CancellationToken cancellationToken)
+    {
+        await _context.Set<UserWorkoutHistory>().AddAsync(history, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
