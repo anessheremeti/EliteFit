@@ -6,7 +6,7 @@ using EliteFit.Domain.Entities;
 using EliteFit.Domain.Interfaces.Repositories.Workout;
 using EliteFit.Domain.Interfaces.services;
 
-namespace EliteFit.Application.Features.Commands.Workouts;
+namespace EliteFit.Application.Features.Workouts.Commands;
 
 public class CreateWorkoutVideoCommand : IRequest<int>
 {
