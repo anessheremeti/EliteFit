@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
 
-namespace EliteFit.Application.Common
+namespace EliteFit.Application.Common.Behaviors
 {
     public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>

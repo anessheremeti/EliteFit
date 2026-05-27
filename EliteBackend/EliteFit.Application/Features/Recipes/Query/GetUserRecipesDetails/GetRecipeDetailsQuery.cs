@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Recipes.Query
+namespace EliteFit.Application.Features.Recipes.Query.GetUserRecipesDetails
 {
     public class GetRecipeDetailsQuery : IRequest<RecipeDetailsDto?>
     {

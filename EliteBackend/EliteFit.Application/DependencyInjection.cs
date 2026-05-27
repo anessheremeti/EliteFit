@@ -1,4 +1,4 @@
-using EliteFit.Application.Common;
+using EliteFit.Application.Common.Behaviors;
 using EliteFit.Application.Features.Commands.Auth;
 using EliteFit.Application.Validators;
 using FluentValidation;

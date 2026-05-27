@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Recipes.Query
+namespace EliteFit.Application.Features.Recipes.Query.GetUserRecipesList
 {
     public class GetRecipesListQueryHandler : IRequestHandler<GetRecipesListQuery, List<RecipeListDto>>
     {
