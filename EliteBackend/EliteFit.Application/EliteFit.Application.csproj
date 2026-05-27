@@ -25,9 +25,4 @@
     <ProjectReference Include="..\EliteFit.Domain\EliteFit.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\Recipes\command\" />
-    <Folder Include="Features\Recipes\Commands\" />
-  </ItemGroup>
-
 </Project>
