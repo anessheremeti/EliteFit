@@ -1,12 +1,14 @@
 using EliteFit.Application;
 using EliteFit.Application.Common.Behaviors;
 using EliteFit.Domain.Interfaces.Repositories;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Query; // Shtuar për Interface-in e ri
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
 using EliteFit.Infrastructure;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
-using EliteFit.Persistence.Repositories.Recipes.Query; // Shtuar për Klasën e re të MongoDB
+using EliteFit.Persistence.Repositories.Recipes.Command;
+using EliteFit.Persistence.Repositories.Recipes.Query;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,7 +16,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MongoDB.Driver; // Shtuar për IMongoClient
+using MongoDB.Driver;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,10 +64,12 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavi
 // REGJISTRIMI I REPOSITORIES (SQL & MONGODB)
 // -------------------------------------------------------------------
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IRecipeAdminRepository, RecipeAdminRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
-
-// REGJISTRIMI I REPOSITORY-T TË RI PËR LEXIM NGA MONGODB
 builder.Services.AddScoped<IRecipesQueryRepositories, RecipesQueryRepositories>();
+
+// KORRIGJIMI: Regjistrimi i Repository-t të Alergjive që shkaktonte errorin
+builder.Services.AddScoped<IAllergyAdminRepository, AllergyAdminRepository>();
 
 // -------------------------------------------------------------------
 // KONFIGURIMI I DATABAZAVE (MySQL/SQL Server & MongoDB)
@@ -79,19 +83,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
-// Shënim për SQL Server (Nëse ndërrohet në të ardhmen):
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-// B) MongoDB Config (Rregulluar plotësisht me injektim parametrash)
+// B) MongoDB Config
 var mongoConnectionString = builder.Configuration.GetValue<string>("MongoSettings:ConnectionString") ?? "mongodb://localhost:27017";
 var mongoDatabaseName = builder.Configuration.GetValue<string>("MongoSettings:DatabaseName") ?? "EliteFitReadDb";
 
-// Regjistrojmë klientin zyrtar të MongoDB si Singleton
 builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoConnectionString));
 
-// Regjistrojmë Context-in e MongoDB duke i kaluar klientin dhe emrin e DB-së
 builder.Services.AddScoped<MongoDbContext>(sp =>
 {
     var client = sp.GetRequiredService<IMongoClient>();
@@ -129,7 +126,6 @@ var app = builder.Build();
 // MIDDLEWARES DHE PIPELINE GLOBAL
 // -------------------------------------------------------------------
 
-// Global exception handler
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -154,13 +150,12 @@ app.UseExceptionHandler(errorApp =>
 });
 
 // -------------------------------------------------------------------
-// TEST ENDPOINTS (Për të parë nëse lidhen databazat)
+// TEST ENDPOINTS
 // -------------------------------------------------------------------
 app.MapGet("/test-mongo", ([Microsoft.AspNetCore.Mvc.FromServices] MongoDbContext mongo) =>
 {
     try
     {
-        // Provon të qaset te koleksioni i recetave për të vërtetuar lidhjen
         var _ = mongo.Recipe;
         return "MongoDB Connected ✅";
     }
@@ -173,7 +168,6 @@ app.MapGet("/test-mongo", ([Microsoft.AspNetCore.Mvc.FromServices] MongoDbContex
 app.MapGet("/test-mysql", async (ApplicationDbContext db) =>
     await db.Database.CanConnectAsync() ? "MySQL Connected ✅" : "MySQL Failed ❌");
 
-// Swagger dhe ridrejtimi
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

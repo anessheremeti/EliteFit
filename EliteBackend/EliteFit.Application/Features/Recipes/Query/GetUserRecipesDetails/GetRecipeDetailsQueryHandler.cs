@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Recipes.Query
+namespace EliteFit.Application.Features.Recipes.Query.GetUserRecipesDetails
 {
     public class GetRecipeDetailsQueryHandler : IRequestHandler<GetRecipeDetailsQuery, RecipeDetailsDto?>
     {

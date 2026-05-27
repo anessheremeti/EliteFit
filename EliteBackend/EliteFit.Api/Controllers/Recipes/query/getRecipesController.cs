@@ -1,5 +1,6 @@
 ﻿using EliteFit.Application.DTOs.Recipes.query;
-using EliteFit.Application.Features.Recipes.Query;
+using EliteFit.Application.Features.Recipes.Query.GetUserRecipesDetails;
+using EliteFit.Application.Features.Recipes.Query.GetUserRecipesList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,11 @@ namespace EliteFit.Api.Controllers.Client
     [ApiController]
     // URL: api/client/recipes
     [Route("api/client/get-recipes")]
-    public class RecipesQueryController : ControllerBase
+    public class GetRecipesController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public RecipesQueryController(IMediator mediator)
+        public GetRecipesController(IMediator mediator)
         {
             _mediator = mediator;
         }
