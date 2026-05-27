@@ -1,12 +1,10 @@
-using EliteFit.Domain.Entities;
+using EliteFit.Domain.Entities; // Sigurohu që këtu janë Entitetet e SQL, jo ato të Mongo
 using EliteFit.Domain.Entities.Mongo;
 using Microsoft.EntityFrameworkCore;
 
 namespace EliteFit.Persistence.Persistence.Context
 {
-    // Parametri (options) vendoset direkt këtu
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : DbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
         // Regjistrimi i tabelave
         public DbSet<User> Users { get; set; }
@@ -39,24 +37,7 @@ namespace EliteFit.Persistence.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            // Map User entity explicitly to legacy snake_case MySQL schema.
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToTable("users");
-                entity.HasKey(u => u.Id);
-
-                entity.Property(u => u.Id).HasColumnName("id");
-                entity.Property(u => u.FirstName).HasColumnName("first_name");
-                entity.Property(u => u.LastName).HasColumnName("last_name");
-                entity.Property(u => u.Email).HasColumnName("email");
-                entity.Property(u => u.PasswordHash).HasColumnName("password_hash");
-                entity.Property(u => u.IsActive).HasColumnName("is_active");
-                entity.Property(u => u.CreatedAt).HasColumnName("created_at");
-                entity.Property(u => u.UpdatedAt).HasColumnName("updated_at");
-            });
-
-            // Current DB schema does not include BaseEntity user tracking columns yet.
-            // Ignore them so EF doesn't generate inserts/updates for missing fields.
+            // Injorimi i fushave të BaseEntity që nuk janë në DB
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 var clrType = entityType.ClrType;
@@ -74,10 +55,26 @@ namespace EliteFit.Persistence.Persistence.Context
                 modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.UpdatedBy));
             }
 
-            // Konfigurimet për Primary Keys që nuk janë "Id"
-            modelBuilder.Entity<UserStreak>().HasKey(us => us.UserId);
+            // ----------------------------------------------------------------
+            // CONFIGURIMI I TABELAVE ME SNAKE_CASE
+            // ----------------------------------------------------------------
 
-            // user_profiles — explicit snake_case mapping
+            // users
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.Id).HasColumnName("id");
+                entity.Property(u => u.FirstName).HasColumnName("first_name");
+                entity.Property(u => u.LastName).HasColumnName("last_name");
+                entity.Property(u => u.Email).HasColumnName("email");
+                entity.Property(u => u.PasswordHash).HasColumnName("password_hash");
+                entity.Property(u => u.IsActive).HasColumnName("is_active");
+                entity.Property(u => u.CreatedAt).HasColumnName("created_at");
+                entity.Property(u => u.UpdatedAt).HasColumnName("updated_at");
+            });
+
+            // user_profiles
             modelBuilder.Entity<UserProfile>(entity =>
             {
                 entity.ToTable("user_profiles");
@@ -99,7 +96,7 @@ namespace EliteFit.Persistence.Persistence.Context
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // goals — explicit snake_case mapping
+            // goals & user_goals
             modelBuilder.Entity<Goal>(entity =>
             {
                 entity.ToTable("goals");
@@ -108,7 +105,6 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(g => g.CreatedAt).HasColumnName("created_at");
             });
 
-            // user_goals — explicit snake_case mapping
             modelBuilder.Entity<UserGoal>(entity =>
             {
                 entity.ToTable("user_goals");
@@ -116,18 +112,11 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(ug => ug.UserId).HasColumnName("user_id");
                 entity.Property(ug => ug.GoalId).HasColumnName("goal_id");
 
-                entity.HasOne(ug => ug.User)
-                    .WithMany(u => u.UserGoals)
-                    .HasForeignKey(ug => ug.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(ug => ug.Goal)
-                    .WithMany(g => g.UserGoals)
-                    .HasForeignKey(ug => ug.GoalId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(ug => ug.User).WithMany(u => u.UserGoals).HasForeignKey(ug => ug.UserId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(ug => ug.Goal).WithMany(g => g.UserGoals).HasForeignKey(ug => ug.GoalId).OnDelete(DeleteBehavior.Cascade);
             });
 
-            // allergies — explicit snake_case mapping
+            // allergies & user_allergies
             modelBuilder.Entity<Allergy>(entity =>
             {
                 entity.ToTable("allergies");
@@ -136,7 +125,6 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(a => a.CreatedAt).HasColumnName("created_at");
             });
 
-            // user_allergies — explicit snake_case mapping
             modelBuilder.Entity<UserAllergy>(entity =>
             {
                 entity.ToTable("user_allergies");
@@ -144,18 +132,11 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(ua => ua.UserId).HasColumnName("user_id");
                 entity.Property(ua => ua.AllergyId).HasColumnName("allergy_id");
 
-                entity.HasOne(ua => ua.User)
-                    .WithMany(u => u.UserAllergies)
-                    .HasForeignKey(ua => ua.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(ua => ua.Allergy)
-                    .WithMany(a => a.UserAllergies)
-                    .HasForeignKey(ua => ua.AllergyId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(ua => ua.User).WithMany(u => u.UserAllergies).HasForeignKey(ua => ua.UserId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(ua => ua.Allergy).WithMany(a => a.UserAllergies).HasForeignKey(ua => ua.AllergyId).OnDelete(DeleteBehavior.Cascade);
             });
 
-            // password_reset_tokens — explicit snake_case mapping
+            // password_reset_tokens
             modelBuilder.Entity<PasswordResetToken>(entity =>
             {
                 entity.ToTable("password_reset_tokens");
@@ -166,17 +147,47 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(t => t.ExpiresAt).HasColumnName("expires_at");
                 entity.Property(t => t.UsedAt).HasColumnName("used_at");
                 entity.Property(t => t.CreatedAt).HasColumnName("created_at");
-                entity.Ignore(t => t.CreatedBy);
-                entity.Ignore(t => t.UpdatedBy);
-                entity.Ignore(t => t.UpdatedAt);
 
-                entity.HasOne(t => t.User)
-                    .WithMany()
-                    .HasForeignKey(t => t.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
+                entity.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasIndex(t => t.TokenHash).IsUnique();
                 entity.HasIndex(t => t.UserId);
+            });
+
+            // ----------------------------------------------------------------
+            // CONFIGURIMI I TABELAVE ME PASCALCASE (Sipas DB SQL)
+            // ----------------------------------------------------------------
+
+            modelBuilder.Entity<UserStreak>().HasKey(us => us.UserId);
+
+            // Mapimi eksplicit për RecipeAllergens për të ruajtur lidhjet
+            modelBuilder.Entity<RecipeAllergenInfo>(entity =>
+            {
+                entity.ToTable("RecipeAllergens");
+                entity.HasKey(ra => ra.Id);
+
+                // Lidhja me recetën (Cascade Delete)
+                entity.HasOne(ra => ra.Recipe)
+                    .WithMany(r => r.Allergens)
+                    .HasForeignKey(ra => ra.RecipeId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Lidhja me alergjinë (Cascade Delete)
+                entity.HasOne(ra => ra.Allergy)
+                    .WithMany()
+                    .HasForeignKey(ra => ra.AllergyId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Konfigurimi i Recetave
+            modelBuilder.Entity<Recipe>(entity =>
+            {
+                entity.ToTable("Recipes");
+                entity.HasKey(r => r.Id);
+
+                // Opsionale: Specifikimi i data type për makrot
+                entity.Property(r => r.ProteinG).HasColumnType("decimal(18,2)");
+                entity.Property(r => r.CarbsG).HasColumnType("decimal(18,2)");
+                entity.Property(r => r.FatG).HasColumnType("decimal(18,2)");
             });
         }
     }
