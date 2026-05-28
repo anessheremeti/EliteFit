@@ -32,7 +32,7 @@ namespace EliteFit.Application.Features.Workouts.Commands
             }
 
 
-            //Llogaritja dinamike e kalorive bazuar në kohën e shikimit
+
             int? calculatedCalories = command.CaloriesBurned;
 
             if (calculatedCalories == null)

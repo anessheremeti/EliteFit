@@ -1,24 +1,32 @@
 using EliteFit.Application;
+using EliteFit.Application.Common.Behaviors;
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
 using EliteFit.Infrastructure;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
+using EliteFit.Persistence.Repositories.Recipes.Command;
+using EliteFit.Persistence.Repositories.Recipes.Query;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Shërbime bazë
+// -------------------------------------------------------------------
+// SHËRBIMET BAZË DHE SWAGGER
+// -------------------------------------------------------------------
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Swagger me mbështetje për JWT
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "EliteFit API", Version = "v1" });
@@ -39,16 +47,35 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Shtresat e arkitekturës Onion
+// -------------------------------------------------------------------
+// SHTRESAT E ARKITEKTURËS ONION & CACHING
+// -------------------------------------------------------------------
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceServices();
 
-// Repositories ekzistuese
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+// Aktivizimi i Memories Distributed për Caching (Përballon 1000+ kërkesa)
+builder.Services.AddDistributedMemoryCache();
 
-// MySQL
+// Regjistrimi i Pipeline Behavior në MediatR për Caching automatik
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
+
+// -------------------------------------------------------------------
+// REGJISTRIMI I REPOSITORIES (SQL & MONGODB)
+// -------------------------------------------------------------------
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IRecipeAdminRepository, RecipeAdminRepository>();
+builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<IRecipesQueryRepositories, RecipesQueryRepositories>();
+
+// KORRIGJIMI: Regjistrimi i Repository-t të Alergjive që shkaktonte errorin
+builder.Services.AddScoped<IAllergyAdminRepository, AllergyAdminRepository>();
+
+// -------------------------------------------------------------------
+// KONFIGURIMI I DATABAZAVE (MySQL/SQL Server & MongoDB)
+// -------------------------------------------------------------------
+
+// A) Relational Database (MySQL ose SQL Server)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -56,18 +83,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
-// -------------------------------------------------------------------
-// ZONA E KOLEGËVE - SQL Server (Entity Framework Core)
-// -------------------------------------------------------------------
-// builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// -------------------------------------------------------------------
+// B) MongoDB Config
+var mongoConnectionString = builder.Configuration.GetValue<string>("MongoSettings:ConnectionString") ?? "mongodb://localhost:27017";
+var mongoDatabaseName = builder.Configuration.GetValue<string>("MongoSettings:DatabaseName") ?? "EliteFitReadDb";
 
-// MongoDB
-builder.Services.AddSingleton<MongoDbContext>();
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoConnectionString));
 
-// JWT Authentication
+builder.Services.AddScoped<MongoDbContext>(sp =>
+{
+    var client = sp.GetRequiredService<IMongoClient>();
+    return new MongoDbContext(client, mongoDatabaseName);
+});
+
+// -------------------------------------------------------------------
+// SECURITY (JWT & CORS)
+// -------------------------------------------------------------------
 var jwtSection = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -80,12 +110,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSection["Issuer"],
             ValidAudience = jwtSection["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSection["Secret"]!))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Secret"]!))
         };
     });
 
-// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -94,7 +122,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Global exception handler — kthen mesazhe të qarta për frontend
+// -------------------------------------------------------------------
+// MIDDLEWARES DHE PIPELINE GLOBAL
+// -------------------------------------------------------------------
+
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -118,11 +149,20 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// Test endpoints
+// -------------------------------------------------------------------
+// TEST ENDPOINTS
+// -------------------------------------------------------------------
 app.MapGet("/test-mongo", ([Microsoft.AspNetCore.Mvc.FromServices] MongoDbContext mongo) =>
 {
-    try { var _ = mongo.AuditLogs; return "MongoDB Connected ✅"; }
-    catch { return "MongoDB Failed ❌"; }
+    try
+    {
+        var _ = mongo.Recipe;
+        return "MongoDB Connected ✅";
+    }
+    catch (Exception ex)
+    {
+        return $"MongoDB Failed ❌: {ex.Message}";
+    }
 });
 
 app.MapGet("/test-mysql", async (ApplicationDbContext db) =>
