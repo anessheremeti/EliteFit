@@ -17,11 +17,11 @@ import { LogoutModal } from '../../../components/modal/LogoutModal';
 
 const links = [
   { href: '/users',            label: 'My Progress', icon: LayoutDashboard },
-  { href: '/user/workouts',    label: 'Workouts',    icon: Dumbbell },
-  { href: '/user/nutrition',   label: 'Nutrition',   icon: Apple },
-  { href: '/user/goals',       label: 'Goals',       icon: Trophy },
-  { href: '/user/profile',     label: 'Profile',     icon: User },
-  { href: '/user/settings',    label: 'Settings',    icon: Settings },
+  { href: '/users/workouts',    label: 'Workouts',    icon: Dumbbell },
+  { href: '/users/nutrition',   label: 'Nutrition',   icon: Apple },
+  { href: '/users/goals',       label: 'Goals',       icon: Trophy },
+  { href: '/users/profile',     label: 'Profile',     icon: User },
+  { href: '/users/settings',    label: 'Settings',    icon: Settings },
 ];
 
 function NavLinks({ location, onLinkClick }) {
