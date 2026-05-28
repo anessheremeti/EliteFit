@@ -39,6 +39,8 @@ const OnboardingAllergies = lazy(() => import('./pages/user/onboarding/Allergies
 const OnboardingGoals     = lazy(() => import('./pages/user/onboarding/GoalsPage'));
 const OnboardingProfile   = lazy(() => import('./pages/user/onboarding/ProfilePage'));
 const OnboardingActivity  = lazy(() => import('./pages/user/onboarding/ActivityPage'));
+const workoutVideos = lazy(() => import('./pages/user/workouts/index.jsx'))
+const Settings = lazy(() => import('./pages/user/settings/AccountSettings.jsx'))
 /* ==========================================================================
     2. RENDER ROUTES LOGIC
    ========================================================================== */
@@ -125,6 +127,8 @@ const routes = [
     layout: UserLayout,
     children: [
       { index: true, element: dashboardUsers },
+      { path: 'workouts', element: workoutVideos },
+      {path:'profile',element:Settings}
     ],
   }
 ];
