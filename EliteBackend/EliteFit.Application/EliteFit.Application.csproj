@@ -28,8 +28,7 @@
   <ItemGroup>
     <Folder Include="DTOs\Recipes\" />
     <Folder Include="Common\" />
-    <Folder Include="Features\Recipes\Commands\" />
-    <Folder Include="Features\Recipes\Query\" />
+    <Folder Include="Features\Recipes\" />
   </ItemGroup>
 
 </Project>

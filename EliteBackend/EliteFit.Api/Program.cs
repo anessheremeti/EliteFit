@@ -1,9 +1,13 @@
 using EliteFit.Application;
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
 using EliteFit.Infrastructure;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
+using EliteFit.Persistence.Repositories.Recipes.Command;
+using EliteFit.Persistence.Repositories.Recipes.Query;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
@@ -11,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using MongoDB.Driver; // Siguron që IMongoClient të jetë i disponueshëm
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,9 +49,12 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceServices();
 
-// Repositories ekzistuese
+// Repositories ekzistuese dhe të reja
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<IRecipesQueryRepositories, RecipesQueryRepositories>();
+builder.Services.AddScoped<IRecipeAdminRepository, RecipeAdminRepository>(); // Regjistruar për komandat e recetave
+builder.Services.AddScoped<IAllergyAdminRepository, AllergyAdminRepository>();
 
 // MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -64,8 +72,29 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // -------------------------------------------------------------------
 
-// MongoDB
-builder.Services.AddSingleton<MongoDbContext>();
+// ==========================================
+// RREGULLIMI PËR MONGODB (Duke u bazuar në appsettings tuaj)
+// ==========================================
+
+// 1. Regjistrojmë IMongoClient si Singleton
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    // Lexon "mongodb://localhost:27017" direkt nga objekti "MongoDbSettings"
+    var connectionString = builder.Configuration["MongoDbSettings:ConnectionString"]
+        ?? "mongodb://localhost:27017";
+    return new MongoClient(connectionString);
+});
+
+// 2. Regjistrojmë MongoDbContext duke kaluar parametrat që pret konstruktori (client, string)
+builder.Services.AddSingleton<MongoDbContext>(sp =>
+{
+    var mongoClient = sp.GetRequiredService<IMongoClient>();
+
+    // Lexon "EliteFitLogDb" direkt nga objekti "MongoDbSettings"
+    var databaseName = builder.Configuration["MongoDbSettings:DatabaseName"] ?? "EliteFitLogDb";
+
+    return new MongoDbContext(mongoClient, databaseName);
+});
 
 // JWT Authentication
 var jwtSection = builder.Configuration.GetSection("Jwt");
@@ -81,7 +110,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = jwtSection["Issuer"],
             ValidAudience = jwtSection["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSection["Secret"]!))
+                Encoding.UTF8.GetBytes(jwtSection["Secret"] ?? "Zevendeso_Me_Nje_Key_Te_Sigurt_Nese_Eshte_Bosh")) // Parandalon crash nëse Secret është bosh përkohësisht
         };
     });
 
