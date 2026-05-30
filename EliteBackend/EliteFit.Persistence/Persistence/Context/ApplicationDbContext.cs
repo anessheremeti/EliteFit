@@ -15,6 +15,7 @@ namespace EliteFit.Persistence.Persistence.Context
         public DbSet<FileEntity> Files { get; set; }
         public DbSet<Goal> Goals { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<MealLog> MealLogs { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<WorkoutVideo> WorkoutVideos { get; set; }
         public DbSet<UserStreak> UserStreaks { get; set; }

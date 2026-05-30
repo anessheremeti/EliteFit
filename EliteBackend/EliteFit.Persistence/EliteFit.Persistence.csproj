@@ -27,4 +27,8 @@
     <ProjectReference Include="..\EliteFit.Domain\EliteFit.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\Personalization\Command\" />
+  </ItemGroup>
+
 </Project>

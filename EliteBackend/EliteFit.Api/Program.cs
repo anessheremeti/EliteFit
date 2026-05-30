@@ -1,11 +1,13 @@
 using EliteFit.Application;
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
 using EliteFit.Infrastructure;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
+using EliteFit.Persistence.Repositories.Personalization.Query;
 using EliteFit.Persistence.Repositories.Recipes.Command;
 using EliteFit.Persistence.Repositories.Recipes.Query;
 using FluentValidation;
@@ -14,8 +16,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using MongoDB.Driver; // Siguron që IMongoClient të jetë i disponueshëm
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +57,9 @@ builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IRecipesQueryRepositories, RecipesQueryRepositories>();
 builder.Services.AddScoped<IRecipeAdminRepository, RecipeAdminRepository>(); // Regjistruar për komandat e recetave
 builder.Services.AddScoped<IAllergyAdminRepository, AllergyAdminRepository>();
+builder.Services.AddScoped<IUserProfileQueryRepository, UserProfileQueryRepository>();
+builder.Services.AddScoped<IMealLogQueryRepository, MealLogQueryRepository>();
+builder.Services.AddScoped<IRecipesSmartQueryRepository, RecipesSmartQueryRepository>();
 
 // MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
