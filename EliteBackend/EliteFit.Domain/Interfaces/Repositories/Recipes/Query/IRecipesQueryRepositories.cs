@@ -12,5 +12,9 @@ namespace EliteFit.Domain.Interfaces.Repositories.Recipes.Query
         Task<long> CountRecipe();
          Task<Recipe> GetRecipeByIdAsync(string id);
          Task<List<Recipe>> GetAllRecipesAsync();
+        Task<List<Recipe>> GetFilteredRecipesAsync(int userId, int? maxCalories, decimal? minProteinG, CancellationToken ct);
+
+        // Kthen një entitet të vetëm Recipe sipas Id-së
+        Task<Recipe?> GetRecipeByIdAsync(int id, CancellationToken ct);
     }
 }
