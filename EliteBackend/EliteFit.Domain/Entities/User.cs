@@ -25,6 +25,7 @@ namespace EliteFit.Domain.Entities
         public ICollection<Notification> Notifications { get; set; }
         public ICollection<RefreshToken> RefreshTokens { get; set; }
         public ICollection<FileEntity> UploadedFiles { get; set; }
+        public ICollection<MealLog> MealLogs { get; set; } = new List<MealLog>();
         public ICollection<UserWorkoutHistory> WorkoutHistories { get; set; }
     }
 }

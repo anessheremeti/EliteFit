@@ -18,5 +18,7 @@ namespace EliteFit.Domain.Entities
 
         public FileEntity? ImageFile { get; set; }
         public ICollection<RecipeAllergenInfo> Allergens { get; set; } = new List<RecipeAllergenInfo>();
+
+        public ICollection<MealLog> MealLogs { get; set; } = new List<MealLog>();
     }
 }
