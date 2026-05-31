@@ -6,7 +6,7 @@ using MediatR;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EliteFit.Application.Features.Commands.Auth
+namespace EliteFit.Application.Features.Auth.Commands
 {
     public record ForgotPasswordCommand(ForgotPasswordRequest Request, string FrontendBaseUrl) : IRequest<Unit>;
 

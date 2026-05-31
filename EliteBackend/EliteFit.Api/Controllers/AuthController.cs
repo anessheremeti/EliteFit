@@ -1,6 +1,6 @@
 using EliteFit.Application.DTOs.Auth;
-using EliteFit.Application.Features.Commands.Auth;
-using EliteFit.Application.Features.Queries.Auth;
+using EliteFit.Application.Features.Auth.Commands;
+using EliteFit.Application.Features.Auth.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

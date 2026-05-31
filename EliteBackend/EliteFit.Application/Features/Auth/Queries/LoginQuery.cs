@@ -3,7 +3,7 @@ using EliteFit.Domain.Interfaces.Repositories;
 using EliteFit.Domain.Interfaces.Services;
 using MediatR;
 
-namespace EliteFit.Application.Features.Queries.Auth
+namespace EliteFit.Application.Features.Auth.Queries
 {
     public record LoginQuery(LoginRequest Request) : IRequest<AuthResponse>;
 

@@ -5,7 +5,7 @@ using MediatR;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EliteFit.Application.Features.Commands.Auth
+namespace EliteFit.Application.Features.Auth.Commands
 {
     public record ResetPasswordCommand(ResetPasswordRequest Request) : IRequest<Unit>;
 

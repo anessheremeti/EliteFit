@@ -1,5 +1,5 @@
 using EliteFit.Application.Common;
-using EliteFit.Application.Features.Commands.Auth;
+using EliteFit.Application.Features.Auth.Commands;
 using EliteFit.Application.Validators;
 using FluentValidation;
 using MediatR;
