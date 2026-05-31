@@ -56,7 +56,7 @@ namespace EliteFit.Application.Features.Workouts.Commands
                 }
             }
 
-
+    
             var history = new UserWorkoutHistory
             {
                 UserId = command.UserId,

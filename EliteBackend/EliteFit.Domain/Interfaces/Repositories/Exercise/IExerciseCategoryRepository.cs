@@ -15,5 +15,9 @@ namespace EliteFit.Domain.Interfaces.Repositories.Exercise
         Task<ExerciseCategory?> GetByIdAsync (int id,CancellationToken cancellationToken);
         Task AddAsync(ExerciseCategory category,CancellationToken cancellationToken);
         Task SaveChangesAsync(CancellationToken cancellationToken);
+
+        Task UpdateAsync(ExerciseCategory category, CancellationToken cancellationToken);
+        Task DeleteAsync(ExerciseCategory category, CancellationToken cancellationToken);
+
     }
 }

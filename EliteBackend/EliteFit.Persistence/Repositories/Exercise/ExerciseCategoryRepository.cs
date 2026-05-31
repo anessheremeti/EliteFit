@@ -33,5 +33,16 @@ namespace EliteFit.Persistence.Repositories.Exercise
         {
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public Task UpdateAsync(ExerciseCategory category,CancellationToken cancellationToken)
+        {
+            _context.Set<ExerciseCategory>().Update(category);
+            return Task.CompletedTask;
+        }
+        public Task DeleteAsync(ExerciseCategory category, CancellationToken cancellationToken)
+        {
+            _context.Set<ExerciseCategory>().Remove(category);
+            return Task.CompletedTask;
+        }
     }
 }
