@@ -1,15 +1,17 @@
 using EliteFit.Application;
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Domain.Interfaces.Repositories.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Queries;
 using EliteFit.Infrastructure;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
-using EliteFit.Persistence.Repositories.Personalization.Query;
+using EliteFit.Persistence.Repositories.Gamification.Command;
+using EliteFit.Persistence.Repositories.Personalization.Queries;
 using EliteFit.Persistence.Repositories.Recipes.Command;
-using EliteFit.Persistence.Repositories.Recipes.Query;
+using EliteFit.Persistence.Repositories.Recipes.Queries;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
@@ -60,7 +62,7 @@ builder.Services.AddScoped<IAllergyAdminRepository, AllergyAdminRepository>();
 builder.Services.AddScoped<IUserProfileQueryRepository, UserProfileQueryRepository>();
 builder.Services.AddScoped<IMealLogQueryRepository, MealLogQueryRepository>();
 builder.Services.AddScoped<IRecipesSmartQueryRepository, RecipesSmartQueryRepository>();
-
+builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 // MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
