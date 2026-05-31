@@ -30,7 +30,7 @@
     <Folder Include="DTOs\Recipes\" />
     <Folder Include="Common\" />
     <Folder Include="Features\Personalization\Command\" />
-
+    <Folder Include="Features\Recipes\" />
     <Folder Include="Features\Recipes\Commands\" />
     <Folder Include="Features\Recipes\Queries\" />
     <Folder Include="Features\Reports\Commands\" />
