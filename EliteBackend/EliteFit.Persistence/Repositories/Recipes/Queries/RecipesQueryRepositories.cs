@@ -1,5 +1,5 @@
 ﻿using EliteFit.Domain.Entities;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Queries;
 using EliteFit.Persistence.Persistence.Context;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EliteFit.Persistence.Repositories.Recipes.Query
+namespace EliteFit.Persistence.Repositories.Recipes.Queries
 {
     public class RecipesQueryRepositories(MongoDbContext context) : IRecipesQueryRepositories
     {

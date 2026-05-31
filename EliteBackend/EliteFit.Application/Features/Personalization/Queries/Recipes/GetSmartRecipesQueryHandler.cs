@@ -1,4 +1,5 @@
 ﻿using EliteFit.Application.DTOs.Personalization;
+using EliteFit.Application.Features.Personalization.Queries.Recipes;
 using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using MediatR;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Personalization.Query
+namespace EliteFit.Application.Features.Personalization.Queries.Recipes
 {
     public class GetSmartRecipesQueryHandler : IRequestHandler<GetSmartRecipesQuery, List<SmartRecipeDto>>
     {

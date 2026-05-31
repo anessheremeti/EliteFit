@@ -2,11 +2,11 @@
 using EliteFit.Application.Features.Recipes.Commands.CreateRecipe;
 using EliteFit.Application.Features.Recipes.Commands.DeleteRecipe;
 using EliteFit.Application.Features.Recipes.Commands.UpdateRecipe;
-using EliteFit.Application.Features.Recipes.Query.GetAdminRecipes;
+using EliteFit.Application.Features.Recipes.Queries.GetAdminRecipes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EliteFit.Api.Controllers.Recipes.command
+namespace EliteFit.Api.Controllers.Recipes.Command
 {
     [ApiController]
     [Route("api/admin/recipes")]

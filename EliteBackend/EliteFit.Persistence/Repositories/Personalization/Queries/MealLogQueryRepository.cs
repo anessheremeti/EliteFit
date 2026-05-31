@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteFit.Persistence.Repositories.Personalization.Query
+namespace EliteFit.Persistence.Repositories.Personalization.Queries
 {
 public class MealLogQueryRepository : IMealLogQueryRepository
     {
