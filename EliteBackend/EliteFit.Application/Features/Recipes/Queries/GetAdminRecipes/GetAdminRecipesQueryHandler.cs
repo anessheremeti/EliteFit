@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Recipes.Query.GetAdminRecipes
+namespace EliteFit.Application.Features.Recipes.Queries.GetAdminRecipes
 {
     public class GetAdminRecipesQueryHandler : IRequestHandler<GetAdminRecipesQuery, List<AdminRecipeDto>>
     {

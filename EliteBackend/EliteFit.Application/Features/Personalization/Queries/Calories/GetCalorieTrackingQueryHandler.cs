@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Personalization.Query
+namespace EliteFit.Application.Features.Personalization.Queries.Calories
 {
     public class GetCalorieTrackingQueryHandler : IRequestHandler<GetCalorieTrackingQuery, CalorieTrackingDto>
     {

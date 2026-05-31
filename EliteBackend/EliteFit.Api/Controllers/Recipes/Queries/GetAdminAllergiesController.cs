@@ -3,11 +3,11 @@ using EliteFit.Application.Features.Recipes.Commands.CreateAllergy;
 using EliteFit.Application.Features.Recipes.Commands.DeleteAllergy;
 using EliteFit.Application.Features.Recipes.Commands.DeleteRecipe;
 using EliteFit.Application.Features.Recipes.Commands.UpdateAllergy;
-using EliteFit.Application.Features.Recipes.Query.GetAdminAllergies;
+using EliteFit.Application.Features.Recipes.Queries.GetAdminAllergies;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EliteFit.Api.Controllers.Recipes.query
+namespace EliteFit.Api.Controllers.Recipes.Queries
 {
     [ApiController]
     [Route("api/admin/get-allergies")]

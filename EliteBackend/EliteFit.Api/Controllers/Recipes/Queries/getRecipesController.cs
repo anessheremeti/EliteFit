@@ -1,10 +1,10 @@
 ﻿using EliteFit.Application.DTOs.Recipes.query;
-using EliteFit.Application.Features.Recipes.Query.GetUserRecipesDetails;
-using EliteFit.Application.Features.Recipes.Query.GetUserRecipesList;
+using EliteFit.Application.Features.Recipes.Queries.GetUserRecipesDetails;
+using EliteFit.Application.Features.Recipes.Queries.GetUserRecipesList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EliteFit.Api.Controllers.Client
+namespace EliteFit.Api.Controllers.Recipes.Queries
 {
     [ApiController]
     // URL: api/client/recipes

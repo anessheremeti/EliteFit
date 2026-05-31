@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Recipes.Query.GetAdminAllergies
+namespace EliteFit.Application.Features.Recipes.Queries.GetAdminAllergies
 {
     public class GetAdminAllergiesQueryHandler : IRequestHandler<GetAdminAllergiesQuery, List<AdminAllergyDto>>
     {
