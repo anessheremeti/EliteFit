@@ -4,7 +4,7 @@ using EliteFit.Domain.Interfaces.Repositories;
 using EliteFit.Domain.Interfaces.Services;
 using MediatR;
 
-namespace EliteFit.Application.Features.Commands.Auth
+namespace EliteFit.Application.Features.Auth.Commands
 {
     public record RegisterCommand(RegisterRequest Request) : IRequest<AuthResponse>;
 

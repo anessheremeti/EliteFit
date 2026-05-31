@@ -40,7 +40,8 @@ const OnboardingGoals     = lazy(() => import('./pages/user/onboarding/GoalsPage
 const OnboardingProfile   = lazy(() => import('./pages/user/onboarding/ProfilePage'));
 const OnboardingActivity  = lazy(() => import('./pages/user/onboarding/ActivityPage'));
 const workoutVideos = lazy(() => import('./pages/user/workouts/index.jsx'))
-const Settings = lazy(() => import('./pages/user/settings/AccountSettings.jsx'))
+const Settings      = lazy(() => import('./pages/user/settings/AccountSettings.jsx'))
+const Notifications = lazy(() => import('./pages/user/notifications/index.jsx'))
 /* ==========================================================================
     2. RENDER ROUTES LOGIC
    ========================================================================== */
@@ -126,9 +127,10 @@ const routes = [
     path: '/users',
     layout: UserLayout,
     children: [
-      { index: true, element: dashboardUsers },
-      { path: 'workouts', element: workoutVideos },
-      {path:'profile',element:Settings}
+      { index: true,              element: dashboardUsers },
+      { path: 'workouts',         element: workoutVideos  },
+      { path: 'notifications',    element: Notifications  },
+      { path: 'profile',          element: Settings       },
     ],
   }
 ];

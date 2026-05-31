@@ -5,23 +5,24 @@ import {
   X,
   Dumbbell,
   LayoutDashboard,
-  CalendarDays,
   Settings,
   LogOut,
   User,
   Trophy,
-  Apple
+  Apple,
+  Bell,
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogoutModal } from '../../../components/modal/LogoutModal';
 
 const links = [
-  { href: '/users',            label: 'My Progress', icon: LayoutDashboard },
-  { href: '/users/workouts',    label: 'Workouts',    icon: Dumbbell },
-  { href: '/users/nutrition',   label: 'Nutrition',   icon: Apple },
-  { href: '/users/goals',       label: 'Goals',       icon: Trophy },
-  { href: '/users/profile',     label: 'Profile',     icon: User },
-  { href: '/users/settings',    label: 'Settings',    icon: Settings },
+  { href: '/users',               label: 'My Progress',   icon: LayoutDashboard },
+  { href: '/users/workouts',      label: 'Workouts',      icon: Dumbbell        },
+  { href: '/users/nutrition',     label: 'Nutrition',     icon: Apple           },
+  { href: '/users/goals',         label: 'Goals',         icon: Trophy          },
+  { href: '/users/notifications', label: 'Notifications', icon: Bell            },
+  { href: '/users/profile',       label: 'Profile',       icon: User            },
+  { href: '/users/settings',      label: 'Settings',      icon: Settings        },
 ];
 
 function NavLinks({ location, onLinkClick }) {
@@ -41,7 +42,7 @@ function NavLinks({ location, onLinkClick }) {
             }`}
           >
             <Icon size={18} className={isActive ? 'text-sky' : 'text-gray-500'} />
-            {label}
+            <span className="flex-1">{label}</span>
           </Link>
         );
       })}
@@ -144,7 +145,7 @@ export function UserSidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="md:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+              className="md:hidden fixed inset-0 z-60 bg-black/40 backdrop-blur-sm"
               onClick={() => setOpen(false)}
             />
             <motion.aside
@@ -152,7 +153,7 @@ export function UserSidebar() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-              className="md:hidden fixed left-0 top-0 bottom-0 z-[70] w-72 bg-white flex flex-col p-5 shadow-2xl"
+              className="md:hidden fixed left-0 top-0 bottom-0 z-70 w-72 bg-white flex flex-col p-5 shadow-2xl"
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
