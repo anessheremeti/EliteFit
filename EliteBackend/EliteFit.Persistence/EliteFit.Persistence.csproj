@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Repositories\Gamification\Queries\" />
     <Folder Include="Repositories\Personalization\Command\" />
   </ItemGroup>
 
