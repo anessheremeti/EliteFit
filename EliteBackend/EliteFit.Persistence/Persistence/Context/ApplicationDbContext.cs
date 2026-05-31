@@ -60,6 +60,7 @@ namespace EliteFit.Persistence.Persistence.Context
             // CONFIGURIMI I TABELAVE ME SNAKE_CASE
             // ----------------------------------------------------------------
 
+
             // users
             modelBuilder.Entity<User>(entity =>
             {

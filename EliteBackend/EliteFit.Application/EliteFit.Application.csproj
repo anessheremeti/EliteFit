@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="EPPlus" Version="8.0.2" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
@@ -30,6 +31,10 @@
     <Folder Include="Common\" />
     <Folder Include="Features\Personalization\Command\" />
     <Folder Include="Features\Recipes\" />
+
+    <Folder Include="Features\Recipes\Commands\" />
+    <Folder Include="Features\Recipes\Query\" />
+    <Folder Include="Features\Reports\Commands\" />
   </ItemGroup>
 
 </Project>

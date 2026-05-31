@@ -1,8 +1,10 @@
 using EliteFit.Domain.Interfaces.Repositories;
 using EliteFit.Domain.Interfaces.Repositories.Exercise;
+using EliteFit.Domain.Interfaces.Repositories.Reports;
 using EliteFit.Domain.Interfaces.Repositories.Workout;
 using EliteFit.Persistence.Repositories;
 using EliteFit.Persistence.Repositories.Exercise;
+using EliteFit.Persistence.Repositories.Reports;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EliteFit.Persistence
@@ -17,6 +19,7 @@ namespace EliteFit.Persistence
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 
+            services.AddScoped<IReportRepository, ReportRepository>();
 
             services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
             services.AddScoped<IWorkoutVideoRepository, WorkoutVideoRepository>();

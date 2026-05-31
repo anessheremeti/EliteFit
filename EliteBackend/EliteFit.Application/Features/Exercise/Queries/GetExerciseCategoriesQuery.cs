@@ -1,16 +1,17 @@
-﻿using EliteFit.Domain.Entities;
-using EliteFit.Domain.Interfaces.Repositories;
+﻿using EliteFit.Application.DTOs.Exercise;
 using EliteFit.Domain.Interfaces.Repositories.Exercise;
 using MediatR;
 using System.Collections.Generic;
+using System.Linq; 
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace EliteFit.Application.Features.Exercise.Queries
 {
-    public record GetExerciseCategoriesQuery : IRequest<List<ExerciseCategory>>;
+    public record GetExerciseCategoriesQuery : IRequest<List<ExerciseCategoryDto>>;
 
-    public class GetExerciseCategoriesQueryHandler : IRequestHandler<GetExerciseCategoriesQuery, List<ExerciseCategory>>
+    
+    public class GetExerciseCategoriesQueryHandler : IRequestHandler<GetExerciseCategoriesQuery, List<ExerciseCategoryDto>>
     {
         private readonly IExerciseCategoryRepository _repository;
 
@@ -19,9 +20,18 @@ namespace EliteFit.Application.Features.Exercise.Queries
             _repository = repository;
         }
 
-        public async Task<List<ExerciseCategory>> Handle(GetExerciseCategoriesQuery request, CancellationToken cancellationToken)
+        
+        public async Task<List<ExerciseCategoryDto>> Handle(GetExerciseCategoriesQuery request, CancellationToken cancellationToken)
         {
-            return await _repository.GetAllAsync(cancellationToken);
+            var categories = await _repository.GetAllAsync(cancellationToken);
+
+            
+            return categories.Select(c => new ExerciseCategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description
+            }).ToList();
         }
     }
 }
