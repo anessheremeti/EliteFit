@@ -1,5 +1,5 @@
 ﻿using EliteFit.Application.DTOs.Recipes.query;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Query;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
