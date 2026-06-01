@@ -1,4 +1,5 @@
-﻿using EliteFit.Domain.Entities; // Sigurohu që e ke namespace-in e saktë për UserProfile
+﻿using EliteFit.Application.Features.Personalization.Command;
+using EliteFit.Domain.Entities; // Sigurohu që e ke namespace-in e saktë për UserProfile
 using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using MediatR;
 using System;
@@ -6,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Personalization.Command
+namespace EliteFit.Application.Features.Personalization.Queries.Onboarding
 {
     public class CalculateDailyTargetCommandHandler : IRequestHandler<CalculateDailyTargetCommand, int>
     {
@@ -46,11 +47,11 @@ namespace EliteFit.Application.Features.Personalization.Command
             decimal bmr;
             if (gender == "female")
             {
-                bmr = (10m * request.WeightKg) + (6.25m * request.HeightCm) - (5m * age) - 161m;
+                bmr = 10m * request.WeightKg + 6.25m * request.HeightCm - 5m * age - 161m;
             }
             else
             {
-                bmr = (10m * request.WeightKg) + (6.25m * request.HeightCm) - (5m * age) + 5m;
+                bmr = 10m * request.WeightKg + 6.25m * request.HeightCm - 5m * age + 5m;
             }
 
             // 3. Përcaktimi i Koeficientit të Aktivitetit

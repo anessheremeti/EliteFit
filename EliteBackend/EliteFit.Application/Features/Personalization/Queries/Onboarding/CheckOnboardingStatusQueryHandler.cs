@@ -1,12 +1,11 @@
-﻿using EliteFit.Application.Features.Personalization.Query;
-using EliteFit.Domain.Interfaces.Repositories.Personalization; // Përdor namespace tuaj të saktë për repository
+﻿using EliteFit.Domain.Interfaces.Repositories.Personalization; // Përdor namespace tuaj të saktë për repository
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EliteFit.Application.Features.Personalization.Query
+namespace EliteFit.Application.Features.Personalization.Queries.Onboarding
 {
     public class CheckOnboardingStatusQueryHandler : IRequestHandler<CheckOnboardingStatusQuery, OnboardingStatusDto>
     {

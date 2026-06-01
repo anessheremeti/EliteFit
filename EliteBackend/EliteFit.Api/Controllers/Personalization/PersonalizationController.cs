@@ -1,6 +1,9 @@
 ﻿using EliteFit.Application.DTOs.Personalization;
 using EliteFit.Application.Features.Personalization.Command;
-using EliteFit.Application.Features.Personalization.Query;
+using EliteFit.Application.Features.Personalization.Queries.Onboarding;
+using EliteFit.Application.Features.Personalization.Queries.Calories;
+using EliteFit.Application.Features.Personalization.Queries.Recipes;
+
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

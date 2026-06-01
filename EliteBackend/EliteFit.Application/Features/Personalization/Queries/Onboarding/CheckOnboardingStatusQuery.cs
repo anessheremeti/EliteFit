@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 
-namespace EliteFit.Application.Features.Personalization.Query
+namespace EliteFit.Application.Features.Personalization.Queries.Onboarding
 {
     public class CheckOnboardingStatusQuery : IRequest<OnboardingStatusDto>
     {

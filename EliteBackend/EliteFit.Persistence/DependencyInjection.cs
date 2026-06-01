@@ -5,7 +5,7 @@ using EliteFit.Domain.Interfaces.Repositories.Reports;
 using EliteFit.Domain.Interfaces.Repositories.Workout;
 using EliteFit.Persistence.Repositories;
 using EliteFit.Persistence.Repositories.Exercise;
-using EliteFit.Persistence.Repositories.Personalization.Query;
+using EliteFit.Persistence.Repositories.Personalization.Queries;
 using EliteFit.Persistence.Repositories.Reports;
 using Microsoft.Extensions.DependencyInjection;
 
