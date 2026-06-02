@@ -39,10 +39,16 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login failed.');
+      const roles = data.roles ?? [];
       localStorage.setItem('token', data.token);
-      localStorage.setItem('elitefit_user', JSON.stringify({ email: data.email, fullName: data.fullName }));
+      localStorage.setItem('elitefit_user', JSON.stringify({
+        email: data.email,
+        fullName: data.fullName,
+        roles,
+      }));
       setSuccess('Logged in successfully! Redirecting...');
-      setTimeout(() => navigate('/users'), 1500);
+      const destination = roles.includes('Admin') ? '/staff' : '/users';
+      setTimeout(() => navigate(destination), 1500);
     } catch (err) {
       setServerError(err.message);
     } finally {

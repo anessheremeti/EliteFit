@@ -34,8 +34,9 @@ namespace EliteFit.Application.Features.Auth.Queries
             if (!user.IsActive)
                 throw new UnauthorizedAccessException("Your account has been deactivated.");
 
-            var token = _jwtService.GenerateToken(user.Id, user.Email!, $"{user.FirstName} {user.LastName}");
-            return new AuthResponse(token, user.Email!, $"{user.FirstName} {user.LastName}", DateTime.UtcNow.AddHours(1));
+            var roles = user.UserRoles?.Select(ur => ur.Role!.Name).ToList() ?? new List<string>();
+            var token = _jwtService.GenerateToken(user.Id, user.Email!, $"{user.FirstName} {user.LastName}", roles);
+            return new AuthResponse(token, user.Email!, $"{user.FirstName} {user.LastName}", DateTime.UtcNow.AddHours(1), roles);
         }
     }
 }

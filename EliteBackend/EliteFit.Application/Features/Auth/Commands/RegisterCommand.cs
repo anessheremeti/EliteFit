@@ -43,8 +43,8 @@ namespace EliteFit.Application.Features.Auth.Commands
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
-            var token = _jwtService.GenerateToken(user.Id, user.Email, $"{user.FirstName} {user.LastName}");
-            return new AuthResponse(token, user.Email, $"{user.FirstName} {user.LastName}", DateTime.UtcNow.AddHours(1));
+            var token = _jwtService.GenerateToken(user.Id, user.Email, $"{user.FirstName} {user.LastName}", new List<string> { "Member" });
+            return new AuthResponse(token, user.Email, $"{user.FirstName} {user.LastName}", DateTime.UtcNow.AddHours(1), new List<string> { "Member" });
         }
     }
 }

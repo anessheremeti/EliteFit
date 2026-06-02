@@ -42,9 +42,9 @@ export default function DashboardView() {
 
       {/* Grid i Kartave të Statistikave */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard title="Total Members" value="1,284" icon={Users} change="+12%" color="bg-sky" />
-        <StatCard title="Today's Check-ins" value="142" icon={Activity} change="+5%" color="bg-pink" />
-        <StatCard title="Monthly Revenue" value="$12,450" icon={DollarSign} change="+8%" color="bg-dark" />
+        <StatCard title="Total Members" value="1,284" icon={Users} change="+12%" color="bg-sky-400" />
+        <StatCard title="Today's Check-ins" value="142" icon={Activity} change="+5%" color="bg-pink-500" />
+        <StatCard title="Monthly Revenue" value="$12,450" icon={DollarSign} change="+8%" color="bg-stone-900" />
         <StatCard title="Active Trainers" value="12" icon={TrendingUp} change="0%" color="bg-green-500" />
       </div>
 
