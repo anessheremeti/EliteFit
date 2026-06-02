@@ -1,10 +1,12 @@
 ﻿using EliteFit.Application.DTOs.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EliteFit.Application.Features.Gamification.Command.Goals
@@ -15,10 +17,12 @@ namespace EliteFit.Application.Features.Gamification.Command.Goals
             IRequestHandler<AssignGoalsToUserCommand, bool>
     {
         private readonly IGoalRepository _repository;
+        private readonly IRealTimeNotificationService _notificationService;
 
-        public GoalsCommandHandler(IGoalRepository repository)
+        public GoalsCommandHandler(IGoalRepository repository, IRealTimeNotificationService notificationService)
         {
             _repository = repository;
+            _notificationService = notificationService;
         }
 
         public async Task<List<GoalDto>> Handle(GetAllGoalsQuery request, CancellationToken cancellationToken)
@@ -52,6 +56,14 @@ namespace EliteFit.Application.Features.Gamification.Command.Goals
             }).ToList();
 
             await _repository.AddUserGoalsAsync(newGoals, cancellationToken);
+
+            // 3. Dërgimi i njoftimit në kohë reale përmes WebSocket
+            await _notificationService.SendNotificationToUserAsync(
+                request.UserId,
+                "Qëllime të reja 🎯",
+                "Ju janë caktuar qëllime të reja për stërvitjet tuaja!"
+            );
+
             return true;
         }
     }

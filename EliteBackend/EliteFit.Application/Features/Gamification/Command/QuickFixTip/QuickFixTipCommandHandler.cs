@@ -2,11 +2,13 @@
 using EliteFit.Application.Features.Gamification.Queries.QuickFixTip;
 using EliteFit.Domain.Entities;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EliteFit.Application.Features.Gamification.Command.QuickFixTip
@@ -19,10 +21,12 @@ namespace EliteFit.Application.Features.Gamification.Command.QuickFixTip
         IRequestHandler<DeleteQuickFixTipCommand, bool>
     {
         private readonly IQuickFixTipRepository _repository;
+        private readonly IRealTimeNotificationService _notificationService;
 
-        public QuickFixTipCommandHandler(IQuickFixTipRepository repository)
+        public QuickFixTipCommandHandler(IQuickFixTipRepository repository, IRealTimeNotificationService notificationService)
         {
             _repository = repository;
+            _notificationService = notificationService;
         }
 
         public async Task<List<QuickFixTipDto>> Handle(GetQuickFixTipsQuery request, CancellationToken cancellationToken)
@@ -62,7 +66,16 @@ namespace EliteFit.Application.Features.Gamification.Command.QuickFixTip
                 Content = request.Content,
                 Category = request.Category
             };
-            return await _repository.AddAsync(newTip, cancellationToken);
+
+            var tipId = await _repository.AddAsync(newTip, cancellationToken);
+
+            // Njoftojmë të gjithë përdoruesit e lidhur në WebSocket për këshillën e re
+            await _notificationService.SendNotificationToAllAsync(
+                "Këshillë e re e shpejtë 💡",
+                $"Sapo u shtua një këshillë e re në kategorinë: {request.Category}. Shikoje tani!"
+            );
+
+            return tipId;
         }
 
         public async Task<bool> Handle(UpdateQuickFixTipCommand request, CancellationToken cancellationToken)

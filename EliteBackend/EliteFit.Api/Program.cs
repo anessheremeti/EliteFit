@@ -6,6 +6,7 @@ using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Queries;
 using EliteFit.Infrastructure;
 using EliteFit.Infrastructure.BackgroundServices;
+using EliteFit.Infrastructure.Services;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
@@ -66,7 +67,14 @@ builder.Services.AddScoped<IRecipesSmartQueryRepository, RecipesSmartQueryReposi
 builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 builder.Services.AddScoped<IUserBadgeRepository, UserBadgeRepository>();
 builder.Services.AddScoped<IUserStreakRepository, UserStreakRepository>();
+builder.Services.AddScoped<EliteFit.Domain.Interfaces.Repositories.Gamification.IGoalRepository, EliteFit.Persistence.Repositories.Gamification.Command.GoalRepository>();
+
 builder.Services.AddScoped<EliteFit.Domain.Interfaces.Repositories.IGoalRepository, EliteFit.Persistence.Repositories.GoalRepository>();
+// 1. Shto Shërbimet e SignalR dhe regjistro ndërfaqen tënde
+builder.Services.AddSignalR();
+builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService>();
+
+// (Më poshtë, pas app.UseRouting() dhe app.UseAuthorization())
 
 // Regjistrimi i shërbimit në prapavijë për Streak
 builder.Services.AddHostedService<StreakBackgroundWorker>();
@@ -164,6 +172,7 @@ app.UseExceptionHandler(errorApp =>
         await context.Response.WriteAsJsonAsync(new { message });
     });
 });
+app.MapHub<EliteFit.Infrastructure.SignalR.NotificationHub>("/hubs/notifications");
 
 // Test endpoints
 app.MapGet("/test-mongo", ([Microsoft.AspNetCore.Mvc.FromServices] MongoDbContext mongo) =>
