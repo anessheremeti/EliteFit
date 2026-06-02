@@ -1,10 +1,12 @@
 ﻿using EliteFit.Application.DTOs.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EliteFit.Application.Features.Gamification.Command.Streak
@@ -14,17 +16,19 @@ namespace EliteFit.Application.Features.Gamification.Command.Streak
            IRequestHandler<GetUserStreakQuery, UserStreakDto?>
     {
         private readonly IUserStreakRepository _repository;
+        private readonly IRealTimeNotificationService _notificationService;
 
-        public StreakCommandHandler(IUserStreakRepository repository)
+        public StreakCommandHandler(IUserStreakRepository repository, IRealTimeNotificationService notificationService)
         {
             _repository = repository;
+            _notificationService = notificationService;
         }
 
-        // Thirret kur useri bën një aktivitet (stërvitje, login, etj.)
         public async Task<bool> Handle(UpdateStreakCommand request, CancellationToken cancellationToken)
         {
             var streak = await _repository.GetByUserIdAsync(request.UserId, cancellationToken);
             var today = DateTime.UtcNow.Date;
+            bool streakIncreased = false;
 
             if (streak == null) return false;
 
@@ -38,6 +42,7 @@ namespace EliteFit.Application.Features.Gamification.Command.Streak
             {
                 // Aktivitet i vazhdueshëm (dje dhe sot) -> Rritet streak
                 streak.CurrentStreak = (streak.CurrentStreak ?? 0) + 1;
+                streakIncreased = true;
             }
             else
             {
@@ -55,6 +60,17 @@ namespace EliteFit.Application.Features.Gamification.Command.Streak
             streak.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(streak, cancellationToken);
+
+            // Dërgojmë njoftim WebSocket nëse përdoruesi vazhdon serinë mbi 1 ditë
+            if (streakIncreased && streak.CurrentStreak > 1)
+            {
+                await _notificationService.SendNotificationToUserAsync(
+                    request.UserId,
+                    "Ditë e suksesshme! 🔥",
+                    $"Ju keni një seri (streak) prej {streak.CurrentStreak} ditësh rresht! Vazhdoni kështu!"
+                );
+            }
+
             return true;
         }
 
