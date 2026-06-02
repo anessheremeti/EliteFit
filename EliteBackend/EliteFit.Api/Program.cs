@@ -5,6 +5,7 @@ using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Queries;
 using EliteFit.Infrastructure;
+using EliteFit.Infrastructure.BackgroundServices;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
 using EliteFit.Persistence.Repositories;
@@ -63,6 +64,12 @@ builder.Services.AddScoped<IUserProfileQueryRepository, UserProfileQueryReposito
 builder.Services.AddScoped<IMealLogQueryRepository, MealLogQueryRepository>();
 builder.Services.AddScoped<IRecipesSmartQueryRepository, RecipesSmartQueryRepository>();
 builder.Services.AddScoped<ISettingRepository, SettingRepository>();
+builder.Services.AddScoped<IUserBadgeRepository, UserBadgeRepository>();
+builder.Services.AddScoped<IUserStreakRepository, UserStreakRepository>();
+builder.Services.AddScoped<EliteFit.Domain.Interfaces.Repositories.IGoalRepository, EliteFit.Persistence.Repositories.GoalRepository>();
+
+// Regjistrimi i shërbimit në prapavijë për Streak
+builder.Services.AddHostedService<StreakBackgroundWorker>();
 // MySQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
