@@ -4,6 +4,7 @@ namespace EliteFit.Application.DTOs.Auth
         string Token,
         string Email,
         string FullName,
-        DateTime ExpiresAt
+        DateTime ExpiresAt,
+        List<string> Roles
     );
 }

@@ -31,6 +31,7 @@ export function StaffSidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem('elitefit_user');
+    localStorage.removeItem('token');
     setLogoutOpen(false);
     navigate('/login', { replace: true });
   };
@@ -71,7 +72,7 @@ export function StaffSidebar() {
       */}
       <header className="md:hidden fixed inset-x-0 top-0 z-40 bg-white border-b border-black/5 shadow-sm h-16 px-4 flex items-center justify-between">
         <Link to="/staff" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm">
             <Dumbbell size={16} fill="white" className="text-white" strokeWidth={2.5} />
           </div>
           <span className="font-heading font-bold text-lg text-dark">EliteFit</span>
@@ -93,7 +94,7 @@ export function StaffSidebar() {
       <aside className="hidden md:flex flex-col fixed inset-y-0 left-0 w-64 bg-white border-r border-black/5 z-50 shadow-sm">
         <div className="p-6">
           <Link to="/dashboard" className="group flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm group-hover:scale-105 transition-all duration-300">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm group-hover:scale-105 transition-all duration-300">
               <Dumbbell size={20} fill="white" className="text-white" strokeWidth={2.5} />
             </div>
             <div className="flex flex-col leading-tight">
@@ -139,7 +140,7 @@ export function StaffSidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="md:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+              className="md:hidden fixed inset-0 z-60 bg-black/40 backdrop-blur-sm"
               onClick={() => setOpen(false)}
             />
             <motion.aside
@@ -147,11 +148,11 @@ export function StaffSidebar() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-              className="md:hidden fixed left-0 top-0 bottom-0 z-[70] w-72 bg-white flex flex-col p-6 shadow-2xl"
+              className="md:hidden fixed left-0 top-0 bottom-0 z-70 w-72 bg-white flex flex-col p-6 shadow-2xl"
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm">
+                  <div className="w-8 h-8 rounded-lg bg-linear-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm">
                     <Dumbbell size={16} fill="white" className="text-white" strokeWidth={2.5} />
                   </div>
                   <div className="flex flex-col leading-tight">

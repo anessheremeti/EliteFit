@@ -1,10 +1,12 @@
 using EliteFit.Domain.Interfaces.Repositories;
 using EliteFit.Domain.Interfaces.Repositories.Exercise;
+using EliteFit.Domain.Interfaces.Repositories.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Reports;
 using EliteFit.Domain.Interfaces.Repositories.Workout;
 using EliteFit.Persistence.Repositories;
 using EliteFit.Persistence.Repositories.Exercise;
+using EliteFit.Persistence.Repositories.Gamification.Command;
 using EliteFit.Persistence.Repositories.Personalization.Queries;
 using EliteFit.Persistence.Repositories.Reports;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,9 @@ namespace EliteFit.Persistence
 
             services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
             services.AddScoped<IWorkoutVideoRepository, WorkoutVideoRepository>();
+
+            services.AddScoped<IBadgeRepository, BadgeRepository>();
+            services.AddScoped<IQuickFixTipRepository, QuickFixTipRepository>();
             return services;
         }
     }

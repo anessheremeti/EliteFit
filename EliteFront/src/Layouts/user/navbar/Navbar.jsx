@@ -67,6 +67,7 @@ export function UserSidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem('elitefit_user');
+    localStorage.removeItem('token');
     setLogoutOpen(false);
     navigate('/login', { replace: true });
   };
