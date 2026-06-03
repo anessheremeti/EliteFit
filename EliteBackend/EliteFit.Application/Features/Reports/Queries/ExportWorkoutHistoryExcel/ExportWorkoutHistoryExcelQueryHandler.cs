@@ -1,21 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EliteFit.Domain.Interfaces.Repositories.Reports;
 using MediatR;
 using OfficeOpenXml;
 
-namespace EliteFit.Application.Features.Reports.Queries
+namespace EliteFit.Application.Features.Reports.Queries.ExportWorkoutHistoryExcel
 {
-    // 1. Kërkesa (Query)
-    public record ExportWorkoutHistoryExcelQuery(
-        DateTime? FromDate,
-        DateTime? ToDate,
-        int? CategoryId) : IRequest<byte[]>;
-
-    // 2. Logjika (Handler) — Rri në të njëjtin skedar
     public class ExportWorkoutHistoryExcelQueryHandler : IRequestHandler<ExportWorkoutHistoryExcelQuery, byte[]>
     {
         private readonly IReportRepository _repository;
@@ -31,7 +22,7 @@ namespace EliteFit.Application.Features.Reports.Queries
             var histories = await _repository.GetWorkoutHistoryReportAsync(
                 request.FromDate, request.ToDate, request.CategoryId, cancellationToken);
 
-            // ZGJIDHJA: I treguam saktë kompajlerit që po përdorim LicenseContext të EPPlus (OfficeOpenXml)
+            // Konfigurimi i LicenseContext për EPPlus (OfficeOpenXml)
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
             using (var package = new ExcelPackage())
@@ -61,7 +52,11 @@ namespace EliteFit.Application.Features.Reports.Queries
                     row++;
                 }
 
-                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+                if (worksheet.Dimension != null)
+                {
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+                }
+
                 return package.GetAsByteArray();
             }
         }

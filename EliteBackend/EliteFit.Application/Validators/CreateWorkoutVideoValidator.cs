@@ -1,4 +1,4 @@
-﻿using EliteFit.Application.Features.Workouts.Commands;
+﻿using EliteFit.Application.Features.Workouts.Commands.CreateWorkoutVideo;
 using FluentValidation;
 
 namespace EliteFit.Application.Validators

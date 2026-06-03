@@ -3,10 +3,8 @@ using System.Threading.Tasks;
 using EliteFit.Domain.Interfaces.Repositories.Exercise;
 using MediatR;
 
-namespace EliteFit.Application.Features.Exercise.Commands
+namespace EliteFit.Application.Features.Exercise.Commands.DeleteExerciseCategory
 {
-    public record DeleteExerciseCategoryCommand(int Id) : IRequest<bool>;
-
     public class DeleteExerciseCategoryCommandHandler : IRequestHandler<DeleteExerciseCategoryCommand, bool>
     {
         private readonly IExerciseCategoryRepository _repository;

@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using EliteFit.Application.Features.Workouts.Queries;
-using EliteFit.Application.Features.Workouts.Commands;
+using EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideos;
+using EliteFit.Application.Features.Workouts.Commands.CompleteWorkoutVideo;
+using EliteFit.Application.Features.Workouts.Commands.CreateWorkoutVideo;
 
 namespace EliteFit.Api.Controllers
 {

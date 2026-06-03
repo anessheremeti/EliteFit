@@ -5,15 +5,8 @@ using System.Threading.Tasks;
 using EliteFit.Domain.Interfaces.Repositories.Reports;
 using MediatR;
 
-namespace EliteFit.Application.Features.Reports.Queries
+namespace EliteFit.Application.Features.Reports.Queries.ExportWorkoutHistoryPdf
 {
-    // 1. Kërkesa (Query)
-    public record ExportWorkoutHistoryPdfQuery(
-        DateTime? FromDate,
-        DateTime? ToDate,
-        int? CategoryId) : IRequest<byte[]>;
-
-    // 2. Logjika (Handler)
     public class ExportWorkoutHistoryPdfQueryHandler : IRequestHandler<ExportWorkoutHistoryPdfQuery, byte[]>
     {
         private readonly IReportRepository _repository;

@@ -1,13 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EliteFit.Application.DTOs.Exercise; // Mapimi me folderin e DTOs
+using EliteFit.Application.DTOs.Exercise;
 using EliteFit.Domain.Interfaces.Repositories.Exercise;
 using MediatR;
 
-namespace EliteFit.Application.Features.Exercise.Queries
+namespace EliteFit.Application.Features.Exercise.Queries.GetExerciseCategoryById
 {
-    public record GetExerciseCategoryByIdQuery(int Id) : IRequest<ExerciseCategoryDto>;
-
     public class GetExerciseCategoryByIdQueryHandler : IRequestHandler<GetExerciseCategoryByIdQuery, ExerciseCategoryDto>
     {
         private readonly IExerciseCategoryRepository _repository;

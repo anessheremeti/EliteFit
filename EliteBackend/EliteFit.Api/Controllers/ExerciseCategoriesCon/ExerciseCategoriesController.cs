@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EliteFit.Application.Features.Exercise.Commands;
-using EliteFit.Application.Features.Exercise.Queries;
+using EliteFit.Application.Features.Exercise.Commands.CreateExerciseCategory;
+using EliteFit.Application.Features.Exercise.Commands.DeleteExerciseCategory;
+using EliteFit.Application.Features.Exercise.Commands.UpdateExerciseCategory;
+using EliteFit.Application.Features.Exercise.Queries.GetExerciseCategoryById;
+using EliteFit.Application.Features.Exercise.Queries.GetWorkoutConfigurations;
+using EliteFit.Application.Features.Exercise.Queries.GetExerciseCategories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

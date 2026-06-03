@@ -7,13 +7,8 @@ using EliteFit.Application.DTOs.Reports;
 using EliteFit.Domain.Interfaces.Repositories.Reports;
 using MediatR;
 
-namespace EliteFit.Application.Features.Reports.Queries
+namespace EliteFit.Application.Features.Reports.Queries.GetWorkoutHistoryReport
 {
-    public record GetWorkoutHistoryReportQuery(
-        DateTime? FromDate,
-        DateTime? ToDate,
-        int? CategoryId) : IRequest<List<WorkoutHistoryReportDto>>;
-
     public class GetWorkoutHistoryReportQueryHandler : IRequestHandler<GetWorkoutHistoryReportQuery, List<WorkoutHistoryReportDto>>
     {
         private readonly IReportRepository _repository;
@@ -31,13 +26,13 @@ namespace EliteFit.Application.Features.Reports.Queries
                 request.CategoryId,
                 cancellationToken);
 
-            // Mapimi i pastër i të dhënave që vijnë nga DB
+            // Mapimi i pastër i të dhënave që vijnë nga DB në DTO
             return histories.Select(h => new WorkoutHistoryReportDto
             {
                 Id = h.Id,
                 UserEmail = h.User?.Email ?? "Pa Email",
-                VideoTitle = h.Video?.Title ?? "Video e fshirë", // Nëse në entitet quhet WorkoutVideo, ndryshoje në h.WorkoutVideo?.Title
-                CategoryName = h.Video?.Category?.Name ?? "Pa Kategori", // Merr emrin e kategorisë përmes lidhjes së videos
+                VideoTitle = h.Video?.Title ?? "Video e fshirë",
+                CategoryName = h.Video?.Category?.Name ?? "Pa Kategori",
                 CaloriesBurned = h.CaloriesBurned ?? 0,
                 TimeWatchedSeconds = h.TimeWatchedSeconds ?? 0,
                 CompletedAt = h.CompletedAt ?? DateTime.MinValue
