@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using EliteFit.Domain.Interfaces.Repositories.Exercise;
 using MediatR;
 
-namespace EliteFit.Application.Features.Exercise.Commands
+namespace EliteFit.Application.Features.Exercise.Commands.UpdateExerciseCategory
 {
-    public record UpdateExerciseCategoryCommand : IRequest<bool>
-    {
-        public int Id { get; set; }
-        public string Name {  get; set; }=string.Empty;
-        public string Description { get; set; } = string.Empty;
-
-    }
-    public  class UpdateExerciseCategoryCommandHandler : IRequestHandler<UpdateExerciseCategoryCommand, bool>
+    public class UpdateExerciseCategoryCommandHandler : IRequestHandler<UpdateExerciseCategoryCommand, bool>
     {
         private readonly IExerciseCategoryRepository _repository;
 
@@ -23,6 +13,7 @@ namespace EliteFit.Application.Features.Exercise.Commands
         {
             _repository = repository;
         }
+
         public async Task<bool> Handle(UpdateExerciseCategoryCommand command, CancellationToken cancellationToken)
         {
             var category = await _repository.GetByIdAsync(command.Id, cancellationToken);
@@ -37,6 +28,4 @@ namespace EliteFit.Application.Features.Exercise.Commands
             return true;
         }
     }
-    
-    }
-
+}

@@ -6,11 +6,8 @@ using EliteFit.Application.DTOs.Exercise;
 using EliteFit.Domain.Enums;
 using MediatR;
 
-namespace EliteFit.Application.Features.Exercise.Queries
+namespace EliteFit.Application.Features.Exercise.Queries.GetWorkoutConfigurations
 {
-    public class GetWorkoutConfigurationsQuery : IRequest<WorkoutConfigurationDto>;
-    
-
     public class GetWorkoutConfigurationsQueryHandler : IRequestHandler<GetWorkoutConfigurationsQuery, WorkoutConfigurationDto>
     {
         public Task<WorkoutConfigurationDto> Handle(GetWorkoutConfigurationsQuery request, CancellationToken cancellationToken)
@@ -31,11 +28,11 @@ namespace EliteFit.Application.Features.Exercise.Queries
                 .Select(m => new LookupDto
                 {
                     Id = (int)m,
-                    Name = m.ToString() 
+                    Name = m.ToString()
                 })
                 .ToList();
 
-            // 3. I paketojmë të dyja listat në DTO-në që do të shkojë në React
+            // 3. I paketojmë të dyja listat në DTO-në kryesore për React
             var result = new WorkoutConfigurationDto
             {
                 DifficultyLevels = difficultyLevels,

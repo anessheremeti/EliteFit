@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using EliteFit.Application.Features.Reports.Queries;
+using EliteFit.Application.Features.Reports.Queries.ExportWorkoutHistoryExcel;
+using EliteFit.Application.Features.Reports.Queries.ExportWorkoutHistoryPdf;
+using EliteFit.Application.Features.Reports.Queries.GetWorkoutHistoryReport;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
