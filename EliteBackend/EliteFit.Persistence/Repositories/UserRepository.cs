@@ -31,5 +31,51 @@ namespace EliteFit.Persistence.Repositories
 
         public async Task SaveChangesAsync()
             => await _context.SaveChangesAsync();
+
+        public async Task<List<User>> GetAllWithRolesAsync(CancellationToken ct = default)
+            => await _context.Users
+                .AsNoTracking()
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .OrderBy(u => u.Id)
+                .ToListAsync(ct);
+
+        public async Task<bool> SetActiveStatusAsync(int id, bool isActive, CancellationToken ct = default)
+        {
+            var user = await _context.Users.FindAsync(new object[] { id }, ct);
+            if (user == null) return false;
+            user.IsActive = isActive;
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
+
+        public async Task<bool> AssignRoleAsync(int userId, int roleId, CancellationToken ct = default)
+        {
+            var user = await _context.Users.FindAsync(new object[] { userId }, ct);
+            if (user is null) return false;
+
+            var alreadyAssigned = await _context.UserRoles
+                .AnyAsync(ur => ur.UserId == userId && ur.RoleId == roleId, ct);
+            if (alreadyAssigned) return true;
+
+            await _context.UserRoles.AddAsync(new Domain.Entities.UserRole
+            {
+                UserId     = userId,
+                RoleId     = roleId,
+                AssignedAt = DateTime.UtcNow,
+            }, ct);
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
+
+        public async Task<bool> RemoveRoleAsync(int userId, int roleId, CancellationToken ct = default)
+        {
+            var userRole = await _context.UserRoles
+                .FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId, ct);
+            if (userRole is null) return false;
+            _context.UserRoles.Remove(userRole);
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
     }
 }

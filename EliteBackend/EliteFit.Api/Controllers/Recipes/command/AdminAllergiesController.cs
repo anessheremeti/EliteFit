@@ -5,13 +5,14 @@ using EliteFit.Application.Features.Recipes.Commands.DeleteRecipe;
 using EliteFit.Application.Features.Recipes.Commands.UpdateAllergy;
 using EliteFit.Application.Features.Recipes.Queries.GetAdminAllergies;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EliteFit.Api.Controllers.Recipes.Command
 {
     [ApiController]
     [Route("api/admin/allergies")]
-    // [Authorize(Roles = "Admin")] // Zhbllokoje kur të kesh gati rolet
+    [Authorize(Roles = "Admin,Nutritionist")]
     public class AdminAllergiesController : ControllerBase
     {
         private readonly IMediator _mediator;

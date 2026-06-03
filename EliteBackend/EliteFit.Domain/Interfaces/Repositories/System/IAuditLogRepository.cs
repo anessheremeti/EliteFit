@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EliteFit.Domain.Entities.Mongo;
+﻿using EliteFit.Domain.Entities.Mongo;
 
 namespace EliteFit.Domain.Interfaces.Repositories
 {
     public interface IAuditLogRepository
     {
         Task AddLogAsync(AuditLog log);
+        Task<IEnumerable<AuditLog>> GetAllAsync(CancellationToken ct = default);
+        Task<IEnumerable<AuditLog>> GetFilteredAsync(
+            int? userId,
+            string? entity,
+            string? action,
+            DateTime? from,
+            DateTime? to,
+            int page,
+            int pageSize,
+            CancellationToken ct = default);
+        Task<long> CountFilteredAsync(int? userId, string? entity, string? action, DateTime? from, DateTime? to, CancellationToken ct = default);
         Task<IEnumerable<AuditLog>> GetLogsByUserIdAsync(int userId);
     }
 }

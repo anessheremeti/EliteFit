@@ -95,7 +95,7 @@ export function StaffSidebar() {
         <div className="p-6">
           <Link to="/dashboard" className="group flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-linear-to-br from-pink to-pink/80 flex items-center justify-center shadow-sm group-hover:scale-105 transition-all duration-300">
-              <Dumbbell size={20} fill="white" className="text-white" strokeWidth={2.5} />
+              <Dumbbell size={20} fill="black" className="text-black" strokeWidth={2.5} />
             </div>
             <div className="flex flex-col leading-tight">
               <span className="font-heading font-bold text-xl text-dark">EliteFit</span>

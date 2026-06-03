@@ -120,15 +120,28 @@ function StatCard({ title, value, icon: Icon, change, color }) {
 }
 
 // Komponenti i vogël për Listën e Klasave
+// Avatari gjenerohet nga DiceBear (api.dicebear.com) duke përdorur emrin e trajnerit
+// si seed — i njëjti emër prodhon gjithmonë të njëjtin avatar (deterministik, pa auth).
 function ClassItem({ time, name, trainer, color }) {
+  const avatarUrl =
+    `https://api.dicebear.com/9.x/avataaars/svg` +
+    `?seed=${encodeURIComponent(trainer)}` +
+    `&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`
+
   return (
-    <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface transition-colors border border-transparent hover:border-black/5">
-      <div className={`w-2 h-10 rounded-full ${color}`} />
-      <div className="flex-1">
-        <h4 className="text-sm font-bold text-dark">{name}</h4>
+    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-surface transition-colors border border-transparent hover:border-black/5">
+      <div className={`w-1.5 h-10 rounded-full shrink-0 ${color}`} />
+      <img
+        src={avatarUrl}
+        alt={trainer}
+        className="w-9 h-9 rounded-full bg-surface object-cover shrink-0"
+        loading="lazy"
+      />
+      <div className="flex-1 min-w-0">
+        <h4 className="text-sm font-bold text-dark truncate">{name}</h4>
         <p className="text-xs text-dark/50">{trainer}</p>
       </div>
-      <span className="text-xs font-mono font-medium text-dark/70">{time}</span>
+      <span className="text-xs font-mono font-medium text-dark/70 shrink-0">{time}</span>
     </div>
   )
 }

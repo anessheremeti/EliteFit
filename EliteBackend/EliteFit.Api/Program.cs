@@ -1,5 +1,7 @@
 using EliteFit.Application;
+using EliteFit.Domain.Authorization;
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Infrastructure.Authorization;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
@@ -54,6 +56,16 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceServices();
+
+// Permission-based authorization policies
+// Registered here (not in Infrastructure) to use the framework-provided
+// AddAuthorization and avoid NuGet package version conflicts.
+builder.Services.AddAuthorization(options =>
+{
+    foreach (var permission in Permissions.All())
+        options.AddPolicy(permission, policy =>
+            policy.Requirements.Add(new PermissionRequirement(permission)));
+});
 
 // Repositories ekzistuese dhe të reja
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -148,6 +160,13 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Seed default roles, permissions and role-permission mappings on startup
+using (var seedScope = app.Services.CreateScope())
+{
+    var db = seedScope.ServiceProvider.GetRequiredService<EliteFit.Persistence.Persistence.Context.ApplicationDbContext>();
+    await EliteFit.Persistence.DataSeeder.SeedAsync(db);
+}
 
 // Global exception handler — kthen mesazhe të qarta për frontend
 app.UseExceptionHandler(errorApp =>

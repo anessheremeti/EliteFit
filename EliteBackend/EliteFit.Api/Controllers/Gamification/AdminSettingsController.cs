@@ -1,12 +1,14 @@
 ﻿using EliteFit.Application.Features.Gamification.Command.Settings;
 using EliteFit.Application.Features.Gamification.Queries.Settings;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EliteFit.Api.Controllers.Gamification
 {
     [ApiController]
     [Route("api/admin/settings")]
+    [Authorize(Roles = "Admin")]
     public class AdminSettingsController : ControllerBase
     {
         private readonly IMediator _mediator;
