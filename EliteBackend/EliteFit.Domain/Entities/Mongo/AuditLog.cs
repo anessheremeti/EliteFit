@@ -9,17 +9,15 @@ namespace EliteFit.Domain.Entities.Mongo
     public class AuditLog // Mos trashëgo nga BaseEntity nese eshte ne Mongo
     {
        
-        public string? Id { get; set; } // MongoDB Id është string (ObjectId)
+        public string? Id { get; set; }
 
         public int? UserId { get; set; }
-        public string? Action { get; set; }
-        public string? Entity { get; set; }
+        public string? UserName { get; set; }
+        public string? Action { get; set; }    // Created | Updated | Deleted
+        public string? Entity { get; set; }    // Recipe | Badge | QuickFixTip …
         public int? EntityId { get; set; }
-
-        // Në MongoDB mund t'i bësh këto edhe "Object" nëse dëshiron të ruash JSON të plotë
-        public string? OldValue { get; set; }
-        public string? NewValue { get; set; }
-
+        public string? OldValue { get; set; }  // JSON snapshot before change
+        public string? NewValue { get; set; }  // JSON snapshot after change
         public string? IpAddress { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

@@ -200,37 +200,107 @@ namespace EliteFit.Persistence.Persistence.Context
             // CONFIGURIMI I TABELAVE ME PASCALCASE (Sipas DB SQL)
             // ----------------------------------------------------------------
 
-            modelBuilder.Entity<UserStreak>().HasKey(us => us.UserId);
+            // user_streaks
+            modelBuilder.Entity<UserStreak>(entity =>
+            {
+                entity.ToTable("user_streaks");
+                entity.HasKey(us => us.UserId);
+                entity.Property(us => us.UserId).HasColumnName("user_id");
+                entity.Property(us => us.CurrentStreak).HasColumnName("current_streak");
+                entity.Property(us => us.HighestStreak).HasColumnName("highest_streak");
+                entity.Property(us => us.StreakFreezeCount).HasColumnName("streak_freeze_count");
+                entity.Property(us => us.LastActivityDate).HasColumnName("last_activity_date");
+                entity.Property(us => us.CreatedAt).HasColumnName("created_at");
+                entity.Property(us => us.UpdatedAt).HasColumnName("updated_at");
+                entity.Property(us => us.CreatedBy).HasColumnName("created_by");
+                entity.Property(us => us.UpdatedBy).HasColumnName("updated_by");
 
-            // Mapimi eksplicit për RecipeAllergens për të ruajtur lidhjet
+                entity.HasOne(us => us.User)
+                    .WithOne(u => u.Streak)
+                    .HasForeignKey<UserStreak>(us => us.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Badges
+            modelBuilder.Entity<Badge>(entity =>
+            {
+                entity.ToTable("Badges");
+                entity.HasKey(b => b.Id);
+                entity.Property(b => b.Id).HasColumnName("id");
+                entity.Property(b => b.Name).HasColumnName("name");
+                entity.Property(b => b.Description).HasColumnName("description");
+                // FK column: BadgeIconId → badge_icon_id
+                // Without this, EF generates "BadgeIconId" but MySQL stores "badge_icon_id"
+                entity.Property(b => b.BadgeIconId).HasColumnName("badge_icon_id");
+            });
+
+            // recipe_allergens — DB table is snake_case; EF "RecipeAllergens" would become
+            // "recipeallergens" (no underscore) under lower_case_table_names=1, causing a 404.
             modelBuilder.Entity<RecipeAllergenInfo>(entity =>
             {
-                entity.ToTable("RecipeAllergens");
+                entity.ToTable("recipe_allergens");
                 entity.HasKey(ra => ra.Id);
+                entity.Property(ra => ra.Id).HasColumnName("id");
+                entity.Property(ra => ra.RecipeId).HasColumnName("recipe_id");
+                entity.Property(ra => ra.AllergyId).HasColumnName("allergy_id");
 
-                // Lidhja me recetën (Cascade Delete)
                 entity.HasOne(ra => ra.Recipe)
                     .WithMany(r => r.Allergens)
                     .HasForeignKey(ra => ra.RecipeId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                // Lidhja me alergjinë (Cascade Delete)
                 entity.HasOne(ra => ra.Allergy)
                     .WithMany()
                     .HasForeignKey(ra => ra.AllergyId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Konfigurimi i Recetave
+            // Recipes — "Recipes" → lowercased "recipes" matches DB table.
+            // Compound-name columns need explicit HasColumnName because MySQL stores them as snake_case
+            // and the underscore makes them different strings (not just a case difference).
             modelBuilder.Entity<Recipe>(entity =>
             {
                 entity.ToTable("Recipes");
                 entity.HasKey(r => r.Id);
+                entity.Property(r => r.Id).HasColumnName("id");
+                entity.Property(r => r.ImageFileId).HasColumnName("image_file_id");
+                entity.Property(r => r.ProteinG).HasColumnName("protein_g").HasColumnType("decimal(18,2)");
+                entity.Property(r => r.CarbsG).HasColumnName("carbs_g").HasColumnType("decimal(18,2)");
+                entity.Property(r => r.FatG).HasColumnName("fat_g").HasColumnType("decimal(18,2)");
 
-                // Opsionale: Specifikimi i data type për makrot
-                entity.Property(r => r.ProteinG).HasColumnType("decimal(18,2)");
-                entity.Property(r => r.CarbsG).HasColumnType("decimal(18,2)");
-                entity.Property(r => r.FatG).HasColumnType("decimal(18,2)");
+                entity.HasOne(r => r.ImageFile)
+                    .WithMany()
+                    .HasForeignKey(r => r.ImageFileId);
+            });
+
+            // Files — "Files" → lowercased "files" matches DB table.
+            // Compound-name columns need explicit HasColumnName.
+            // Uploader navigation is configured to use the explicit UploadedBy property as FK,
+            // eliminating the EF-generated shadow "UploaderId" column that does not exist in DB.
+            modelBuilder.Entity<FileEntity>(entity =>
+            {
+                entity.ToTable("Files");
+                entity.HasKey(f => f.Id);
+                entity.Property(f => f.Id).HasColumnName("id");
+                entity.Property(f => f.EntityId).HasColumnName("entity_id");
+                entity.Property(f => f.FilePath).HasColumnName("file_path");
+                entity.Property(f => f.FileSize).HasColumnName("file_size");
+                entity.Property(f => f.UploadedBy).HasColumnName("uploaded_by");
+
+                entity.HasOne(f => f.Uploader)
+                    .WithMany()
+                    .HasForeignKey(f => f.UploadedBy)
+                    .IsRequired(false);
+            });
+
+            // quick_fix_tips — "QuickFixTips" → lowercased "quickfixtips" ≠ "quick_fix_tips".
+            // Explicit ToTable required; single-word columns (title, content, category) are fine
+            // because MySQL column matching is case-insensitive and has no underscore divergence.
+            modelBuilder.Entity<QuickFixTip>(entity =>
+            {
+                entity.ToTable("quick_fix_tips");
+                entity.HasKey(q => q.Id);
+                entity.Property(q => q.Id).HasColumnName("id");
             });
         }
     }
