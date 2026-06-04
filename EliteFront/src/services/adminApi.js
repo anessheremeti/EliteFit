@@ -66,4 +66,10 @@ export const adminApi = {
 
   // ── Permissions ────────────────────────────────────────────────────────────
   getPermissions: () => request('GET', '/admin/permissions'),
+
+  // ── Settings ───────────────────────────────────────────────────────────────
+  getSettings:   ()       => request('GET',    '/admin/settings'),
+  createSetting: (data)   => request('POST',   '/admin/settings', data),
+  updateSetting: (id, d)  => request('PUT',    `/admin/settings/${id}`, { id, ...d }),
+  deleteSetting: (id)     => request('DELETE', `/admin/settings/${id}`),
 }

@@ -2,6 +2,7 @@ using EliteFit.Domain.Authorization;
 using EliteFit.Domain.Entities;
 using EliteFit.Persistence.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace EliteFit.Persistence
 {
@@ -9,9 +10,143 @@ namespace EliteFit.Persistence
     {
         public static async Task SeedAsync(ApplicationDbContext db)
         {
+            await EnsureSettingsTableAsync(db);
+            await EnsureNotificationsColumnsAsync(db);
             await SeedRolesAsync(db);
             await SeedPermissionsAsync(db);
             await SeedRolePermissionsAsync(db);
+            await SeedDefaultUsersAsync(db);
+            await BackfillMissingMemberRolesAsync(db);
+        }
+
+        // ── Backfill ───────────────────────────────────────────────────────────
+        // Users registered before the RegisterCommand role-persistence fix have
+        // no user_roles row. Assign them "Member" so they can log in.
+        private static async Task BackfillMissingMemberRolesAsync(ApplicationDbContext db)
+        {
+            var memberRole = await db.Roles.FirstOrDefaultAsync(r => r.Name == "Member");
+            if (memberRole is null) return;
+
+            // Find user IDs that have zero role assignments
+            var assignedUserIds = await db.UserRoles
+                .Select(ur => ur.UserId)
+                .Distinct()
+                .ToListAsync();
+
+            var unassigned = await db.Users
+                .Where(u => !assignedUserIds.Contains(u.Id))
+                .ToListAsync();
+
+            if (unassigned.Count == 0) return;
+
+            foreach (var user in unassigned)
+            {
+                db.UserRoles.Add(new UserRole
+                {
+                    UserId     = user.Id,
+                    RoleId     = memberRole.Id,
+                    AssignedAt = DateTime.UtcNow,
+                });
+                Console.WriteLine($"[Seed] Backfilled Member role → {user.Email}");
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+        // ── Default test users ─────────────────────────────────────────────────
+        // Creates one Admin and one Member account on first startup.
+        // Credentials are printed to the console so you can log in immediately.
+        private static async Task SeedDefaultUsersAsync(ApplicationDbContext db)
+        {
+            await SeedUserIfMissing(db, "admin@elitefit.com",  "Admin",  "User", "Admin123!",  "Admin");
+            await SeedUserIfMissing(db, "member@elitefit.com", "Member", "User", "Member123!", "Member");
+        }
+
+        private static async Task SeedUserIfMissing(
+            ApplicationDbContext db,
+            string email, string firstName, string lastName,
+            string plainPassword, string roleName)
+        {
+            if (await db.Users.AnyAsync(u => u.Email == email))
+                return;
+
+            var role = await db.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+            if (role is null) return;
+
+            var salt = RandomNumberGenerator.GetBytes(16);
+            var hash = Rfc2898DeriveBytes.Pbkdf2(
+                plainPassword, salt, 10_000, HashAlgorithmName.SHA256, 32);
+            var passwordHash = $"{Convert.ToBase64String(salt)}:{Convert.ToBase64String(hash)}";
+
+            var user = new User
+            {
+                FirstName    = firstName,
+                LastName     = lastName,
+                Email        = email,
+                PasswordHash = passwordHash,
+                IsActive     = true,
+            };
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
+
+            db.UserRoles.Add(new UserRole
+            {
+                UserId     = user.Id,
+                RoleId     = role.Id,
+                AssignedAt = DateTime.UtcNow,
+            });
+            await db.SaveChangesAsync();
+
+            Console.WriteLine($"[Seed] Created {roleName} — email: {email}  password: {plainPassword}");
+        }
+
+        private static async Task EnsureNotificationsColumnsAsync(ApplicationDbContext db)
+        {
+            // Create table for fresh installs (migration may not have run)
+            await db.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS `Notifications` (
+                    `Id`        int          NOT NULL AUTO_INCREMENT,
+                    `UserId`    int          NOT NULL,
+                    `Type`      varchar(100) NULL,
+                    `Title`     varchar(500) NULL,
+                    `Message`   longtext     NULL,
+                    `IsRead`    tinyint(1)   NOT NULL DEFAULT 0,
+                    `CreatedAt` datetime(6)  NULL DEFAULT CURRENT_TIMESTAMP(6),
+                    PRIMARY KEY (`Id`),
+                    CONSTRAINT `FK_Notifications_users_UserId`
+                        FOREIGN KEY (`UserId`) REFERENCES `users` (`id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+
+            // Add column to existing installs that were created before CreatedAt was added.
+            // ALTER TABLE ... ADD COLUMN IF NOT EXISTS requires MySQL 8.0.3+; the declared
+            // server version is 8.0.0, so we drop IF NOT EXISTS and swallow the duplicate-
+            // column error (1060) that MySQL raises when the column is already present.
+            try
+            {
+                await db.Database.ExecuteSqlRawAsync(@"
+                    ALTER TABLE `Notifications`
+                    ADD COLUMN `CreatedAt` datetime(6) NULL DEFAULT CURRENT_TIMESTAMP(6);
+                ");
+            }
+            catch (Exception ex) when (ex.Message.Contains("Duplicate column"))
+            {
+                // Column already exists — nothing to do
+            }
+        }
+
+        private static async Task EnsureSettingsTableAsync(ApplicationDbContext db)
+        {
+            // `Key` is a MySQL reserved word — must be backtick-quoted in DDL
+            await db.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS `Settings` (
+                    `Id`          int          NOT NULL AUTO_INCREMENT,
+                    `Key`         varchar(500) NOT NULL,
+                    `Value`       longtext     NULL,
+                    `Description` longtext     NULL,
+                    PRIMARY KEY (`Id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
         }
 
         // ── Roles ─────────────────────────────────────────────────────────────
@@ -81,10 +216,14 @@ namespace EliteFit.Persistence
                 (Permissions.Users.Activate,   "Activate user accounts"),
                 (Permissions.Users.Deactivate, "Deactivate user accounts"),
                 (Permissions.AuditLogs.View,   "View audit logs"),
-                (Permissions.Roles.View,       "View roles and permissions"),
-                (Permissions.Roles.Create,     "Create roles"),
-                (Permissions.Roles.Update,     "Update role permissions"),
-                (Permissions.Roles.Delete,     "Delete roles"),
+                (Permissions.Roles.View,        "View roles and permissions"),
+                (Permissions.Roles.Create,      "Create roles"),
+                (Permissions.Roles.Update,      "Update role permissions"),
+                (Permissions.Roles.Delete,      "Delete roles"),
+                (Permissions.Settings.View,     "View system settings"),
+                (Permissions.Settings.Create,   "Create system settings"),
+                (Permissions.Settings.Update,   "Update system settings"),
+                (Permissions.Settings.Delete,   "Delete system settings"),
             };
 
             var toAdd = defaults

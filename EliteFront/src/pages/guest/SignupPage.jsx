@@ -75,10 +75,12 @@ export default function SignupPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Registration failed.');
+      const roles = data.roles ?? [];
       localStorage.setItem('token', data.token);
-      localStorage.setItem('elitefit_user', JSON.stringify({ email: data.email, fullName: data.fullName }));
+      localStorage.setItem('elitefit_user', JSON.stringify({ email: data.email, fullName: data.fullName, roles }));
       setSuccess('Account created! Redirecting...');
-      ///setTimeout(() => navigate('/'), 1500);
+      const destination = roles.includes('Admin') ? '/staff' : '/users';
+      setTimeout(() => navigate(destination), 1500);
     } catch (err) {
       setServerError(err.message);
     } finally {

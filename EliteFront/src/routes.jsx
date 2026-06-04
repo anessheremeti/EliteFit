@@ -87,11 +87,15 @@ export const RenderRoutes = (routes = []) => (
           <Route key={i} path={route.path} element={routeElement}>
             {route.children && route.children.map((child, index) => {
               const ChildComponent = child.element;
+              // Never pass both path and index — React Router v7 treats them as
+              // mutually exclusive. Spread only the applicable prop.
+              const routeProps = child.index
+                ? { index: true }
+                : { path: child.path };
               return (
                 <Route
                   key={index}
-                  path={child.path}
-                  index={child.index}
+                  {...routeProps}
                   element={
                     <Suspense fallback={<ChildLoader />}>
                       <ChildComponent />

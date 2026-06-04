@@ -12,6 +12,7 @@ export default function ForgotPassword() {
     const [loading, setLoading] = useState(false);
     const [serverError, setServerError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [devLink, setDevLink] = useState(null);
     const navigate = useNavigate();
 
     function validateEmail(value) {
@@ -35,6 +36,7 @@ export default function ForgotPassword() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Something went wrong.');
+            setDevLink(data.devResetLink ?? null);
             setSuccess(true);
         } catch (err) {
             setServerError(err.message);
@@ -78,11 +80,30 @@ export default function ForgotPassword() {
                                     <Check size={28} className="text-green-500" />
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-900 mb-3">Check your inbox</h2>
-                                <p className="text-gray-400 text-sm leading-relaxed mb-8">
+                                <p className="text-gray-400 text-sm leading-relaxed mb-5">
                                     If <span className="text-gray-600 font-medium">{email}</span> is registered,
                                     you'll receive a password reset link within a few minutes.
                                     The link expires in <strong className="text-gray-700">30 minutes</strong>.
                                 </p>
+
+                                {/* Dev-mode banner — only visible when Email:Enabled = false */}
+                                {devLink && (
+                                    <div className="w-full mb-6 p-4 rounded-2xl text-left"
+                                        style={{ background: 'rgba(254,243,199,0.8)', border: '1px solid rgba(234,179,8,0.3)' }}>
+                                        <p className="text-xs font-bold text-amber-700 mb-1.5">
+                                            ⚙ Dev mode — email disabled
+                                        </p>
+                                        <p className="text-xs text-amber-600 mb-2">
+                                            Click the link below to reset your password:
+                                        </p>
+                                        <a href={devLink}
+                                            className="text-xs text-amber-700 underline break-all font-medium"
+                                            style={{ wordBreak: 'break-all' }}>
+                                            {devLink}
+                                        </a>
+                                    </div>
+                                )}
+
                                 <Link to="/login"
                                     className="flex items-center gap-1.5 text-sm font-medium text-blue-400 hover:text-blue-600 transition-colors">
                                     <ArrowLeft size={15} /> Back to Login
@@ -151,11 +172,11 @@ export default function ForgotPassword() {
                                         </div>
                                         <AnimatePresence>
                                             {emailError && (
-                                                <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                                                <Motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.15 }}
                                                     className="text-xs mt-1.5" style={{ color: '#ef4444' }}>
                                                     {emailError}
-                                                </motion.p>
+                                                </Motion.p>
                                             )}
                                         </AnimatePresence>
                                     </div>

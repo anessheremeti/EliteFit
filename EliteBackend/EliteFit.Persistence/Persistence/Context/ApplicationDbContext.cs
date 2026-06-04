@@ -49,7 +49,10 @@ namespace EliteFit.Persistence.Persistence.Context
 
                 if (clrType != typeof(User))
                 {
-                    modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.CreatedAt));
+                    // Notification keeps CreatedAt for timestamp tracking; all others ignore it
+                    if (clrType != typeof(Notification))
+                        modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.CreatedAt));
+
                     modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.UpdatedAt));
                 }
                 modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.CreatedBy));
@@ -301,6 +304,18 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.ToTable("quick_fix_tips");
                 entity.HasKey(q => q.Id);
                 entity.Property(q => q.Id).HasColumnName("id");
+            });
+
+            // Notifications — CreatedAt is preserved (excluded from the ignore loop above)
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.ToTable("Notifications");
+                entity.HasKey(n => n.Id);
+                entity.Property(n => n.CreatedAt).HasColumnName("CreatedAt");
+                entity.HasOne(n => n.User)
+                    .WithMany(u => u.Notifications)
+                    .HasForeignKey(n => n.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

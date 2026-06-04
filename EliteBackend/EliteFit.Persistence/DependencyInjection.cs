@@ -43,6 +43,7 @@ namespace EliteFit.Persistence
             services.AddScoped<IBadgeRepository, BadgeRepository>();
             services.AddScoped<IQuickFixTipRepository, QuickFixTipRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             return services;
         }

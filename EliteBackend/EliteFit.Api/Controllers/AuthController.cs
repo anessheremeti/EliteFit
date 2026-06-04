@@ -37,10 +37,15 @@ namespace EliteFit.Api.Controllers
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var frontendBaseUrl = _configuration["AppSettings:FrontendBaseUrl"] ?? "http://localhost:5173";
-            await _mediator.Send(new ForgotPasswordCommand(request, frontendBaseUrl));
+            var devLink = await _mediator.Send(new ForgotPasswordCommand(request, frontendBaseUrl));
 
-            // Always return 200 — never reveal whether an email is registered
-            return Ok(new { message = "If that email is registered, you will receive a reset link shortly." });
+            // Always return 200 — never reveal whether an email is registered.
+            // devLink is non-null only when Email:Enabled = false (development mode).
+            return Ok(new
+            {
+                message = "If that email is registered, you will receive a reset link shortly.",
+                devResetLink = devLink
+            });
         }
 
         [HttpPost("reset-password")]

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu,
@@ -15,6 +15,8 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogoutModal } from '../../../components/modal/LogoutModal';
 
+const NotificationBadge = lazy(() => import('../../../components/NotificationBadge'));
+
 const links = [
   { href: '/users',               label: 'My Progress',   icon: LayoutDashboard },
   { href: '/users/workouts',      label: 'Workouts',      icon: Dumbbell        },
@@ -30,6 +32,7 @@ function NavLinks({ location, onLinkClick }) {
     <nav className="flex flex-col gap-1 mt-6 px-3">
       {links.map(({ href, label, icon: Icon }) => {
         const isActive = location.pathname === href;
+        const isBell   = href === '/users/notifications';
         return (
           <Link
             key={href}
@@ -41,7 +44,14 @@ function NavLinks({ location, onLinkClick }) {
                 : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
             }`}
           >
-            <Icon size={18} className={isActive ? 'text-sky' : 'text-gray-500'} />
+            <span className="relative shrink-0">
+              <Icon size={18} className={isActive ? 'text-sky' : 'text-gray-500'} />
+              {isBell && (
+                <Suspense fallback={null}>
+                  <NotificationBadge />
+                </Suspense>
+              )}
+            </span>
             <span className="flex-1">{label}</span>
           </Link>
         );

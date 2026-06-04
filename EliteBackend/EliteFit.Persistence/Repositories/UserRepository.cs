@@ -49,6 +49,18 @@ namespace EliteFit.Persistence.Repositories
             return true;
         }
 
+        public async Task AssignRoleByNameAsync(int userId, string roleName, CancellationToken ct = default)
+        {
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName, ct)
+                ?? throw new InvalidOperationException($"Role '{roleName}' does not exist.");
+
+            var user = await _context.Users.AnyAsync(u => u.Id == userId, ct);
+            if (!user)
+                throw new InvalidOperationException($"User {userId} does not exist.");
+
+            await AssignRoleAsync(userId, role.Id, ct);
+        }
+
         public async Task<bool> AssignRoleAsync(int userId, int roleId, CancellationToken ct = default)
         {
             var user = await _context.Users.FindAsync(new object[] { userId }, ct);
