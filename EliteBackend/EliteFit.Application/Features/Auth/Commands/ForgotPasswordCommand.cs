@@ -8,9 +8,9 @@ using System.Text;
 
 namespace EliteFit.Application.Features.Auth.Commands
 {
-    public record ForgotPasswordCommand(ForgotPasswordRequest Request, string FrontendBaseUrl) : IRequest<Unit>;
+    public record ForgotPasswordCommand(ForgotPasswordRequest Request, string FrontendBaseUrl) : IRequest<string?>;
 
-    public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordCommand, Unit>
+    public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordCommand, string?>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordResetTokenRepository _tokenRepository;
@@ -26,13 +26,13 @@ namespace EliteFit.Application.Features.Auth.Commands
             _emailService = emailService;
         }
 
-        public async Task<Unit> Handle(ForgotPasswordCommand command, CancellationToken cancellationToken)
+        public async Task<string?> Handle(ForgotPasswordCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByEmailAsync(command.Request.Email.ToLowerInvariant());
 
             // Silently succeed even if email doesn't exist (prevents email enumeration)
             if (user == null || !user.IsActive)
-                return Unit.Value;
+                return null;
 
             // Invalidate any previous tokens for this user
             await _tokenRepository.InvalidateExistingTokensAsync(user.Id);
@@ -52,12 +52,13 @@ namespace EliteFit.Application.Features.Auth.Commands
             await _tokenRepository.SaveChangesAsync();
 
             var resetLink = $"{command.FrontendBaseUrl}/reset-password?token={Uri.EscapeDataString(rawToken)}";
-            await _emailService.SendPasswordResetEmailAsync(
+            var devLink = await _emailService.SendPasswordResetEmailAsync(
                 user.Email,
                 $"{user.FirstName} {user.LastName}",
                 resetLink);
 
-            return Unit.Value;
+            // devLink is non-null only when Email:Enabled = false (dev mode)
+            return devLink;
         }
     }
 }

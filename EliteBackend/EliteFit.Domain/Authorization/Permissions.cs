@@ -51,15 +51,24 @@ namespace EliteFit.Domain.Authorization
             public const string Delete = "Role.Delete";
         }
 
+        public static class Settings
+        {
+            public const string View   = "Setting.View";
+            public const string Create = "Setting.Create";
+            public const string Update = "Setting.Update";
+            public const string Delete = "Setting.Delete";
+        }
+
         /// <summary>Returns all defined permissions as a flat list.</summary>
         public static IEnumerable<string> All() =>
         [
-            Recipes.View, Recipes.Create, Recipes.Update, Recipes.Delete,
-            Videos.View,  Videos.Create,  Videos.Update,  Videos.Delete,
-            Badges.View,  Badges.Create,  Badges.Update,  Badges.Delete,
-            Users.View,   Users.Manage,   Users.Activate, Users.Deactivate,
+            Recipes.View,   Recipes.Create,   Recipes.Update,   Recipes.Delete,
+            Videos.View,    Videos.Create,    Videos.Update,    Videos.Delete,
+            Badges.View,    Badges.Create,    Badges.Update,    Badges.Delete,
+            Users.View,     Users.Manage,     Users.Activate,   Users.Deactivate,
             AuditLogs.View,
-            Roles.View,   Roles.Create,   Roles.Update,   Roles.Delete,
+            Roles.View,     Roles.Create,     Roles.Update,     Roles.Delete,
+            Settings.View,  Settings.Create,  Settings.Update,  Settings.Delete,
         ];
     }
 }

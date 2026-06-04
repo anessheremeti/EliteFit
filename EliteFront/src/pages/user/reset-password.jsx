@@ -228,11 +228,11 @@ export default function ResetPassword() {
 
                                         <AnimatePresence>
                                             {errors.newPassword && (
-                                                <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                                                <MotionDiv initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.15 }}
                                                     className="text-xs mt-1.5" style={{ color: '#ef4444' }}>
                                                     {errors.newPassword}
-                                                </motion.p>
+                                                </MotionDiv>
                                             )}
                                         </AnimatePresence>
                                     </div>
@@ -265,11 +265,11 @@ export default function ResetPassword() {
                                         </div>
                                         <AnimatePresence>
                                             {errors.confirmPassword && (
-                                                <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                                                <MotionDiv initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.15 }}
                                                     className="text-xs mt-1.5" style={{ color: '#ef4444' }}>
                                                     {errors.confirmPassword}
-                                                </motion.p>
+                                                </MotionDiv>
                                             )}
                                         </AnimatePresence>
                                     </div>

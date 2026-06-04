@@ -13,6 +13,7 @@ namespace EliteFit.Domain.Interfaces.Repositories
         Task<List<User>> GetAllWithRolesAsync(CancellationToken ct = default);
         Task<bool> SetActiveStatusAsync(int id, bool isActive, CancellationToken ct = default);
         Task<bool> AssignRoleAsync(int userId, int roleId, CancellationToken ct = default);
+        Task AssignRoleByNameAsync(int userId, string roleName, CancellationToken ct = default);
         Task<bool> RemoveRoleAsync(int userId, int roleId, CancellationToken ct = default);
     }
 }
