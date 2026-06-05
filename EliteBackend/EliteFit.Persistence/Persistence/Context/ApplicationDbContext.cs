@@ -1,55 +1,200 @@
-using EliteFit.Domain.Entities; // Sigurohu që këtu janë Entitetet e SQL, jo ato të Mongo
+using EliteFit.Domain.Entities;
 using EliteFit.Domain.Entities.Mongo;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace EliteFit.Persistence.Persistence.Context
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+    public class ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        IHttpContextAccessor httpContextAccessor) : DbContext(options)
     {
-        // Regjistrimi i tabelave
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserProfile> UserProfiles { get; set; }
-        public DbSet<Allergy> Allergies { get; set; }
-        public DbSet<Badge> Badges { get; set; }
-        public DbSet<ExerciseCategory> ExerciseCategories { get; set; }
-        public DbSet<FileEntity> Files { get; set; }
-        public DbSet<Goal> Goals { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
-        public DbSet<MealLog> MealLogs { get; set; }
-        public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<WorkoutVideo> WorkoutVideos { get; set; }
-        public DbSet<UserStreak> UserStreaks { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<AuditLog> AuditLogs { get; set; }
-        public DbSet<Permission> Permissions { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<RolePermission> RolePermissions { get; set; }
-        public DbSet<UserAllergy> UserAllergies { get; set; }
-        public DbSet<UserBadge> UserBadges { get; set; }
-        public DbSet<UserGoal> UserGoals { get; set; }
+        private readonly IHttpContextAccessor _http = httpContextAccessor;
+
+        // ── Table registrations ────────────────────────────────────────────────
+        public DbSet<User>               Users               { get; set; }
+        public DbSet<UserProfile>        UserProfiles        { get; set; }
+        public DbSet<Allergy>            Allergies           { get; set; }
+        public DbSet<Badge>              Badges              { get; set; }
+        public DbSet<ExerciseCategory>   ExerciseCategories  { get; set; }
+        public DbSet<FileEntity>         Files               { get; set; }
+        public DbSet<Goal>               Goals               { get; set; }
+        public DbSet<Notification>       Notifications       { get; set; }
+        public DbSet<MealLog>            MealLogs            { get; set; }
+        public DbSet<Recipe>             Recipes             { get; set; }
+        public DbSet<WorkoutVideo>       WorkoutVideos       { get; set; }
+        public DbSet<UserStreak>         UserStreaks          { get; set; }
+        public DbSet<Role>               Roles               { get; set; }
+        public DbSet<AuditLog>           AuditLogs           { get; set; }
+        public DbSet<Permission>         Permissions         { get; set; }
+        public DbSet<UserRole>           UserRoles           { get; set; }
+        public DbSet<RolePermission>     RolePermissions     { get; set; }
+        public DbSet<UserAllergy>        UserAllergies       { get; set; }
+        public DbSet<UserBadge>          UserBadges          { get; set; }
+        public DbSet<UserGoal>           UserGoals           { get; set; }
         public DbSet<UserWorkoutHistory> UserWorkoutHistories { get; set; }
-        public DbSet<RecipeAllergenInfo> RecipeAllergens { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public DbSet<Setting> Settings { get; set; }
-        public DbSet<QuickFixTip> QuickFixTips { get; set; }
+        public DbSet<RecipeAllergenInfo> RecipeAllergens     { get; set; }
+        public DbSet<RefreshToken>       RefreshTokens       { get; set; }
+        public DbSet<Setting>            Settings            { get; set; }
+        public DbSet<QuickFixTip>        QuickFixTips        { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
+        // ── Automatic audit-log capture ────────────────────────────────────────
+
+        // Entity type names that should never be auto-audited.
+        private static readonly HashSet<string> _skipAudit = new(StringComparer.Ordinal)
+        {
+            nameof(AuditLog),           // prevent recursion
+            nameof(RefreshToken),       // security / noise
+            nameof(PasswordResetToken), // security / noise
+            nameof(Notification),       // background-service noise
+            nameof(UserStreak),         // background-service noise
+        };
+
+        // Property names that hold sensitive data and must be redacted from snapshots.
+        private static readonly HashSet<string> _sensitiveProps = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "PasswordHash", "password_hash",
+            "TokenHash",    "token_hash",
+        };
+
+        // Guards against the second SaveChangesAsync (that persists audit rows) re-entering the
+        // collection logic and generating audit entries for AuditLog entities themselves.
+        private bool _writingAuditLogs;
+
+        public override async Task<int> SaveChangesAsync(CancellationToken ct = default)
+        {
+            // Skip auto-audit when there is no active HTTP request (startup seeding, background
+            // workers, EF migrations CLI) — nothing useful to capture and no caller identity.
+            var httpCtx = _http.HttpContext;
+            if (httpCtx is null || _writingAuditLogs)
+                return await base.SaveChangesAsync(ct);
+
+            var auditRows = CollectAuditRows(httpCtx);
+            var result    = await base.SaveChangesAsync(ct);
+
+            if (auditRows.Count > 0)
+            {
+                try
+                {
+                    _writingAuditLogs = true;
+                    AuditLogs.AddRange(auditRows);
+                    await base.SaveChangesAsync(ct);
+                }
+                catch (Exception ex)
+                {
+                    // Audit failures must NEVER surface to callers or break business operations.
+                    Console.Error.WriteLine($"[AuditLog] Auto-capture failed: {ex.Message}");
+                }
+                finally
+                {
+                    _writingAuditLogs = false;
+                }
+            }
+
+            return result;
+        }
+
+        private List<AuditLog> CollectAuditRows(HttpContext httpCtx)
+        {
+            // Extract caller identity from the JWT claims present on the request.
+            var userId   = int.TryParse(httpCtx.User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : (int?)null;
+            var userName = httpCtx.User.FindFirstValue(ClaimTypes.Name);
+            var ip       = httpCtx.Connection.RemoteIpAddress?.ToString();
+            var endpoint = httpCtx.Request.Path.Value;
+            var method   = httpCtx.Request.Method;
+            var traceId  = httpCtx.TraceIdentifier;
+
+            var rows = new List<AuditLog>();
+
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.State is not (EntityState.Added or EntityState.Modified or EntityState.Deleted))
+                    continue;
+
+                var entityName = entry.Entity.GetType().Name;
+                if (_skipAudit.Contains(entityName))
+                    continue;
+
+                var action = entry.State switch
+                {
+                    EntityState.Added    => "Created",
+                    EntityState.Modified => "Updated",
+                    EntityState.Deleted  => "Deleted",
+                    _                    => null
+                };
+                if (action is null) continue;
+
+                // Resolve the integer primary-key value (string PKs map to null).
+                var pkProp = entry.Properties.FirstOrDefault(p => p.Metadata.IsPrimaryKey());
+                int? entityId = pkProp?.CurrentValue switch
+                {
+                    int i  => i,
+                    long l => (int)l,
+                    _      => null
+                };
+
+                string? oldJson = null;
+                string? newJson = null;
+
+                if (entry.State is EntityState.Modified or EntityState.Deleted)
+                {
+                    var changed = entry.Properties
+                        .Where(p => p.IsModified || entry.State == EntityState.Deleted)
+                        .Where(p => !_sensitiveProps.Contains(p.Metadata.Name))
+                        .ToDictionary(p => p.Metadata.Name, p => p.OriginalValue);
+
+                    oldJson = changed.Count > 0 ? JsonSerializer.Serialize(changed) : null;
+                }
+
+                if (entry.State is EntityState.Modified or EntityState.Added)
+                {
+                    var current = entry.Properties
+                        .Where(p => p.IsModified || entry.State == EntityState.Added)
+                        .Where(p => !_sensitiveProps.Contains(p.Metadata.Name))
+                        .ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
+
+                    newJson = current.Count > 0 ? JsonSerializer.Serialize(current) : null;
+                }
+
+                rows.Add(new AuditLog
+                {
+                    Id         = Guid.NewGuid().ToString("N"),
+                    UserId     = userId,
+                    UserName   = userName,
+                    Action     = action,
+                    Entity     = entityName,
+                    EntityId   = entityId,
+                    OldValue   = oldJson,
+                    NewValue   = newJson,
+                    IpAddress  = ip,
+                    Endpoint   = endpoint,
+                    HttpMethod = method,
+                    TraceId    = traceId,
+                    CreatedAt  = DateTime.UtcNow,
+                });
+            }
+
+            return rows;
+        }
+
+        // ── Model configuration ───────────────────────────────────────────────
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Injorimi i fushave të BaseEntity që nuk janë në DB
+            // Ignore BaseEntity shadow properties that have no matching DB columns.
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 var clrType = entityType.ClrType;
                 if (clrType is null || !typeof(BaseEntity).IsAssignableFrom(clrType))
-                {
                     continue;
-                }
 
                 if (clrType != typeof(User))
                 {
-                    // Notification keeps CreatedAt for timestamp tracking; all others ignore it
                     if (clrType != typeof(Notification))
                         modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.CreatedAt));
 
@@ -59,12 +204,32 @@ namespace EliteFit.Persistence.Persistence.Context
                 modelBuilder.Entity(clrType).Ignore(nameof(BaseEntity.UpdatedBy));
             }
 
-            // ----------------------------------------------------------------
-            // CONFIGURIMI I TABELAVE ME SNAKE_CASE
-            // ----------------------------------------------------------------
+            // ── audit_logs ────────────────────────────────────────────────────
+            modelBuilder.Entity<AuditLog>(e =>
+            {
+                e.ToTable("audit_logs");
+                e.HasKey(a => a.Id);
+                e.Property(a => a.Id).HasColumnName("id").HasMaxLength(36).IsRequired();
+                e.Property(a => a.UserId).HasColumnName("user_id");
+                e.Property(a => a.UserName).HasColumnName("user_name").HasMaxLength(255);
+                e.Property(a => a.Action).HasColumnName("action").HasMaxLength(100);
+                e.Property(a => a.Entity).HasColumnName("entity").HasMaxLength(100);
+                e.Property(a => a.EntityId).HasColumnName("entity_id");
+                e.Property(a => a.OldValue).HasColumnName("old_value").HasColumnType("longtext");
+                e.Property(a => a.NewValue).HasColumnName("new_value").HasColumnType("longtext");
+                e.Property(a => a.IpAddress).HasColumnName("ip_address").HasMaxLength(50);
+                e.Property(a => a.Endpoint).HasColumnName("endpoint").HasMaxLength(500);
+                e.Property(a => a.HttpMethod).HasColumnName("http_method").HasMaxLength(10);
+                e.Property(a => a.TraceId).HasColumnName("trace_id").HasMaxLength(100);
+                e.Property(a => a.CreatedAt).HasColumnName("created_at");
 
+                e.HasIndex(a => a.UserId).HasDatabaseName("IX_audit_logs_user_id");
+                e.HasIndex(a => a.Entity).HasDatabaseName("IX_audit_logs_entity");
+                e.HasIndex(a => a.Action).HasDatabaseName("IX_audit_logs_action");
+                e.HasIndex(a => a.CreatedAt).HasDatabaseName("IX_audit_logs_created_at");
+            });
 
-            // users
+            // ── users ─────────────────────────────────────────────────────────
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("users");
@@ -79,7 +244,7 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(u => u.UpdatedAt).HasColumnName("updated_at");
             });
 
-            // user_profiles
+            // ── user_profiles ─────────────────────────────────────────────────
             modelBuilder.Entity<UserProfile>(entity =>
             {
                 entity.ToTable("user_profiles");
@@ -101,7 +266,7 @@ namespace EliteFit.Persistence.Persistence.Context
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // goals & user_goals
+            // ── goals & user_goals ────────────────────────────────────────────
             modelBuilder.Entity<Goal>(entity =>
             {
                 entity.ToTable("goals");
@@ -121,7 +286,7 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.HasOne(ug => ug.Goal).WithMany(g => g.UserGoals).HasForeignKey(ug => ug.GoalId).OnDelete(DeleteBehavior.Cascade);
             });
 
-            // allergies & user_allergies
+            // ── allergies & user_allergies ────────────────────────────────────
             modelBuilder.Entity<Allergy>(entity =>
             {
                 entity.ToTable("allergies");
@@ -141,7 +306,7 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.HasOne(ua => ua.Allergy).WithMany(a => a.UserAllergies).HasForeignKey(ua => ua.AllergyId).OnDelete(DeleteBehavior.Cascade);
             });
 
-            // password_reset_tokens
+            // ── password_reset_tokens ─────────────────────────────────────────
             modelBuilder.Entity<PasswordResetToken>(entity =>
             {
                 entity.ToTable("password_reset_tokens");
@@ -158,7 +323,7 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.HasIndex(t => t.UserId);
             });
 
-            // roles
+            // ── roles ─────────────────────────────────────────────────────────
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("roles");
@@ -168,7 +333,7 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(r => r.Description).HasColumnName("description");
             });
 
-            // user_roles
+            // ── user_roles ────────────────────────────────────────────────────
             modelBuilder.Entity<UserRole>(entity =>
             {
                 entity.ToTable("user_roles");
@@ -189,7 +354,7 @@ namespace EliteFit.Persistence.Persistence.Context
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // permissions
+            // ── permissions ───────────────────────────────────────────────────
             modelBuilder.Entity<Permission>(entity =>
             {
                 entity.ToTable("permissions");
@@ -199,11 +364,7 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(p => p.Description).HasColumnName("description");
             });
 
-            // ----------------------------------------------------------------
-            // CONFIGURIMI I TABELAVE ME PASCALCASE (Sipas DB SQL)
-            // ----------------------------------------------------------------
-
-            // user_streaks
+            // ── user_streaks ──────────────────────────────────────────────────
             modelBuilder.Entity<UserStreak>(entity =>
             {
                 entity.ToTable("user_streaks");
@@ -224,7 +385,7 @@ namespace EliteFit.Persistence.Persistence.Context
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Badges
+            // ── Badges ────────────────────────────────────────────────────────
             modelBuilder.Entity<Badge>(entity =>
             {
                 entity.ToTable("Badges");
@@ -232,13 +393,10 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(b => b.Id).HasColumnName("id");
                 entity.Property(b => b.Name).HasColumnName("name");
                 entity.Property(b => b.Description).HasColumnName("description");
-                // FK column: BadgeIconId → badge_icon_id
-                // Without this, EF generates "BadgeIconId" but MySQL stores "badge_icon_id"
                 entity.Property(b => b.BadgeIconId).HasColumnName("badge_icon_id");
             });
 
-            // recipe_allergens — DB table is snake_case; EF "RecipeAllergens" would become
-            // "recipeallergens" (no underscore) under lower_case_table_names=1, causing a 404.
+            // ── recipe_allergens ──────────────────────────────────────────────
             modelBuilder.Entity<RecipeAllergenInfo>(entity =>
             {
                 entity.ToTable("recipe_allergens");
@@ -258,9 +416,7 @@ namespace EliteFit.Persistence.Persistence.Context
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Recipes — "Recipes" → lowercased "recipes" matches DB table.
-            // Compound-name columns need explicit HasColumnName because MySQL stores them as snake_case
-            // and the underscore makes them different strings (not just a case difference).
+            // ── Recipes ───────────────────────────────────────────────────────
             modelBuilder.Entity<Recipe>(entity =>
             {
                 entity.ToTable("Recipes");
@@ -276,10 +432,7 @@ namespace EliteFit.Persistence.Persistence.Context
                     .HasForeignKey(r => r.ImageFileId);
             });
 
-            // Files — "Files" → lowercased "files" matches DB table.
-            // Compound-name columns need explicit HasColumnName.
-            // Uploader navigation is configured to use the explicit UploadedBy property as FK,
-            // eliminating the EF-generated shadow "UploaderId" column that does not exist in DB.
+            // ── Files ─────────────────────────────────────────────────────────
             modelBuilder.Entity<FileEntity>(entity =>
             {
                 entity.ToTable("Files");
@@ -296,9 +449,7 @@ namespace EliteFit.Persistence.Persistence.Context
                     .IsRequired(false);
             });
 
-            // quick_fix_tips — "QuickFixTips" → lowercased "quickfixtips" ≠ "quick_fix_tips".
-            // Explicit ToTable required; single-word columns (title, content, category) are fine
-            // because MySQL column matching is case-insensitive and has no underscore divergence.
+            // ── quick_fix_tips ────────────────────────────────────────────────
             modelBuilder.Entity<QuickFixTip>(entity =>
             {
                 entity.ToTable("quick_fix_tips");
@@ -306,7 +457,7 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.Property(q => q.Id).HasColumnName("id");
             });
 
-            // Notifications — CreatedAt is preserved (excluded from the ignore loop above)
+            // ── Notifications ─────────────────────────────────────────────────
             modelBuilder.Entity<Notification>(entity =>
             {
                 entity.ToTable("Notifications");

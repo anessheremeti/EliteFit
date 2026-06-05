@@ -36,6 +36,9 @@ namespace EliteFit.Application.Features.Admin.AuditLog.Queries
                 l.OldValue,
                 l.NewValue,
                 l.IpAddress,
+                l.Endpoint,
+                l.HttpMethod,
+                l.TraceId,
                 l.CreatedAt
             ));
 
