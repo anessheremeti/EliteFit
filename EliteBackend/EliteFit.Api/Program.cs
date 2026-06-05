@@ -30,6 +30,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Shërbime bazë
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 
 // Swagger me mbështetje për JWT
 builder.Services.AddSwaggerGen(c =>

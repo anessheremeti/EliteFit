@@ -10,6 +10,7 @@ namespace EliteFit.Persistence
     {
         public static async Task SeedAsync(ApplicationDbContext db)
         {
+            await EnsureAuditLogsTableAsync(db);
             await EnsureSettingsTableAsync(db);
             await EnsureNotificationsColumnsAsync(db);
             await SeedRolesAsync(db);
@@ -132,6 +133,48 @@ namespace EliteFit.Persistence
             catch (Exception ex) when (ex.Message.Contains("Duplicate column"))
             {
                 // Column already exists — nothing to do
+            }
+        }
+
+        // ── audit_logs ─────────────────────────────────────────────────────────
+        private static async Task EnsureAuditLogsTableAsync(ApplicationDbContext db)
+        {
+            await db.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS `audit_logs` (
+                    `id`          varchar(36)   NOT NULL,
+                    `user_id`     int           NULL,
+                    `user_name`   varchar(255)  NULL,
+                    `action`      varchar(100)  NULL,
+                    `entity`      varchar(100)  NULL,
+                    `entity_id`   int           NULL,
+                    `old_value`   longtext      NULL,
+                    `new_value`   longtext      NULL,
+                    `ip_address`  varchar(50)   NULL,
+                    `endpoint`    varchar(500)  NULL,
+                    `http_method` varchar(10)   NULL,
+                    `trace_id`    varchar(100)  NULL,
+                    `created_at`  datetime(6)   NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+                    PRIMARY KEY (`id`),
+                    KEY `IX_audit_logs_user_id`    (`user_id`),
+                    KEY `IX_audit_logs_entity`     (`entity`),
+                    KEY `IX_audit_logs_action`     (`action`),
+                    KEY `IX_audit_logs_created_at` (`created_at`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+
+            // Add new columns to existing installs that were created before these columns existed.
+            // MySQL 8.0 uses error 1060 for duplicate columns; swallow it so restarts are idempotent.
+            foreach (var (col, ddl) in new[]
+            {
+                ("endpoint",   "ALTER TABLE `audit_logs` ADD COLUMN `endpoint`   varchar(500) NULL"),
+                ("http_method","ALTER TABLE `audit_logs` ADD COLUMN `http_method` varchar(10)  NULL"),
+                ("trace_id",   "ALTER TABLE `audit_logs` ADD COLUMN `trace_id`   varchar(100) NULL"),
+                ("user_name",  "ALTER TABLE `audit_logs` ADD COLUMN `user_name`  varchar(255) NULL"),
+            })
+            {
+                _ = col; // suppress unused-variable warning
+                try { await db.Database.ExecuteSqlRawAsync(ddl); }
+                catch (Exception ex) when (ex.Message.Contains("Duplicate column")) { }
             }
         }
 

@@ -5,7 +5,7 @@ import {
   UserX, UserCheck, Shield, Trash2,
   AlertCircle, RefreshCw, ChevronLeft, ChevronRight,
   Filter, X, Plus, Pencil, Search, CheckCircle2, XCircle,
-  SlidersHorizontal,
+  SlidersHorizontal, Eye, Hash, Globe,
 } from 'lucide-react'
 import { adminApi } from '../../../services/adminApi'
 
@@ -67,13 +67,136 @@ function ToastContainer({ toasts }) {
   )
 }
 
+// ── Audit Logs — helpers ──────────────────────────────────────────────────────
+function methodBadge(method) {
+  const m = (method ?? '').toUpperCase()
+  const map = {
+    GET:    'bg-sky/10 text-sky',
+    POST:   'bg-green-50 text-green-600',
+    PUT:    'bg-amber-50 text-amber-600',
+    PATCH:  'bg-purple-50 text-purple-600',
+    DELETE: 'bg-red-50 text-red-500',
+  }
+  return map[m] ?? 'bg-gray-100 text-gray-500'
+}
+
+function tryPrettyJson(raw) {
+  if (!raw) return null
+  try { return JSON.stringify(JSON.parse(raw), null, 2) }
+  catch { return raw }
+}
+
+// ── Audit Detail Modal ────────────────────────────────────────────────────────
+function AuditDetailModal({ log, onClose }) {
+  const oldPretty = tryPrettyJson(log.oldValue)
+  const newPretty = tryPrettyJson(log.newValue)
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <motion.div
+        initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.96, opacity: 0 }} transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+        className="bg-white rounded-3xl shadow-2xl border border-black/5 w-full max-w-2xl max-h-[90vh] flex flex-col"
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between p-6 border-b border-black/5 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className={`w-3 h-3 rounded-full ${actionColor(log.action)}`} />
+            <div>
+              <p className="font-bold text-dark text-base">
+                {log.action} — <span className="text-sky">{log.entity}</span>
+                {log.entityId ? <span className="text-dark/40"> #{log.entityId}</span> : ''}
+              </p>
+              <p className="text-xs text-dark/40 mt-0.5">
+                {new Date(log.createdAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'medium' })}
+              </p>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-dark/30 hover:text-dark transition-colors p-1">
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="overflow-y-auto p-6 space-y-5 flex-1">
+
+          {/* Meta grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <MetaCell icon={<Users size={13} />} label="User">
+              {log.userName ?? (log.userId ? `User #${log.userId}` : '—')}
+            </MetaCell>
+            <MetaCell icon={<Globe size={13} />} label="IP Address">
+              {log.ipAddress ?? '—'}
+            </MetaCell>
+            {log.httpMethod && (
+              <MetaCell icon={<Hash size={13} />} label="Method / Endpoint">
+                <span className={`inline-block px-2 py-0.5 rounded-lg text-xs font-bold mr-2 ${methodBadge(log.httpMethod)}`}>
+                  {log.httpMethod}
+                </span>
+                <span className="font-mono text-xs text-dark/60 break-all">{log.endpoint ?? ''}</span>
+              </MetaCell>
+            )}
+            {log.traceId && (
+              <MetaCell icon={<Hash size={13} />} label="Trace ID">
+                <span className="font-mono text-xs text-dark/50 break-all">{log.traceId}</span>
+              </MetaCell>
+            )}
+          </div>
+
+          {/* Old / New value diff */}
+          {(oldPretty || newPretty) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <JsonBlock label="Before" value={oldPretty} colorClass="border-red-100 bg-red-50/40" />
+              <JsonBlock label="After"  value={newPretty} colorClass="border-green-100 bg-green-50/40" />
+            </div>
+          )}
+
+          {!oldPretty && !newPretty && (
+            <p className="text-xs text-dark/30 text-center py-4">No value snapshot captured for this entry.</p>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+function MetaCell({ icon, label, children }) {
+  return (
+    <div className="flex flex-col gap-1 bg-surface/50 rounded-2xl p-3 border border-black/5">
+      <div className="flex items-center gap-1.5 text-dark/40">
+        {icon}
+        <span className="text-xs font-semibold uppercase tracking-wider">{label}</span>
+      </div>
+      <div className="text-sm font-medium text-dark/80">{children}</div>
+    </div>
+  )
+}
+
+function JsonBlock({ label, value, colorClass }) {
+  if (!value) return (
+    <div className={`rounded-2xl border p-4 ${colorClass}`}>
+      <p className="text-xs font-semibold text-dark/40 mb-2">{label}</p>
+      <p className="text-xs text-dark/25 italic">—</p>
+    </div>
+  )
+  return (
+    <div className={`rounded-2xl border p-4 ${colorClass}`}>
+      <p className="text-xs font-semibold text-dark/50 mb-2">{label}</p>
+      <pre className="text-xs font-mono text-dark/70 whitespace-pre-wrap break-all leading-relaxed max-h-52 overflow-y-auto">
+        {value}
+      </pre>
+    </div>
+  )
+}
+
 // ── Audit Logs Tab ────────────────────────────────────────────────────────────
 function AuditLogsTab() {
-  const [logs,    setLogs]    = useState([])
-  const [meta,    setMeta]    = useState({ totalCount: 0, page: 1, pageSize: 20 })
-  const [loading, setLoading] = useState(true)
-  const [error,   setError]   = useState(null)
-  const [filters, setFilters] = useState({ entity: '', action: '', from: '', to: '' })
+  const [logs,      setLogs]      = useState([])
+  const [meta,      setMeta]      = useState({ totalCount: 0, page: 1, pageSize: 20 })
+  const [loading,   setLoading]   = useState(true)
+  const [error,     setError]     = useState(null)
+  const [filters,   setFilters]   = useState({ entity: '', action: '', userId: '', from: '', to: '' })
+  const [detailLog, setDetailLog] = useState(null)
 
   const load = useCallback(async (page = 1) => {
     setLoading(true); setError(null)
@@ -87,42 +210,71 @@ function AuditLogsTab() {
 
   useEffect(() => { load(1) }, []) // eslint-disable-line
 
+  const clearFilters = () => {
+    setFilters({ entity: '', action: '', userId: '', from: '', to: '' })
+  }
+
+  const hasActiveFilters = Object.values(filters).some(v => v !== '')
   const totalPages = Math.max(1, Math.ceil(meta.totalCount / meta.pageSize))
 
   return (
     <div>
+      <AnimatePresence>
+        {detailLog && (
+          <AuditDetailModal log={detailLog} onClose={() => setDetailLog(null)} />
+        )}
+      </AnimatePresence>
+
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
         <div>
           <h3 className="font-heading font-bold text-dark text-lg">Audit Logs Viewer</h3>
           <p className="text-xs text-dark/50 mt-0.5">
-            {meta.totalCount > 0 ? `${meta.totalCount} regjistrime gjithsej` : 'Monitorimi i çdo veprimi në sistem'}
+            {meta.totalCount > 0
+              ? `${meta.totalCount.toLocaleString()} records total`
+              : 'Monitor every system action'}
           </p>
         </div>
         <button onClick={() => load(meta.page)}
           className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-surface hover:bg-sky/10 hover:text-sky transition-colors">
-          <RefreshCw size={13} /> Rifresko
+          <RefreshCw size={13} /> Refresh
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 p-4 bg-surface/50 rounded-2xl border border-black/5">
-        <input placeholder="Entity (p.sh. Recipe)" value={filters.entity}
-          onChange={e => setFilters(f => ({ ...f, entity: e.target.value }))}
-          className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
-        <input placeholder="Veprimi (p.sh. Created)" value={filters.action}
-          onChange={e => setFilters(f => ({ ...f, action: e.target.value }))}
-          className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
-        <input type="date" value={filters.from}
-          onChange={e => setFilters(f => ({ ...f, from: e.target.value }))}
-          className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
-        <input type="date" value={filters.to}
-          onChange={e => setFilters(f => ({ ...f, to: e.target.value }))}
-          className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
-        <button onClick={() => load(1)}
-          className="col-span-2 md:col-span-4 flex items-center justify-center gap-2 bg-[#0ea5e9] text-white rounded-xl py-2 text-xs font-bold hover:bg-sky/90 transition-colors">
-          <Filter size={13} /> Apliko Filtrat
-        </button>
+      {/* Filter bar */}
+      <div className="p-4 bg-surface/50 rounded-2xl border border-black/5 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-3">
+          <input placeholder="Entity (e.g. Recipe)" value={filters.entity}
+            onChange={e => setFilters(f => ({ ...f, entity: e.target.value }))}
+            className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
+          <input placeholder="Action (e.g. Created)" value={filters.action}
+            onChange={e => setFilters(f => ({ ...f, action: e.target.value }))}
+            className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
+          <input placeholder="User ID" type="number" value={filters.userId}
+            onChange={e => setFilters(f => ({ ...f, userId: e.target.value }))}
+            className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
+          <input type="date" value={filters.from}
+            onChange={e => setFilters(f => ({ ...f, from: e.target.value }))}
+            className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
+          <input type="date" value={filters.to}
+            onChange={e => setFilters(f => ({ ...f, to: e.target.value }))}
+            className="bg-white border border-black/5 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky/40" />
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => load(1)}
+            className="flex-1 flex items-center justify-center gap-2 bg-[#0ea5e9] text-white rounded-xl py-2 text-xs font-bold hover:bg-sky/90 transition-colors">
+            <Filter size={13} /> Apply Filters
+          </button>
+          {hasActiveFilters && (
+            <button onClick={() => { clearFilters(); setTimeout(() => load(1), 0) }}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border border-black/10 text-dark/60 hover:bg-surface transition-colors">
+              <X size={12} /> Clear
+            </button>
+          )}
+        </div>
       </div>
 
+      {/* Error */}
       {error && (
         <div className="flex items-center gap-2 p-3 mb-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
           <AlertCircle size={15} className="shrink-0" />{error}
@@ -130,44 +282,64 @@ function AuditLogsTab() {
         </div>
       )}
 
+      {/* List */}
       <div className="space-y-2">
         {loading
-          ? Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-14 bg-gray-50 rounded-2xl animate-pulse" />
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-16 bg-gray-50 rounded-2xl animate-pulse" />
             ))
           : logs.length === 0
             ? (
               <div className="flex flex-col items-center justify-center py-16 text-dark/30">
                 <FileClock size={40} className="mb-3 opacity-30" />
-                <p className="text-sm font-semibold">Asnjë regjistrim nuk u gjet</p>
+                <p className="text-sm font-semibold">No audit records found</p>
+                {hasActiveFilters && (
+                  <p className="text-xs mt-1">Try clearing the active filters</p>
+                )}
               </div>
             )
             : logs.map(log => (
-              <div key={log.id} className="flex items-center justify-between p-4 rounded-2xl hover:bg-surface/30 border border-black/5 gap-4">
+              <div key={log.id}
+                className="flex items-center justify-between p-4 rounded-2xl hover:bg-surface/40 border border-black/5 gap-3 cursor-pointer group transition-colors"
+                onClick={() => setDetailLog(log)}
+              >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${actionColor(log.action)}`} />
                   <div className="min-w-0">
-                    <p className="text-sm font-bold text-dark truncate">
-                      {log.action} — <span className="text-sky">{log.entity}</span>
-                      {log.entityId ? ` #${log.entityId}` : ''}
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-bold text-dark">
+                        {log.action} — <span className="text-sky">{log.entity}</span>
+                        {log.entityId ? <span className="text-dark/40"> #{log.entityId}</span> : ''}
+                      </p>
+                      {log.httpMethod && (
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${methodBadge(log.httpMethod)}`}>
+                          {log.httpMethod}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-dark/50 mt-0.5">
-                      Kryer nga: <span className="font-semibold text-dark/70">{log.userName || `User #${log.userId}`}</span>
-                      {log.ipAddress ? <span className="ml-2 text-dark/30">· {log.ipAddress}</span> : ''}
+                      By: <span className="font-semibold text-dark/70">{log.userName || `User #${log.userId}`}</span>
+                      {log.ipAddress && <span className="ml-2 text-dark/30">· {log.ipAddress}</span>}
                     </p>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-dark/40 bg-surface px-2 py-1 rounded-lg shrink-0 whitespace-nowrap">
-                  {new Date(log.createdAt).toLocaleString('sq-AL', { dateStyle: 'short', timeStyle: 'short' })}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs font-semibold text-dark/40 bg-surface px-2 py-1 rounded-lg whitespace-nowrap hidden sm:block">
+                    {new Date(log.createdAt).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}
+                  </span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Eye size={14} className="text-sky" />
+                  </span>
+                </div>
               </div>
             ))
         }
       </div>
 
+      {/* Pagination */}
       {!loading && totalPages > 1 && (
         <div className="flex items-center justify-between mt-6 pt-4 border-t border-black/5">
-          <span className="text-xs text-dark/40">Faqja {meta.page} nga {totalPages}</span>
+          <span className="text-xs text-dark/40">Page {meta.page} of {totalPages}</span>
           <div className="flex gap-2">
             <button disabled={meta.page <= 1} onClick={() => load(meta.page - 1)}
               className="p-2 rounded-xl border border-black/5 hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed">
