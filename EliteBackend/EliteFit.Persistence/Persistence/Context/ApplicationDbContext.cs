@@ -215,8 +215,8 @@ namespace EliteFit.Persistence.Persistence.Context
                 e.Property(a => a.Action).HasColumnName("action").HasMaxLength(100);
                 e.Property(a => a.Entity).HasColumnName("entity").HasMaxLength(100);
                 e.Property(a => a.EntityId).HasColumnName("entity_id");
-                e.Property(a => a.OldValue).HasColumnName("old_value").HasColumnType("longtext");
-                e.Property(a => a.NewValue).HasColumnName("new_value").HasColumnType("longtext");
+                e.Property(a => a.OldValue).HasColumnName("old_value").HasColumnType("nvarchar(max)");
+                e.Property(a => a.NewValue).HasColumnName("new_value").HasColumnType("nvarchar(max)");
                 e.Property(a => a.IpAddress).HasColumnName("ip_address").HasMaxLength(50);
                 e.Property(a => a.Endpoint).HasColumnName("endpoint").HasMaxLength(500);
                 e.Property(a => a.HttpMethod).HasColumnName("http_method").HasMaxLength(10);

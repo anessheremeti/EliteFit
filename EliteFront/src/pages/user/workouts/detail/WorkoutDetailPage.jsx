@@ -7,8 +7,8 @@ import { WorkoutStats }     from './components/WorkoutStats';
 import { RelatedWorkouts }  from './components/RelatedWorkouts';
 import { WorkoutTimer }     from './components/WorkoutTimer';
 import { SessionStatsCard } from './components/SessionStatsCard';
-import { workoutService }     from '../../../../services/workoutService';
-import { exerciseLogService } from '../../../../services/exerciseLogService';
+  import { workoutService }     from '../../../../services/workoutService';
+  import { exerciseLogService } from '../../../../services/exerciseLogService';
 
 // Calories-per-minute by difficulty level
 const CAL_PER_MIN = { Beginner: 5, Intermediate: 8, Advanced: 12 };

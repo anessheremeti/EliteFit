@@ -92,19 +92,19 @@ builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationSer
 // Regjistrimi i shërbimit në prapavijë për Streak
 builder.Services.AddHostedService<StreakBackgroundWorker>();
 // MySQL
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 0))
     )
-);
+);*/
 
 // -------------------------------------------------------------------
 // ZONA E KOLEGËVE - SQL Server (Entity Framework Core)
 // -------------------------------------------------------------------
-// builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+ builder.Services.AddDbContext<ApplicationDbContext>(options =>
+     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // -------------------------------------------------------------------
 
 // ==========================================

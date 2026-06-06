@@ -10,13 +10,14 @@ namespace EliteFit.Persistence
     {
         public static async Task SeedAsync(ApplicationDbContext db)
         {
-            await EnsureAuditLogsTableAsync(db);
-            await EnsureSettingsTableAsync(db);
-            await EnsureNotificationsColumnsAsync(db);
-            await SeedRolesAsync(db);
-            await SeedPermissionsAsync(db);
-            await SeedRolePermissionsAsync(db);
-            await SeedDefaultUsersAsync(db);
+            // await EnsureAuditLogsTableAsync(db);   // Ky le të rrijë i komentuar
+            // await EnsureSettingsTableAsync(db);    // Ky le të rrijë i komentuar
+            // await EnsureNotificationsColumnsAsync(db); // Ky le të rrijë i komentuar
+
+            await SeedRolesAsync(db);              // Këtë bëje aktiv!
+            await SeedPermissionsAsync(db);        // Këtë bëje aktiv!
+            await SeedRolePermissionsAsync(db);    // Këtë bëje aktiv! (Tani punon sepse metoda më poshtë nuk është më e bllokuar)
+            await SeedDefaultUsersAsync(db);       // Këtë bëje aktiv!
             await BackfillMissingMemberRolesAsync(db);
         }
 
@@ -44,8 +45,8 @@ namespace EliteFit.Persistence
             {
                 db.UserRoles.Add(new UserRole
                 {
-                    UserId     = user.Id,
-                    RoleId     = memberRole.Id,
+                    UserId = user.Id,
+                    RoleId = memberRole.Id,
                     AssignedAt = DateTime.UtcNow,
                 });
                 Console.WriteLine($"[Seed] Backfilled Member role → {user.Email}");
@@ -59,7 +60,7 @@ namespace EliteFit.Persistence
         // Credentials are printed to the console so you can log in immediately.
         private static async Task SeedDefaultUsersAsync(ApplicationDbContext db)
         {
-            await SeedUserIfMissing(db, "admin@elitefit.com",  "Admin",  "User", "Admin123!",  "Admin");
+            await SeedUserIfMissing(db, "admin@elitefit.com", "Admin", "User", "Admin123!", "Admin");
             await SeedUserIfMissing(db, "member@elitefit.com", "Member", "User", "Member123!", "Member");
         }
 
@@ -81,19 +82,19 @@ namespace EliteFit.Persistence
 
             var user = new User
             {
-                FirstName    = firstName,
-                LastName     = lastName,
-                Email        = email,
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
                 PasswordHash = passwordHash,
-                IsActive     = true,
+                IsActive = true,
             };
             db.Users.Add(user);
             await db.SaveChangesAsync();
 
             db.UserRoles.Add(new UserRole
             {
-                UserId     = user.Id,
-                RoleId     = role.Id,
+                UserId = user.Id,
+                RoleId = role.Id,
                 AssignedAt = DateTime.UtcNow,
             });
             await db.SaveChangesAsync();
@@ -101,7 +102,8 @@ namespace EliteFit.Persistence
             Console.WriteLine($"[Seed] Created {roleName} — email: {email}  password: {plainPassword}");
         }
 
-        private static async Task EnsureNotificationsColumnsAsync(ApplicationDbContext db)
+        // Metodat e mëposhtme që nuk të duhen më janë të komentuara plotësished
+        /* private static async Task EnsureNotificationsColumnsAsync(ApplicationDbContext db)
         {
             // Create table for fresh installs (migration may not have run)
             await db.Database.ExecuteSqlRawAsync(@"
@@ -119,10 +121,6 @@ namespace EliteFit.Persistence
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ");
 
-            // Add column to existing installs that were created before CreatedAt was added.
-            // ALTER TABLE ... ADD COLUMN IF NOT EXISTS requires MySQL 8.0.3+; the declared
-            // server version is 8.0.0, so we drop IF NOT EXISTS and swallow the duplicate-
-            // column error (1060) that MySQL raises when the column is already present.
             try
             {
                 await db.Database.ExecuteSqlRawAsync(@"
@@ -134,67 +132,66 @@ namespace EliteFit.Persistence
             {
                 // Column already exists — nothing to do
             }
-        }
+        }*/
 
         // ── audit_logs ─────────────────────────────────────────────────────────
-        private static async Task EnsureAuditLogsTableAsync(ApplicationDbContext db)
-        {
-            await db.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS `audit_logs` (
-                    `id`          varchar(36)   NOT NULL,
-                    `user_id`     int           NULL,
-                    `user_name`   varchar(255)  NULL,
-                    `action`      varchar(100)  NULL,
-                    `entity`      varchar(100)  NULL,
-                    `entity_id`   int           NULL,
-                    `old_value`   longtext      NULL,
-                    `new_value`   longtext      NULL,
-                    `ip_address`  varchar(50)   NULL,
-                    `endpoint`    varchar(500)  NULL,
-                    `http_method` varchar(10)   NULL,
-                    `trace_id`    varchar(100)  NULL,
-                    `created_at`  datetime(6)   NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-                    PRIMARY KEY (`id`),
-                    KEY `IX_audit_logs_user_id`    (`user_id`),
-                    KEY `IX_audit_logs_entity`     (`entity`),
-                    KEY `IX_audit_logs_action`     (`action`),
-                    KEY `IX_audit_logs_created_at` (`created_at`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-            ");
+        /* private static async Task EnsureAuditLogsTableAsync(ApplicationDbContext db)
+          {
+              await db.Database.ExecuteSqlRawAsync(@"
+                  CREATE TABLE IF NOT EXISTS `audit_logs` (
+                      `id`          varchar(36)   NOT NULL,
+                      `user_id`     int           NULL,
+                      `user_name`   varchar(255)  NULL,
+                      `action`      varchar(100)  NULL,
+                      `entity`      varchar(100)  NULL,
+                      `entity_id`   int           NULL,
+                      `old_value`   longtext      NULL,
+                      `new_value`   longtext      NULL,
+                      `ip_address`  varchar(50)   NULL,
+                      `endpoint`    varchar(500)  NULL,
+                      `http_method` varchar(10)   NULL,
+                      `trace_id`    varchar(100)  NULL,
+                      `created_at`  datetime(6)   NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+                      PRIMARY KEY (`id`),
+                      KEY `IX_audit_logs_user_id`    (`user_id`),
+                      KEY `IX_audit_logs_entity`     (`entity`),
+                      KEY `IX_audit_logs_action`     (`action`),
+                      KEY `IX_audit_logs_created_at` (`created_at`)
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+              ");
 
-            // Add new columns to existing installs that were created before these columns existed.
-            // MySQL 8.0 uses error 1060 for duplicate columns; swallow it so restarts are idempotent.
-            foreach (var (col, ddl) in new[]
-            {
-                ("endpoint",   "ALTER TABLE `audit_logs` ADD COLUMN `endpoint`   varchar(500) NULL"),
-                ("http_method","ALTER TABLE `audit_logs` ADD COLUMN `http_method` varchar(10)  NULL"),
-                ("trace_id",   "ALTER TABLE `audit_logs` ADD COLUMN `trace_id`   varchar(100) NULL"),
-                ("user_name",  "ALTER TABLE `audit_logs` ADD COLUMN `user_name`  varchar(255) NULL"),
-            })
-            {
-                _ = col; // suppress unused-variable warning
-                try { await db.Database.ExecuteSqlRawAsync(ddl); }
-                catch (Exception ex) when (ex.Message.Contains("Duplicate column")) { }
-            }
-        }
+              foreach (var (col, ddl) in new[]
+              {
+                  ("endpoint",   "ALTER TABLE `audit_logs` ADD COLUMN `endpoint`   varchar(500) NULL"),
+                  ("http_method","ALTER TABLE `audit_logs` ADD COLUMN `http_method` varchar(10)  NULL"),
+                  ("trace_id",   "ALTER TABLE `audit_logs` ADD COLUMN `trace_id`   varchar(100) NULL"),
+                  ("user_name",  "ALTER TABLE `audit_logs` ADD COLUMN `user_name`  varchar(255) NULL"),
+              })
+              {
+                  _ = col; // suppress unused-variable warning
+                  try { await db.Database.ExecuteSqlRawAsync(ddl); }
+                  catch (Exception ex) when (ex.Message.Contains("Duplicate column")) { }
+              }
+          }*/
 
-        private static async Task EnsureSettingsTableAsync(ApplicationDbContext db)
-        {
-            // `Key` is a MySQL reserved word — must be backtick-quoted in DDL
-            await db.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS `Settings` (
-                    `Id`          int          NOT NULL AUTO_INCREMENT,
-                    `Key`         varchar(500) NOT NULL,
-                    `Value`       longtext     NULL,
-                    `Description` longtext     NULL,
-                    PRIMARY KEY (`Id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-            ");
-        }
+        /* private static async Task EnsureSettingsTableAsync(ApplicationDbContext db)
+         {
+             await db.Database.ExecuteSqlRawAsync(@"
+                 CREATE TABLE IF NOT EXISTS `Settings` (
+                     `Id`          int          NOT NULL AUTO_INCREMENT,
+                     `Key`         varchar(500) NOT NULL,
+                     `Value`       longtext     NULL,
+                     `Description` longtext     NULL,
+                     PRIMARY KEY (`Id`)
+                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+             ");
+         }
+        */
 
         // ── Roles ─────────────────────────────────────────────────────────────
         private static async Task SeedRolesAsync(ApplicationDbContext db)
         {
+            /* KJO PJESË NUK TY DUHET MË SEPSE E KRIJON MIGRATION-I
             await db.Database.ExecuteSqlRawAsync(@"
                 CREATE TABLE IF NOT EXISTS `roles` (
                     `id`          int NOT NULL AUTO_INCREMENT,
@@ -203,6 +200,7 @@ namespace EliteFit.Persistence
                     PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ");
+            */
 
             var existing = (await db.Roles.Select(r => r.Name).ToListAsync()).ToHashSet();
 
@@ -229,6 +227,7 @@ namespace EliteFit.Persistence
         // ── Permissions ────────────────────────────────────────────────────────
         private static async Task SeedPermissionsAsync(ApplicationDbContext db)
         {
+            /* KJO PJESË NUK TY DUHET MË SEPSE E KRIJON MIGRATION-I
             await db.Database.ExecuteSqlRawAsync(@"
                 CREATE TABLE IF NOT EXISTS `permissions` (
                     `id`          int NOT NULL AUTO_INCREMENT,
@@ -237,6 +236,7 @@ namespace EliteFit.Persistence
                     PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ");
+            */
 
             var existing = (await db.Permissions.Select(p => p.Name).ToListAsync()).ToHashSet();
 
@@ -284,6 +284,7 @@ namespace EliteFit.Persistence
         // ── RolePermissions ────────────────────────────────────────────────────
         private static async Task SeedRolePermissionsAsync(ApplicationDbContext db)
         {
+            /* KJO PJESË NUK TY DUHET MË SEPSE E KRIJON MIGRATION-I
             await db.Database.ExecuteSqlRawAsync(@"
                 CREATE TABLE IF NOT EXISTS `RolePermissions` (
                     `Id`           int NOT NULL AUTO_INCREMENT,
@@ -298,6 +299,7 @@ namespace EliteFit.Persistence
                         FOREIGN KEY (`PermissionId`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ");
+            */
 
             // Resolve actual IDs from the database (do NOT assume hardcoded IDs)
             var permsByName = await db.Permissions.ToDictionaryAsync(p => p.Name, p => p.Id);
