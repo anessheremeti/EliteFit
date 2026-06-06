@@ -45,7 +45,8 @@ const UserDashboard  = lazy(() => import('./pages/user/dashboard/index.jsx'));
 const workoutVideos  = lazy(() => import('./pages/user/workouts/index.jsx'));
 const Settings       = lazy(() => import('./pages/user/settings/AccountSettings.jsx'));
 const Notifications  = lazy(() => import('./pages/user/notifications/index.jsx'));
-
+const NutritionPage = lazy(() => import('./pages/user/nutrition/index.jsx'));
+const RecipeDetailPage = lazy(() =>import('./pages/user/nutrition/detail/RecipeDetailPage.jsx'));
 /* ==========================================================================
     2. LOADING FALLBACK
    ========================================================================== */
@@ -171,6 +172,9 @@ const routes = [
       { path: 'workouts',         element: workoutVideos },
       { path: 'notifications',    element: Notifications },
       { path: 'profile',          element: Settings      },
+      { path: 'nutrition',        element: NutritionPage },
+      { path: 'nutrition/:id', element: RecipeDetailPage },
+      { path: 'goals',              element: OnboardingGoals },
     ],
   },
 ];

@@ -2,29 +2,51 @@ import { useNavigate } from 'react-router-dom';
 import { Clock, Flame, Users, Star } from 'lucide-react';
 
 const DIET_COLORS = {
-  Vegan:       'bg-green-100 text-green-700',
-  Vegetarian:  'bg-lime-100  text-lime-700',
-  Keto:        'bg-purple-100 text-purple-700',
-  Paleo:       'bg-orange-100 text-orange-700',
-  Standard:    'bg-gray-100  text-gray-600',
+  Vegan:      'bg-green-100 text-green-700',
+  Vegetarian: 'bg-lime-100  text-lime-700',
+  Keto:       'bg-purple-100 text-purple-700',
+  Pale:      'bg-orange-100 text-orange-700',
+  Standard:   'bg-gray-100  text-gray-600',
 };
 
 export function RecipeCard({ recipe }) {
   const navigate = useNavigate();
-  const totalTime = (recipe.prepTimeMin ?? 0) + (recipe.cookTimeMin ?? 0);
+
+  // Sigurohemi që kapim ID-në pavarësisht nëse vjen si 'id' apo 'Id'
+  const recipeId = recipe.id || recipe.Id;
+  const title = recipe.title || recipe.Title || 'Pa titull';
+  const calories = recipe.calories !== undefined ? recipe.calories : recipe.Calories;
+  
+  // Përshtatja e makronutrientëve me kolonat e SQL Server-it tënd
+  const protein = recipe.proteinG ?? recipe.ProteinG ?? recipe.protein_g;
+  const carbs = recipe.carbsG ?? recipe.CarbsG ?? recipe.carbs_g;
+  const fat = recipe.fatG ?? recipe.FatG ?? recipe.fat_g;
+
+  // Nëse nuk kemi kohë specifike nga backend-i, vendosim 0 si plan rezervë
+  const prepTime = recipe.prepTimeMin ?? recipe.PrepTimeMin ?? 0;
+  const cookTime = recipe.cookTimeMin ?? recipe.CookTimeMin ?? 0;
+  const totalTime = prepTime + cookTime;
+
+  const servingsCount = recipe.servingsCount ?? recipe.ServingsCount;
+  const isFeatured = recipe.isFeatured ?? recipe.IsFeatured;
+  const category = recipe.category ?? recipe.Category;
+  const dietType = recipe.dietType ?? recipe.DietType ?? 'Standard';
+  
+  // Alergjenët mund të vijnë si listë objektesh apo stringjesh (i kthejmë në masiv të thjeshtë tekstesh)
+  const allergens = recipe.allergens || recipe.Allergens || [];
 
   return (
     <div
-      onClick={() => navigate(`/user/nutrition/${recipe.id}`)}
+      onClick={() => navigate(`/user/nutrition/${recipeId}`)}
       className="group bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden cursor-pointer
                  hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-        {recipe.imageUrl ? (
+        {recipe.imageUrl || recipe.ImageUrl ? (
           <img
-            src={recipe.imageUrl}
-            alt={recipe.title}
+            src={recipe.imageUrl || recipe.ImageUrl}
+            alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
@@ -35,7 +57,7 @@ export function RecipeCard({ recipe }) {
         )}
 
         {/* Featured star */}
-        {recipe.isFeatured && (
+        {isFeatured && (
           <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5
                           bg-amber-400 rounded-full text-white text-[10px] font-bold shadow">
             <Star size={9} fill="currentColor" />
@@ -44,10 +66,10 @@ export function RecipeCard({ recipe }) {
         )}
 
         {/* Category badge */}
-        {recipe.category && (
+        {category && (
           <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-full
                           bg-black/50 backdrop-blur-sm text-white text-[10px] font-semibold">
-            {recipe.category}
+            {category}
           </div>
         )}
       </div>
@@ -56,28 +78,28 @@ export function RecipeCard({ recipe }) {
       <div className="p-3.5">
         {/* Diet type + allergen count */}
         <div className="flex items-center gap-1.5 mb-1.5">
-          {recipe.dietType && recipe.dietType !== 'Standard' && (
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${DIET_COLORS[recipe.dietType] ?? DIET_COLORS.Standard}`}>
-              {recipe.dietType}
+          {dietType && dietType !== 'Standard' && (
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${DIET_COLORS[dietType] ?? DIET_COLORS.Standard}`}>
+              {dietType}
             </span>
           )}
-          {recipe.allergens?.length > 0 && (
-            <span className="text-[10px] text-dark/35 font-medium">
-              Contains {recipe.allergens.join(', ')}
+          {allergens.length > 0 && (
+            <span className="text-[10px] text-dark/35 font-medium line-clamp-1">
+              Contains {typeof allergens[0] === 'object' ? 'Allergens' : allergens.join(', ')}
             </span>
           )}
         </div>
 
         <h3 className="font-bold text-dark text-[13px] leading-snug line-clamp-2 mb-2">
-          {recipe.title}
+          {title}
         </h3>
 
         {/* Macros row */}
         <div className="flex items-center gap-3 text-[11px] text-dark/50 font-medium">
-          {recipe.calories != null && (
+          {calories != null && (
             <span className="flex items-center gap-1">
               <Flame size={11} className="text-orange-400" />
-              {recipe.calories} kcal
+              {calories} kcal
             </span>
           )}
           {totalTime > 0 && (
@@ -86,25 +108,25 @@ export function RecipeCard({ recipe }) {
               {totalTime} min
             </span>
           )}
-          {recipe.servingsCount != null && (
+          {servingsCount != null && (
             <span className="flex items-center gap-1">
               <Users size={11} className="text-dark/40" />
-              {recipe.servingsCount}
+              {servingsCount}
             </span>
           )}
         </div>
 
         {/* Macro breakdown */}
-        {(recipe.proteinG != null || recipe.carbsG != null || recipe.fatG != null) && (
+        {(protein != null || carbs != null || fat != null) && (
           <div className="mt-2.5 flex gap-2">
-            {recipe.proteinG != null && (
-              <MacroChip label="P" value={`${recipe.proteinG}g`} color="text-sky" />
+            {protein != null && (
+              <MacroChip label="P" value={`${protein}g`} color="text-sky" />
             )}
-            {recipe.carbsG != null && (
-              <MacroChip label="C" value={`${recipe.carbsG}g`} color="text-amber-500" />
+            {carbs != null && (
+              <MacroChip label="C" value={`${carbs}g`} color="text-amber-500" />
             )}
-            {recipe.fatG != null && (
-              <MacroChip label="F" value={`${recipe.fatG}g`} color="text-rose-400" />
+            {fat != null && (
+              <MacroChip label="F" value={`${fat}g`} color="text-rose-400" />
             )}
           </div>
         )}

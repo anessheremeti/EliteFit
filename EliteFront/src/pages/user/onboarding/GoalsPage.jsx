@@ -1,86 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { TrendingDown, Dumbbell, Zap, Wind, Apple, Heart, Trophy, ShieldCheck, Check, ArrowRight } from 'lucide-react'
+import { TrendingDown, Dumbbell, Zap, Wind, Apple, Heart, Trophy, ShieldCheck, Check, ArrowRight, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+// Importojmë funksionet e API-së nga rruga e saktë sipas strukturës tënde të folderave
+import { getAllGoals, assignUserGoals } from '../../../api/user/gamification/goals'
 
-const GOALS = [
-  {
-    id: 1,
-    name: 'Lose Weight',
-    description: 'Burn fat, look leaner',
-    Icon: TrendingDown,
-    iconBg: 'bg-rose-50',
-    selectedIconBg: 'bg-rose-100',
-    iconColor: 'text-rose-500',
-  },
-  {
-    id: 2,
-    name: 'Build Muscle',
-    description: 'Gain strength & mass',
-    Icon: Dumbbell,
-    iconBg: 'bg-violet-50',
-    selectedIconBg: 'bg-violet-100',
-    iconColor: 'text-violet-600',
-  },
-  {
-    id: 3,
-    name: 'More Energy',
-    description: 'Feel alive every day',
-    Icon: Zap,
-    iconBg: 'bg-amber-50',
-    selectedIconBg: 'bg-amber-100',
-    iconColor: 'text-amber-500',
-  },
-  {
-    id: 4,
-    name: 'Flexibility',
-    description: 'Move freely & painlessly',
-    Icon: Wind,
-    iconBg: 'bg-teal-50',
-    selectedIconBg: 'bg-teal-100',
-    iconColor: 'text-teal-500',
-  },
-  {
-    id: 5,
-    name: 'Eat Better',
-    description: 'Fuel your body right',
-    Icon: Apple,
-    iconBg: 'bg-green-50',
-    selectedIconBg: 'bg-green-100',
-    iconColor: 'text-green-500',
-  },
-  {
-    id: 6,
-    name: 'Less Stress',
-    description: 'Find balance & calm',
-    Icon: Heart,
-    iconBg: 'bg-pink-50',
-    selectedIconBg: 'bg-pink-100',
-    iconColor: 'text-pink-500',
-  },
-  {
-    id: 7,
-    name: 'Performance',
-    description: 'Train like an athlete',
-    Icon: Trophy,
-    iconBg: 'bg-orange-50',
-    selectedIconBg: 'bg-orange-100',
-    iconColor: 'text-orange-500',
-  },
-  {
-    id: 8,
-    name: 'Better Health',
-    description: 'Live longer, live well',
-    Icon: ShieldCheck,
-    iconBg: 'bg-sky-50',
-    selectedIconBg: 'bg-sky-100',
-    iconColor: 'text-sky-500',
-  },
-]
+// Mapimi i ikonave dhe ngjyrave bazuar në emrin ekzakt që vjen nga SQL Server / .NET
+const ICON_MAP = {
+  'Lose Weight': { Icon: TrendingDown, bg: 'bg-rose-50', selBg: 'bg-rose-100', color: 'text-rose-500', desc: 'Burn fat, look leaner' },
+  'Build Muscle': { Icon: Dumbbell, bg: 'bg-violet-50', selBg: 'bg-violet-100', color: 'text-violet-600', desc: 'Gain strength & mass' },
+  'More Energy': { Icon: Zap, bg: 'bg-amber-50', selBg: 'bg-amber-100', color: 'text-amber-500', desc: 'Feel alive every day' },
+  'Flexibility': { Icon: Wind, bg: 'bg-teal-50', selBg: 'bg-teal-100', color: 'text-teal-500', desc: 'Move freely & painlessly' },
+  'Eat Better': { Icon: Apple, bg: 'bg-green-50', selBg: 'bg-green-100', color: 'text-green-500', desc: 'Fuel your body right' },
+  'Less Stress': { Icon: Heart, bg: 'bg-pink-50', selBg: 'bg-pink-100', color: 'text-pink-500', desc: 'Find balance & calm' },
+  'Performance': { Icon: Trophy, bg: 'bg-orange-50', selBg: 'bg-orange-100', color: 'text-orange-500', desc: 'Train like an athlete' },
+  'Better Health': { Icon: ShieldCheck, bg: 'bg-sky-50', selBg: 'bg-sky-100', color: 'text-sky-500', desc: 'Live longer, live well' },
+}
 
 export default function GoalsPage() {
+  const [goals, setGoals] = useState([]) // Ruan qëllimet që vijnë live nga databaza
   const [selected, setSelected] = useState(new Set())
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
+
+  // 1. Ngarkimi i qëllimeve nga Backend-i kur hapet faqja
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const responseData = await getAllGoals()
+        
+        // Mbrojtje e trefashtë në varësi se si .NET i paketon të dhënat (direkt array, .data ose .$values)
+        const actualList = responseData?.data || responseData?.$values || (Array.isArray(responseData) ? responseData : [])
+        
+        setGoals(actualList)
+      } catch (err) {
+        console.error("Gabim gjatë marrjes së qëllimeve:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchGoals()
+  }, [])
 
   const toggle = (id) => {
     setSelected((prev) => {
@@ -90,9 +51,37 @@ export default function GoalsPage() {
     })
   }
 
-  const handleContinue = () => {
-    localStorage.setItem('elitefit_onboarding_goals', JSON.stringify(Array.from(selected)))
-    navigate('/onboarding/profile')
+  // 2. Dërgimi i të dhënave në Backend kur klikohet Continue
+  const handleContinue = async () => {
+    if (selected.size === 0) return
+
+    setSubmitting(true)
+    try {
+      // Merrni ID-në e përdoruesit aktual të loguar (nëse nuk ekziston vendoset 1 si fallback)
+      const userId = localStorage.getItem('elitefit_user_id') || 1 
+      const goalIdsArray = Array.from(selected)
+
+      // Thirrja e endpoint-it POST "api/Goals/user/assign"
+      await assignUserGoals(userId, goalIdsArray)
+
+      // Ruajmë gjithashtu në localStorage për rrjedhën e mëtutjeshme të onboarding
+      localStorage.setItem('elitefit_onboarding_goals', JSON.stringify(goalIdsArray))
+      
+      // Navigojmë te faqja e profilit
+      navigate('/onboarding/profile')
+    } catch (err) {
+      console.error("Dështoi ruajtja e qëllimeve në backend:", err)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="animate-spin text-brand-accent" size={32} />
+      </div>
+    )
   }
 
   return (
@@ -133,12 +122,12 @@ export default function GoalsPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl md:text-[2.1rem] font-heading font-bold text-dark leading-tight mb-3">
+          <h1 className="text-3xl md:text-[2.1rem] font-heading font-bold text-dark loam-tight mb-3">
             What are your fitness goals?
           </h1>
           <p className="text-dark/45 text-[0.95rem] max-w-sm mx-auto leading-relaxed font-sans">
             Select all that apply. We'll build your personalised plan around what
-            matters most to you.
+            matter most to you.
           </p>
         </motion.div>
 
@@ -149,15 +138,26 @@ export default function GoalsPage() {
           transition={{ duration: 0.4, delay: 0.2 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-3"
         >
-          {GOALS.map((goal, i) => {
-            const isSelected = selected.has(goal.id)
+          {goals.map((goal, i) => {
+            // Suporton si shkronjat e mëdha ashtu edhe të vogla nga backend-i (id / Id dhe name / Name)
+            const currentId = goal.id ?? goal.Id;
+            const currentName = goal.name ?? goal.Name;
+            
+            const isSelected = selected.has(currentId)
+
+            // Gjen konfigurimin e dizajnit sipas emrit të qëllimit nga DB
+            const uiConfig = ICON_MAP[currentName] || {
+              Icon: ShieldCheck, bg: 'bg-gray-50', selBg: 'bg-gray-100', color: 'text-gray-500', desc: 'Fitness Goal'
+            }
+            const { Icon, bg, selBg, color, desc } = uiConfig
+
             return (
               <motion.button
-                key={goal.id}
+                key={currentId}
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.18, delay: i * 0.04 }}
-                onClick={() => toggle(goal.id)}
+                onClick={() => toggle(currentId)}
                 className={`
                   relative flex flex-col items-center gap-2.5 py-5 px-3 rounded-2xl
                   border-2 bg-white transition-all duration-200 cursor-pointer text-center
@@ -187,18 +187,18 @@ export default function GoalsPage() {
                   className={`
                     w-[58px] h-[58px] rounded-[14px] flex items-center justify-center
                     transition-colors duration-200
-                    ${isSelected ? goal.selectedIconBg : goal.iconBg}
+                    ${isSelected ? selBg : bg}
                   `}
                 >
-                  <goal.Icon size={26} strokeWidth={1.5} className={goal.iconColor} />
+                  <Icon size={26} strokeWidth={1.5} className={color} />
                 </div>
 
                 <div>
                   <p className={`text-[13px] font-semibold font-sans ${isSelected ? 'text-dark' : 'text-dark/70'}`}>
-                    {goal.name}
+                    {currentName}
                   </p>
                   <p className="text-[11px] text-dark/35 font-sans mt-0.5 leading-tight">
-                    {goal.description}
+                    {desc}
                   </p>
                 </div>
               </motion.button>
@@ -212,25 +212,30 @@ export default function GoalsPage() {
         <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate('/onboarding')}
-            className="text-sm font-medium text-dark/40 hover:text-dark/70 font-sans transition-colors px-2 py-1.5"
+            disabled={submitting}
+            className="text-sm font-medium text-dark/40 hover:text-dark/70 font-sans transition-colors px-2 py-1.5 disabled:opacity-50"
           >
             Back
           </button>
           <motion.button
             whileTap={{ scale: 0.96 }}
             onClick={handleContinue}
+            disabled={selected.size === 0 || submitting}
             className={`
               inline-flex items-center gap-2 px-7 py-3 rounded-full font-sans font-bold text-sm
               transition-all duration-200
               ${
-                selected.size > 0
+                selected.size > 0 && !submitting
                   ? 'bg-brand-dark text-white shadow-lg shadow-black/15 hover:bg-brand-dark/90'
                   : 'bg-brand-dark/70 text-white/80 cursor-not-allowed'
               }
             `}
           >
-            Continue
-            <ArrowRight size={15} strokeWidth={2.5} />
+            {submitting ? (
+              <> Ruajtja... <Loader2 className="animate-spin" size={14} /> </>
+            ) : (
+              <> Continue <ArrowRight size={15} strokeWidth={2.5} /> </>
+            )}
           </motion.button>
         </div>
       </div>
