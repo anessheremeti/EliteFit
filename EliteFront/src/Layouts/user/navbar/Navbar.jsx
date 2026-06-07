@@ -24,7 +24,6 @@ const links = [
   { href: '/users/goals',         label: 'Goals',         icon: Trophy          },
   { href: '/users/notifications', label: 'Notifications', icon: Bell            },
   { href: '/users/profile',       label: 'Profile',       icon: User            },
-  { href: '/users/settings',      label: 'Settings',      icon: Settings        },
 ];
 
 function NavLinks({ location, onLinkClick }) {
