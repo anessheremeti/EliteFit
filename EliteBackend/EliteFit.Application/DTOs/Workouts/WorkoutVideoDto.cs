@@ -16,5 +16,8 @@ namespace EliteFit.Application.DTOs.Workouts
         public string DifficultyLevel { get; set; }
         public string MuscleGroup { get; set; }
         public int? EstimatedCaloriesBurned { get; set; }
+
+        // SHTO KËTË RRESHT:
+        public string VideoUrl { get; set; }
     }
 }

@@ -24,25 +24,30 @@ namespace EliteFit.Persistence.Repositories.Recipes.Command
         }
         public async Task<List<Recipe>> GetAllForAdminAsync(string? searchTerm, int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
-            var query = _context.Recipes.Include(r => r.Allergens).AsQueryable();
+            // 1. Fillojmë me IQueryable
+            var query = _context.Recipes
+                .Include(r => r.ImageFile)    // SHTO KËTË: Ngarkon foton
+                .Include(r => r.Allergens)    // SHTO KËTË: Ngarkon listën e alergjenëve
+                .AsQueryable();
 
-            // 1. Kërkimi (Nëse ka vlerë SearchTerm)
+            // 2. Aplikojmë filtrin (Search) nëse ekziston
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 query = query.Where(r => r.Title.Contains(searchTerm));
             }
 
-            // 2. Paginimi dhe Kthimi i Listës
+            // 3. Aplikojmë Paginimin
             return await query
-                .OrderByDescending(r => r.Id)
-                .Skip((pageNumber - 1) * pageSize) // Kapërcen recetat e faqeve të kaluara
-                .Take(pageSize)                    // Merr vetëm sasinë e caktuar për faqe
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .OrderByDescending(r => r.Id) // Zakonisht duam recetat e fundit të para
                 .ToListAsync(cancellationToken);
         }
         public async Task<List<Recipe>> GetAllForAdminAsync(CancellationToken cancellationToken)
         {
             return await _context.Recipes
                 .Include(r => r.Allergens)
+                .Include(r => r.ImageFile)
                 .OrderByDescending(r => r.Id)
                 .ToListAsync(cancellationToken);
         }

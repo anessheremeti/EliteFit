@@ -9,9 +9,14 @@ namespace EliteFit.Application.DTOs.Recipes.command
     public class AdminRecipeDto
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; }
+        public string Instructions { get; set; }
         public int? Calories { get; set; }
         public decimal? ProteinG { get; set; }
-        public List<int> AllergenIds { get; set; } = new();
+        public decimal? CarbsG { get; set; }
+        public decimal? FatG { get; set; }
+        public int? ImageFileId { get; set; }
+        public string ImagePath { get; set; } // <--- Kjo duhet për të shfaqur foton në React
+        public List<int> AllergenIds { get; set; }
     }
 }

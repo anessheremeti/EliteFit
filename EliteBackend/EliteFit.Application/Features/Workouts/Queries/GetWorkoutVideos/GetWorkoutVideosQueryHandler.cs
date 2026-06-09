@@ -19,10 +19,8 @@ namespace EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideos
 
         public async Task<List<WorkoutVideoDto>> Handle(GetWorkoutVideosQuery request, CancellationToken cancellationToken)
         {
-            // Logjika e filtrimit bartet në Repository, Application vetëm pranon entitetet
             var videos = await _workoutVideoRepository.GetFilteredVideosAsync(request.CategoryId, request.DifficultyLevel, cancellationToken);
 
-            // Mapimi i pastër i entiteteve në DTOs
             return videos.Select(v => new WorkoutVideoDto
             {
                 Id = v.Id,
@@ -32,7 +30,10 @@ namespace EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideos
                 DurationSeconds = v.DurationSeconds,
                 DifficultyLevel = v.DifficultyLevel,
                 MuscleGroup = v.MuscleGroup,
-                EstimatedCaloriesBurned = v.EstimatedCaloriesBurned
+                EstimatedCaloriesBurned = v.EstimatedCaloriesBurned,
+
+                // RREGULLIMI: Marrim linkun e YouTube nga FileEntity dhe e kalojmë në DTO
+                VideoUrl = v.VideoFile != null ? v.VideoFile.FilePath : null
             }).ToList();
         }
     }

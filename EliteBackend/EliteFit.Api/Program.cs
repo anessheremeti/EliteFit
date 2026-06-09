@@ -22,10 +22,30 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MongoDB.Driver; // Siguron që IMongoClient të jetë i disponueshëm
+using MongoDB.Driver;
 using System.Text;
+using tusdotnet;
+using tusdotnet.Models;
+using tusdotnet.Models.Configuration;
+using tusdotnet.Stores;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ===================================================================
+// KONFIGURIMI I LIMITIT TË MADHËSISË SË SKEDARËVE
+// ===================================================================
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 524288000; // 500 * 1024 * 1024 bytes
+});
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = 524288000; // 500 MB
+    options.MultipartHeadersLengthLimit = int.MaxValue;
+});
+// ===================================================================
 
 // Shërbime bazë
 builder.Services.AddControllers();
@@ -36,6 +56,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "EliteFit API", Version = "v1" });
+    c.MapType<System.IO.Stream>(() => new OpenApiSchema { Type = "string", Format = "binary" });
+    c.MapType<Microsoft.AspNetCore.Http.IFormFile>(() => new OpenApiSchema { Type = "string", Format = "binary" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -59,8 +81,6 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceServices();
 
 // Permission-based authorization policies
-// Registered here (not in Infrastructure) to use the framework-provided
-// AddAuthorization and avoid NuGet package version conflicts.
 builder.Services.AddAuthorization(options =>
 {
     foreach (var permission in Permissions.All())
@@ -72,7 +92,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IRecipesQueryRepositories, RecipesQueryRepositories>();
-builder.Services.AddScoped<IRecipeAdminRepository, RecipeAdminRepository>(); // Regjistruar për komandat e recetave
+builder.Services.AddScoped<IRecipeAdminRepository, RecipeAdminRepository>();
 builder.Services.AddScoped<IAllergyAdminRepository, AllergyAdminRepository>();
 builder.Services.AddScoped<IUserProfileQueryRepository, UserProfileQueryRepository>();
 builder.Services.AddScoped<IMealLogQueryRepository, MealLogQueryRepository>();
@@ -81,53 +101,30 @@ builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 builder.Services.AddScoped<IUserBadgeRepository, UserBadgeRepository>();
 builder.Services.AddScoped<IUserStreakRepository, UserStreakRepository>();
 builder.Services.AddScoped<EliteFit.Domain.Interfaces.Repositories.Gamification.IGoalRepository, EliteFit.Persistence.Repositories.Gamification.Command.GoalRepository>();
-
 builder.Services.AddScoped<EliteFit.Domain.Interfaces.Repositories.IGoalRepository, EliteFit.Persistence.Repositories.GoalRepository>();
-// 1. Shto Shërbimet e SignalR dhe regjistro ndërfaqen tënde
+
+// SignalR
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService>();
 
-// (Më poshtë, pas app.UseRouting() dhe app.UseAuthorization())
-
 // Regjistrimi i shërbimit në prapavijë për Streak
 builder.Services.AddHostedService<StreakBackgroundWorker>();
-// MySQL
-/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 0))
-    )
-);*/
 
-// -------------------------------------------------------------------
-// ZONA E KOLEGËVE - SQL Server (Entity Framework Core)
-// -------------------------------------------------------------------
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
- builder.Services.AddDbContext<ApplicationDbContext>(options =>
+// SQL Server (Entity Framework Core)
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// -------------------------------------------------------------------
 
-// ==========================================
-// RREGULLIMI PËR MONGODB (Duke u bazuar në appsettings tuaj)
-// ==========================================
-
-// 1. Regjistrojmë IMongoClient si Singleton
+// MONGODB
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
-    // Lexon "mongodb://localhost:27017" direkt nga objekti "MongoDbSettings"
-    var connectionString = builder.Configuration["MongoDbSettings:ConnectionString"]
-        ?? "mongodb://localhost:27017";
+    var connectionString = builder.Configuration["MongoDbSettings:ConnectionString"] ?? "mongodb://localhost:27017";
     return new MongoClient(connectionString);
 });
 
-// 2. Regjistrojmë MongoDbContext duke kaluar parametrat që pret konstruktori (client, string)
 builder.Services.AddSingleton<MongoDbContext>(sp =>
 {
     var mongoClient = sp.GetRequiredService<IMongoClient>();
-
-    // Lexon "EliteFitLogDb" direkt nga objekti "MongoDbSettings"
     var databaseName = builder.Configuration["MongoDbSettings:DatabaseName"] ?? "EliteFitLogDb";
-
     return new MongoDbContext(mongoClient, databaseName);
 });
 
@@ -135,8 +132,7 @@ builder.Services.AddSingleton<MongoDbContext>(sp =>
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtSecret = jwtSection["Secret"];
 if (string.IsNullOrWhiteSpace(jwtSecret))
-    throw new InvalidOperationException(
-        "Jwt:Secret is not configured. Add it to appsettings.Development.json.");
+    throw new InvalidOperationException("Jwt:Secret is not configured. Add it to appsettings.Development.json.");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -152,8 +148,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
         };
 
-        // SignalR WebSocket connections cannot send Authorization headers;
-        // the client passes the token via ?access_token= query string instead.
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -167,23 +161,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// CORS
+// CORS i përditësuar për të mbështetur saktë React dhe Tus Headers
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.AddPolicy("AllowReactApp", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials()
+              .WithExposedHeaders("Upload-Key", "X-Context-Id", "Location", "Upload-Offset", "Upload-Length", "Tus-Version", "Tus-Resumable", "Tus-Extension", "Tus-Max-Size"));
 });
 
 var app = builder.Build();
 
-// Seed default roles, permissions and role-permission mappings on startup
+// Seed default data
 using (var seedScope = app.Services.CreateScope())
 {
-    var db = seedScope.ServiceProvider.GetRequiredService<EliteFit.Persistence.Persistence.Context.ApplicationDbContext>();
+    var db = seedScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await EliteFit.Persistence.DataSeeder.SeedAsync(db);
 }
 
-// Global exception handler — kthen mesazhe të qarta për frontend
+// Global exception handler
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -201,11 +199,59 @@ app.UseExceptionHandler(errorApp =>
 
         var message = exception is ValidationException ve
             ? string.Join("; ", ve.Errors.Select(e => e.ErrorMessage))
-            : exception?.Message ?? "An unexpected error occurred.";
+            : exception?.InnerException != null
+                ? $"{exception.Message} -> DETALET E DB: {exception.InnerException.Message}"
+                : exception?.Message ?? "An unexpected error occurred.";
 
         await context.Response.WriteAsJsonAsync(new { message });
     });
 });
+
+// ===================================================================
+// RENDITJA JODIKE: CORS duhet të thirret para Tus Middleware që të kapë Preflight Requests
+// ===================================================================
+app.UseCors("AllowReactApp");
+
+
+// Kjo i thotë .NET-it: Kur dikush kërkon /uploads/..., shko kërkoje në disk tek ky folder
+
+
+app.UseStaticFiles(); // Kjo shërben gjithçka në wwwroot
+var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "uploads");
+if (!Directory.Exists(uploadsPath)) Directory.CreateDirectory(uploadsPath);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
+// --- KRIJIMI AUTOMATIK I FOLDERIT NËSE MUNGON NË DISK ---
+var tusTempPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "uploads", "tus_temp");
+if (!Directory.Exists(tusTempPath))
+{
+    Directory.CreateDirectory(tusTempPath);
+}
+// --------------------------------------------------------
+
+// ===================================================================
+// KONFIGURIMI I TUS MIDDLEWARE 
+// ===================================================================
+app.UseTus(httpContext => new DefaultTusConfiguration
+{
+    Store = new TusDiskStore(tusTempPath),
+    UrlPath = "/api/upload-chunks",
+    Events = new Events
+    {
+        OnFileCompleteAsync = async ctx =>
+        {
+            var file = await ctx.GetFileAsync();
+            var fileContent = await file.GetContentAsync(ctx.CancellationToken);
+            Console.WriteLine($"Video {file.Id} u ngarkua e plotë dhe pa bllokuar rrjetin.");
+        }
+    }
+});
+// ===================================================================
+
 app.MapHub<EliteFit.Infrastructure.SignalR.NotificationHub>("/hubs/notifications");
 
 // Test endpoints
@@ -225,7 +271,7 @@ if (app.Environment.IsDevelopment())
     app.MapGet("/", () => Results.Redirect("/swagger"));
 }
 
-app.UseCors("AllowAll");
+// Renditja e mbetur e Middleware-ve
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

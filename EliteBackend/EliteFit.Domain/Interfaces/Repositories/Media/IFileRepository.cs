@@ -11,6 +11,7 @@ namespace EliteFit.Domain.Interfaces.Repositories.Media
     {
         Task<FileEntity?> GetByIdAsync(int id);
         Task<IEnumerable<FileEntity>> GetByEntityAsync(string entity, int entityId);
+        Task UpdateAsync(FileEntity file);
         Task AddAsync(FileEntity file);
         void Delete(FileEntity file);
         Task<bool> SaveChangesAsync();

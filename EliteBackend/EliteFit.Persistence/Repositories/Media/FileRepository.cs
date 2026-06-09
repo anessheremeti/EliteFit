@@ -22,6 +22,11 @@ namespace EliteFit.Persistence.Repositories.Media
         {
             return await _context.Set<FileEntity>().FindAsync(id);
         }
+        public async Task UpdateAsync(FileEntity file)
+        {
+            _context.Files.Update(file); // apo si e ke emrin e DbSet të Entity Framework
+            await _context.SaveChangesAsync();
+        }
         public async Task<IEnumerable<FileEntity>> GetByEntityAsync(string entity, int entityId)
         {
             return await _context.Set<FileEntity>()

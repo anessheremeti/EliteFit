@@ -1,6 +1,7 @@
 using EliteFit.Api.Authorization;
 using EliteFit.Application.Features.Gamification.Command.Badge;
 using EliteFit.Application.Features.Gamification.Queries.Badge;
+using EliteFit.Application.Features.Media.Commands.UploadFile;
 using EliteFit.Domain.Authorization;
 using EliteFit.Domain.Interfaces.Services;
 using MediatR;
@@ -16,6 +17,30 @@ namespace EliteFit.Api.Controllers.Gamification
     [Authorize(Roles = "Admin")]
     public class AdminBadgesController(IMediator mediator, IAuditLogService auditLog) : ControllerBase
     {
+        // RREGULLIMI KRYESOR: Përdorim DTO në vend të parametrave të ndarë që Swagger të mos bëjë error
+        [HttpPost("upload-icon")]
+        public async Task<IActionResult> UploadIcon([FromForm] UploadIconRequest dto)
+        {
+            if (dto.File == null || dto.File.Length == 0)
+                return BadRequest("Skedari është i zbrazët.");
+
+            if (CallerId == null)
+                return Unauthorized("Përdoruesi nuk është i autentikuar.");
+
+            using var stream = dto.File.OpenReadStream();
+
+            var command = new UploadFileCommand(
+                stream,               // 1. FileStream
+                dto.File.FileName,    // 2. Filename
+                dto.Entity,           // 3. Entity
+                dto.EntityId,         // 4. EntityId
+                CallerId.Value        // 5. UploaderId
+            );
+
+            var fileId = await mediator.Send(command);
+            return Ok(fileId);
+        }
+
         [HttpGet]
         [HasPermission(Permissions.Badges.View)]
         public async Task<IActionResult> GetAll()
@@ -39,13 +64,13 @@ namespace EliteFit.Api.Controllers.Gamification
                 var badgeId = await mediator.Send(command);
 
                 await auditLog.LogAsync(
-                    action:    "Created",
-                    entity:    "Badge",
-                    entityId:  badgeId,
-                    oldValue:  null,
-                    newValue:  JsonSerializer.Serialize(new { command.Name, command.Description, command.BadgeIconId }),
-                    userId:    CallerId,
-                    userName:  CallerName,
+                    action: "Created",
+                    entity: "Badge",
+                    entityId: badgeId,
+                    oldValue: null,
+                    newValue: JsonSerializer.Serialize(new { command.Name, command.Description, command.BadgeIconId }),
+                    userId: CallerId,
+                    userName: CallerName,
                     ipAddress: CallerIp);
 
                 return CreatedAtAction(nameof(GetById), new { id = badgeId }, command);
@@ -68,13 +93,13 @@ namespace EliteFit.Api.Controllers.Gamification
                 if (!updated) return NotFound($"Medalja me ID {id} nuk ekziston.");
 
                 await auditLog.LogAsync(
-                    action:    "Updated",
-                    entity:    "Badge",
-                    entityId:  id,
-                    oldValue:  null,
-                    newValue:  JsonSerializer.Serialize(new { command.Name, command.Description, command.BadgeIconId }),
-                    userId:    CallerId,
-                    userName:  CallerName,
+                    action: "Updated",
+                    entity: "Badge",
+                    entityId: id,
+                    oldValue: null,
+                    newValue: JsonSerializer.Serialize(new { command.Name, command.Description, command.BadgeIconId }),
+                    userId: CallerId,
+                    userName: CallerName,
                     ipAddress: CallerIp);
 
                 return Ok(new { Message = "Medalja u përditësua me sukses." });
@@ -93,13 +118,13 @@ namespace EliteFit.Api.Controllers.Gamification
             if (!deleted) return NotFound($"Medalja me ID {id} nuk ekziston ose nuk mund të fshihet.");
 
             await auditLog.LogAsync(
-                action:    "Deleted",
-                entity:    "Badge",
-                entityId:  id,
-                oldValue:  JsonSerializer.Serialize(new { Id = id }),
-                newValue:  null,
-                userId:    CallerId,
-                userName:  CallerName,
+                action: "Deleted",
+                entity: "Badge",
+                entityId: id,
+                oldValue: JsonSerializer.Serialize(new { Id = id }),
+                newValue: null,
+                userId: CallerId,
+                userName: CallerName,
                 ipAddress: CallerIp);
 
             return Ok(new { Message = "Medalja u fshi me sukses." });
@@ -109,6 +134,16 @@ namespace EliteFit.Api.Controllers.Gamification
         private int? CallerId =>
             int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
         private string? CallerName => User.FindFirstValue(ClaimTypes.Name);
-        private string? CallerIp   => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string? CallerIp => HttpContext.Connection.RemoteIpAddress?.ToString();
+    }
+
+    // SHTO KËTË DTO KËTU (Ose ku ke dosjen e DTO-ve)
+    // Pasi vetitë e kësaj klase përputhen me fjalët e dërguara nga React, 
+    // model-binding do të funksionojë në mënyrë perfekte dhe pa errors në Swagger.
+    public class UploadIconRequest
+    {
+        public IFormFile File { get; set; }
+        public string Entity { get; set; }
+        public int EntityId { get; set; }
     }
 }

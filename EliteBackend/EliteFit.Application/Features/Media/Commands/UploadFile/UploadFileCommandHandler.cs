@@ -26,7 +26,15 @@ namespace EliteFit.Application.Features.Media.Commands.UploadFile
             if (request.FileStream == null || request.FileStream.Length == 0)
                 throw new ArgumentException("Fajlli është i zbrazët ose invalid.");
 
-            string baseDir = AppContext.BaseDirectory;
+            // Sigurohemi që stream-i të lexohet nga fillimi
+            if (request.FileStream.CanSeek)
+            {
+                request.FileStream.Position = 0;
+            }
+
+            // RREGULLIMI KRYESOR: Përdorim Directory.GetCurrentDirectory() në vend të AppContext.BaseDirectory
+            // për të kapur dosjen e saktë të projektit ku ndodhet 'wwwroot'
+            string baseDir = Directory.GetCurrentDirectory();
             string tempFolder = Path.Combine(baseDir, "wwwroot", "uploads", "temp");
 
             if (!Directory.Exists(tempFolder))
@@ -34,43 +42,72 @@ namespace EliteFit.Application.Features.Media.Commands.UploadFile
                 Directory.CreateDirectory(tempFolder);
             }
 
-            string tempFileName = $"{Guid.NewGuid()}_{Path.GetFileName(request.Filename)}";
+            // Sigurohemi që emri i fajllit nuk ka karaktere të rrezikshme (path injection)
+            string safeFileName = Path.GetFileName(request.Filename);
+            string ext = Path.GetExtension(safeFileName).ToLower();
+            string tempFileName = $"{Guid.NewGuid()}_{safeFileName}";
             string tempFilePath = Path.Combine(tempFolder, tempFileName);
 
-            using (var fileStream = new FileStream(tempFilePath, FileMode.Create))
+            // 1. Ruajmë skedarin e përkohshëm në disk
+            using (var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
             {
                 await request.FileStream.CopyToAsync(fileStream, cancellationToken);
             }
 
-            string finalDbPath = string.Empty;
-            long finalSize = request.FileStream.Length;
-            string ext = Path.GetExtension(request.Filename).ToLower();
+            // Përcaktojmë llojet e skedarëve
             string[] videoExtensions = { ".mp4", ".mov", ".avi", ".mkv", ".wmv", ".flv" };
+            string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp" };
 
-            if (videoExtensions.Contains(ext))
+            bool isVideo = videoExtensions.Contains(ext);
+            bool isImage = imageExtensions.Contains(ext);
+
+            string uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileNameWithoutExtension(safeFileName)}";
+            string finalDbPath;
+            string finalDiskPath = null;
+
+            // 2. Gjenerojmë rrugën përfundimtare varësisht nga lloji i fajllit
+            if (isVideo)
             {
-                // Thirrja e procesimit të videos
-                var processVideoCommand = new ProcessVideoCommand(tempFilePath, request.Filename);
-                var metadata = await _mediator.Send(processVideoCommand, cancellationToken);
-
-                finalDbPath = metadata.FilePath;
-                finalSize = metadata.FileSize;
+                finalDbPath = $"/uploads/videos/{uniqueFileName}.mp4";
+            }
+            else if (isImage)
+            {
+                finalDbPath = $"/uploads/images/{uniqueFileName}{ext}";
+                string imagesFolder = Path.Combine(baseDir, "wwwroot", "uploads", "images");
+                if (!Directory.Exists(imagesFolder)) Directory.CreateDirectory(imagesFolder);
+                finalDiskPath = Path.Combine(imagesFolder, $"{uniqueFileName}{ext}");
             }
             else
             {
-                string regularUploadsFolder = Path.Combine(baseDir, "wwwroot", "uploads");
-                if (!Directory.Exists(regularUploadsFolder)) Directory.CreateDirectory(regularUploadsFolder);
-
-                string finalRegularPath = Path.Combine(regularUploadsFolder, tempFileName);
-                File.Move(tempFilePath, finalRegularPath);
-                finalDbPath = $"/uploads/{tempFileName}";
+                // Për dokumente ose skedarë të tjerë
+                finalDbPath = $"/uploads/others/{uniqueFileName}{ext}";
+                string othersFolder = Path.Combine(baseDir, "wwwroot", "uploads", "others");
+                if (!Directory.Exists(othersFolder)) Directory.CreateDirectory(othersFolder);
+                finalDiskPath = Path.Combine(othersFolder, $"{uniqueFileName}{ext}");
             }
 
+            long finalSize = request.FileStream.Length;
+
+            // 3. Menaxhimi i skedarit fizik sipas llojit (E bëjmë PARA se ta ruajmë në DB)
+            if (!isVideo && finalDiskPath != null)
+            {
+                if (File.Exists(tempFilePath))
+                {
+                    // Lëvizim fajllin nga temp në lokacionin përfundimtar (overwrite: true për siguri)
+                    File.Move(tempFilePath, finalDiskPath, true);
+                }
+                else
+                {
+                    throw new FileNotFoundException("Skedari i përkohshëm nuk u gjet pas ngarkimit.");
+                }
+            }
+
+            // 4. Krijojmë rekordet në Databazë TANI që jemi të sigurt që fajlli u ruajt
             var fileEntity = new FileEntity
             {
                 Entity = request.Entity,
                 EntityId = request.EntityId,
-                Filename = videoExtensions.Contains(ext) ? Path.ChangeExtension(request.Filename, ".mp4") : request.Filename,
+                Filename = isVideo ? Path.ChangeExtension(safeFileName, ".mp4") : safeFileName,
                 FilePath = finalDbPath,
                 FileSize = finalSize,
                 UploadedBy = request.UploaderId
@@ -79,6 +116,24 @@ namespace EliteFit.Application.Features.Media.Commands.UploadFile
             await _fileRepository.AddAsync(fileEntity);
             await _fileRepository.SaveChangesAsync();
 
+            // 5. Nisim procesimin e videos në prapavijë pa penguar response-in
+            if (isVideo)
+            {
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        var processVideoCommand = new ProcessVideoCommand(tempFilePath, safeFileName);
+                        await _mediator.Send(processVideoCommand);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[FFmpeg Background Error]: {ex.Message}");
+                    }
+                });
+            }
+
+            // Kthejmë ID-në e skedarit te front-end-i menjëherë
             return fileEntity.Id;
         }
     }

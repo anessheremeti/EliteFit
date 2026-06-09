@@ -13,5 +13,8 @@ namespace EliteFit.Domain.Interfaces.Repositories.Gamification
         Task<List<UserGoal>> GetUserGoalsAsync(int userId, CancellationToken cancellationToken);
         Task ClearUserGoalsAsync(int userId, CancellationToken cancellationToken);
         Task AddUserGoalsAsync(List<UserGoal> userGoals, CancellationToken cancellationToken);
+         Task<Goal> AddGoalAsync(Goal goal, CancellationToken cancellationToken);
+         Task UpdateGoalAsync(Goal goal, CancellationToken cancellationToken);
+         Task DeleteGoalAsync(int id, CancellationToken cancellationToken);
     }
 }

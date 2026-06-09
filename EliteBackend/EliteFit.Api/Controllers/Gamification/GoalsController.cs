@@ -29,6 +29,28 @@ namespace EliteFit.Api.Controllers.Gamification
             return Ok(result);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateGoal([FromBody] CreateGoalCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateGoal(int id, [FromBody] UpdateGoalCommand command)
+        {
+            if (id != command.Id) return BadRequest();
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGoal(int id)
+        {
+            var result = await _mediator.Send(new DeleteGoalCommand(id));
+            return Ok(result);
+        }
+
         [HttpPost("user/assign")]
         public async Task<IActionResult> AssignGoals([FromBody] AssignGoalsToUserCommand command)
         {

@@ -1,75 +1,115 @@
-const BASE = 'http://localhost:5193/api'
+import axios from 'axios';
 
-function authHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
+const BASE_URL = 'https://localhost:7049/api';
+
+// 1. Krijimi i një instance të Axios
+const apiClient = axios.create({
+  baseURL: BASE_URL,
+});
+
+// 2. Interceptor për të shtuar Token-in automatikisht në çdo kërkesë
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    // RËNDËSISHME: Nëse dërgojmë FormData (p.sh. video ose foto), Axios e vendos vetë 
+    // 'multipart/form-data' dhe boundary-n e saktë. Nuk duhet ta detyrojmë 'application/json' nëse është FormData.
+    if (!(config.data instanceof FormData)) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+    
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-}
+);
 
-async function request(method, path, body) {
-  const res = await fetch(`${BASE}${path}`, {
-    method,
-    headers: authHeaders(),
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.message || `Request failed (${res.status})`)
+// 3. Interceptor për menaxhimin e gabimeve (Error Handling)
+apiClient.interceptors.response.use(
+  (response) => response.data, // Kthen direkt të dhënat (nuk ka nevojë për .json() ose .text())
+  (error) => {
+    const serverMessage = error.response?.data?.message || error.response?.data;
+    const errorMessage = serverMessage || `Request failed (${error.response?.status || 'Network Error'})`;
+    return Promise.reject(new Error(errorMessage));
   }
-  const text = await res.text()
-  return text ? JSON.parse(text) : null
-}
+);
 
+// 4. Objektet e API-ve të konvertuara
 export const adminApi = {
+  // ── Media / Uploads ────────────────────────────────────────────────────────
+  // RREGULLIMI: U ndryshua rruga në '/Files/upload' për t'u përputhur me FilesController tuaj
+  uploadFile: (formData) => apiClient.post('/Files/upload', formData), 
+
   // ── Audit Logs ─────────────────────────────────────────────────────────────
   getAuditLogs(params = {}) {
-    const clean = Object.fromEntries(
+    const cleanParams = Object.fromEntries(
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
-    )
-    const qs = new URLSearchParams(clean).toString()
-    return request('GET', `/admin/audit-logs${qs ? `?${qs}` : ''}`)
+    );
+    return apiClient.get('/admin/audit-logs', { params: cleanParams });
   },
 
-  // ── Recipes ────────────────────────────────────────────────────────────────
-  getRecipes:   ()       => request('GET',    '/admin/recipes'),
-  createRecipe: (data)   => request('POST',   '/admin/recipes', data),
-  updateRecipe: (id, d)  => request('PUT',    `/admin/recipes/${id}`, { id, ...d }),
-  deleteRecipe: (id)     => request('DELETE', `/admin/recipes/${id}`),
+  // ── Workouts ──────────────────────────────────────────────────────────────
+  getWorkouts:   () => apiClient.get('/workouts/videos'),
+  createWorkout: (data) => apiClient.post('/workouts/create-video', data), 
+  updateWorkout: (id, data) => apiClient.put('/workouts/update-video', data),
+  deleteWorkout: (id) => apiClient.delete(`/workouts/videos/${id}`),
 
-  // ── Badges ─────────────────────────────────────────────────────────────────
-  getBadges:   ()       => request('GET',    '/admin/badges'),
-  createBadge: (data)   => request('POST',   '/admin/badges', data),
-  deleteBadge: (id)     => request('DELETE', `/admin/badges/${id}`),
+  // ── Recipes ────────────────────────────────────────────────────────────────
+  getRecipes:   () => apiClient.get('/admin/recipes'),
+  createRecipe: (data) => apiClient.post('/admin/recipes', data),
+  updateRecipe: (id, d) => apiClient.put(`/admin/recipes/${id}`, { id, ...d }),
+  deleteRecipe: (id) => apiClient.delete(`/admin/recipes/${id}`),
+
+ // ── Badges ─────────────────────────────────────────────────────────────────
+  getBadges:   () => apiClient.get('/admin/badges'),
+  createBadge: (data) => apiClient.post('/admin/badges', data),
+  updateBadge: (id, d) => apiClient.put(`/admin/badges/${id}`, { id, ...d }), // <--- SHTO KËTË
+  deleteBadge: (id) => apiClient.delete(`/admin/badges/${id}`),
+  uploadFile: (formData) => apiClient.post('/admin/badges/upload-icon', formData),
 
   // ── QuickFix Tips ──────────────────────────────────────────────────────────
-  getTips:    ()        => request('GET',    '/admin/quickfix-tips'),
-  createTip:  (data)    => request('POST',   '/admin/quickfix-tips', data),
-  updateTip:  (id, d)   => request('PUT',    `/admin/quickfix-tips/${id}`, { id, ...d }),
-  deleteTip:  (id)      => request('DELETE', `/admin/quickfix-tips/${id}`),
+  getTips:   () => apiClient.get('/admin/quickfix-tips'),
+  createTip: (data) => apiClient.post('/admin/quickfix-tips', data),
+  updateTip: (id, d) => apiClient.put(`/admin/quickfix-tips/${id}`, { id, ...d }),
+  deleteTip: (id) => apiClient.delete(`/admin/quickfix-tips/${id}`),
 
   // ── Users ──────────────────────────────────────────────────────────────────
-  getUsers:         ()           => request('GET',    '/admin/users'),
-  activateUser:     (id)         => request('PATCH',  `/admin/users/${id}/activate`),
-  deactivateUser:   (id)         => request('PATCH',  `/admin/users/${id}/deactivate`),
-  assignRoleToUser: (userId, roleId) => request('POST',   `/admin/users/${userId}/roles/${roleId}`),
-  removeRoleFromUser: (userId, roleId) => request('DELETE', `/admin/users/${userId}/roles/${roleId}`),
+  getUsers:           () => apiClient.get('/admin/users'),
+  activateUser:     (id) => apiClient.patch(`/admin/users/${id}/activate`),
+  deactivateUser:   (id) => apiClient.patch(`/admin/users/${id}/deactivate`),
+  assignRoleToUser: (userId, roleId) => apiClient.post(`/admin/users/${userId}/roles/${roleId}`),
+  removeRoleFromUser: (userId, roleId) => apiClient.delete(`/admin/users/${userId}/roles/${roleId}`),
 
   // ── Roles ──────────────────────────────────────────────────────────────────
-  getRoles:          ()           => request('GET',    '/admin/roles'),
-  getRoleDetails:    (id)         => request('GET',    `/admin/roles/${id}`),
-  createRole:        (data)       => request('POST',   '/admin/roles', data),
-  updateRole:        (id, data)   => request('PUT',    `/admin/roles/${id}`, data),
-  deleteRole:        (id)         => request('DELETE', `/admin/roles/${id}`),
-  assignPermission:  (roleId, permId) => request('POST',   `/admin/roles/${roleId}/permissions/${permId}`),
-  removePermission:  (roleId, permId) => request('DELETE', `/admin/roles/${roleId}/permissions/${permId}`),
-
+  getRoles:          () => apiClient.get('/admin/roles'),
+  getRoleDetails:    (id) => apiClient.get(`/admin/roles/${id}`),
+  createRole:        (data) => apiClient.post('/admin/roles', data),
+  updateRole:        (id, data) => apiClient.put(`/admin/roles/${id}`, data),
+  deleteRole:        (id) => apiClient.delete(`/admin/roles/${id}`),
+  assignPermission:  (roleId, permId) => apiClient.post(`/admin/roles/${roleId}/permissions/${permId}`),
+  removePermission:  (roleId, permId) => apiClient.delete(`/admin/roles/${roleId}/permissions/${permId}`),
+  // ── Exercise Categories ──────────────────────────────────────────────────
+  getExerciseCategories:   () => apiClient.get('/ExerciseCategories'),
+  getExerciseCategoryById: (id) => apiClient.get(`/ExerciseCategories/${id}`),
+  createExerciseCategory: (data) => apiClient.post('/ExerciseCategories', data),
+  updateExerciseCategory: (id, data) => apiClient.put(`/ExerciseCategories/${id}`, data),
+  deleteExerciseCategory: (id) => apiClient.delete(`/ExerciseCategories/${id}`),
+  getExerciseConfigurations: () => apiClient.get('/ExerciseCategories/configurations'),
+  // ── Goals ──────────────────────────────────────────────────────────────────
+getGoals:   () => apiClient.get('/Goals'),
+  createGoal: (data) => apiClient.post('/Goals', data),
+  updateGoal: (id, data) => apiClient.put(`/Goals/${id}`, data),
+  deleteGoal: (id) => apiClient.delete(`/Goals/${id}`),
   // ── Permissions ────────────────────────────────────────────────────────────
-  getPermissions: () => request('GET', '/admin/permissions'),
+  getPermissions: () => apiClient.get('/admin/permissions'),
 
   // ── Settings ───────────────────────────────────────────────────────────────
-  getSettings:   ()       => request('GET',    '/admin/settings'),
-  createSetting: (data)   => request('POST',   '/admin/settings', data),
-  updateSetting: (id, d)  => request('PUT',    `/admin/settings/${id}`, { id, ...d }),
-  deleteSetting: (id)     => request('DELETE', `/admin/settings/${id}`),
-}
+  getSettings:   () => apiClient.get('/admin/settings'),
+  createSetting: (data) => apiClient.post('/admin/settings', data),
+  updateSetting: (id, d) => apiClient.put(`/admin/settings/${id}`, { id, ...d }),
+  deleteSetting: (id) => apiClient.delete(`/admin/settings/${id}`),
+};

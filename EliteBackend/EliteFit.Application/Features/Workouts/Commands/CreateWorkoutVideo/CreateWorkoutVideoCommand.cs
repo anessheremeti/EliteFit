@@ -12,10 +12,9 @@ namespace EliteFit.Application.Features.Workouts.Commands.CreateWorkoutVideo
         public string DifficultyLevel { get; set; }
         public string MuscleGroup { get; set; }
         public int? EstimatedCaloriesBurned { get; set; }
-
-        // Përdorimi i Stream dhe emrit të fajllit për upload
-        public Stream FileStream { get; set; }
-        public string FileName { get; set; }
         public int? UploaderId { get; set; }
+
+        // Shtuar:
+        public string VideoUrl { get; set; }
     }
 }

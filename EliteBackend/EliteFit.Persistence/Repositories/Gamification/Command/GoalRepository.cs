@@ -32,7 +32,28 @@ namespace EliteFit.Persistence.Repositories.Gamification.Command
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
+        public async Task<Goal> AddGoalAsync(Goal goal, CancellationToken cancellationToken)
+        {
+            await _context.Goals.AddAsync(goal, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            return goal;
+        }
 
+        public async Task UpdateGoalAsync(Goal goal, CancellationToken cancellationToken)
+        {
+            _context.Goals.Update(goal);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteGoalAsync(int id, CancellationToken cancellationToken)
+        {
+            var goal = await _context.Goals.FindAsync(new object[] { id }, cancellationToken);
+            if (goal != null)
+            {
+                _context.Goals.Remove(goal);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+        }
         public async Task ClearUserGoalsAsync(int userId, CancellationToken cancellationToken)
         {
             var existing = await _context.UserGoals.Where(ug => ug.UserId == userId).ToListAsync(cancellationToken);

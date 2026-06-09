@@ -53,6 +53,19 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
         // Kthehet ID-ja që sapo u gjenerua nga databaza
         return workoutVideo.Id;
     }
+    // 3. Përditësimi i një videoje ekzistuese (Update)
+    public async Task UpdateAsync(WorkoutVideo workoutVideo, CancellationToken cancellationToken)
+    {
+        _context.WorkoutVideos.Update(workoutVideo);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    // 4. Fshirja e një videoje (Delete)
+    public async Task DeleteAsync(WorkoutVideo workoutVideo, CancellationToken cancellationToken)
+    {
+        _context.WorkoutVideos.Remove(workoutVideo);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 
     public async Task AddHistoryAsync(UserWorkoutHistory history,CancellationToken cancellationToken)
     {

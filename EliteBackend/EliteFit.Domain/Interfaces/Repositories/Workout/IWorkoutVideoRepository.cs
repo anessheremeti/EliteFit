@@ -15,6 +15,9 @@ namespace EliteFit.Domain.Interfaces.Repositories.Workout
 
         Task AddHistoryAsync(UserWorkoutHistory history, CancellationToken cancellationToken);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
-    
+        Task UpdateAsync(WorkoutVideo workoutVideo, CancellationToken cancellationToken);
+        Task DeleteAsync(WorkoutVideo workoutVideo, CancellationToken cancellationToken);
+
+
     }
 }
