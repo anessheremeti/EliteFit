@@ -16,13 +16,13 @@ const STATUS_HINT = {
 };
 
 /**
- * Controlled display component. All timer state lives in the parent.
+ * Controlled display component. Të gjitha gjendjet e timer-it menaxhohen nga prindi.
  * Props:
- *   elapsedSeconds  – current session time in seconds
- *   status          – 'idle' | 'running' | 'paused'
- *   liveCalories    – estimated kcal for the current session
- *   onStart/onPause/onResume/onFinish/onReset – action callbacks
- *   disabled        – disables destructive actions while logging
+ * elapsedSeconds – koha aktuale e seancës në sekonda
+ * status          – 'idle' | 'running' | 'paused'
+ * liveCalories    – kalorive e llogaritura live për këtë seancë
+ * onStart/onPause/onResume/onFinish/onReset – funksionet callback për veprime
+ * disabled        – bllokon butonat destruktivë gjatë ruajtjes në databazë
  */
 export function WorkoutTimer({
   elapsedSeconds = 0,
@@ -35,6 +35,9 @@ export function WorkoutTimer({
   onReset,
   disabled = false,
 }) {
+  // Sigurohemi që kaloritë shfaqen si numër i plotë (p.sh. 42 kcal në vend të 42.15)
+  const displayCalories = Math.round(liveCalories);
+
   return (
     <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5">
 
@@ -45,18 +48,18 @@ export function WorkoutTimer({
           <h3 className="text-sm font-bold text-dark">Current Session</h3>
         </div>
 
-        {/* Live calorie badge — only visible once session starts */}
+        {/* Live calorie badge — shfaqet vetëm kur nis stërvitja */}
         {status !== 'idle' && (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-100">
-            <Flame size={12} className="text-orange-500" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-100 border-solid animate-pulse">
+            <Flame size={12} className="text-orange-500 fill-orange-500" />
             <span className="text-xs font-semibold text-orange-600 tabular-nums">
-              {liveCalories} kcal
+              {displayCalories} kcal
             </span>
           </div>
         )}
       </div>
 
-      {/* Elapsed time */}
+      {/* Elapsed time display */}
       <div className="text-center mb-5">
         <span className="font-mono text-5xl font-bold text-dark tabular-nums tracking-tight">
           {formatTime(elapsedSeconds)}
@@ -66,7 +69,7 @@ export function WorkoutTimer({
         </p>
       </div>
 
-      {/* Action buttons */}
+      {/* Action buttons bllok sipas gjendjes së stërvitjes */}
       <div className="flex items-center justify-center gap-2">
 
         {status === 'idle' && (

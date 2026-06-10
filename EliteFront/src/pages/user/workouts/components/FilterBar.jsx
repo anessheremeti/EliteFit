@@ -1,6 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 
-function FilterSelect({ label, value, options, onChange }) {
+function FilterSelect({ label, value, options = ['All'], onChange }) {
   return (
     <div className="relative">
       <div className="flex items-center gap-2.5 px-3.5 py-2 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors cursor-pointer pointer-events-none">
@@ -25,16 +25,23 @@ function FilterSelect({ label, value, options, onChange }) {
 }
 
 export function FilterBar({
-  categories   = ['All'],
-  difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'],
-  muscleGroups = ['All', 'Full Body', 'Upper Body', 'Lower Body', 'Core', 'Back'],
-  durations    = ['All', '< 15 min', '15–30 min', '30–45 min', '45–60 min', '60+ min'],
-  category, difficulty, muscleGroup, duration,
-  onCategoryChange, onDifficultyChange, onMuscleGroupChange, onDurationChange,
+  categories = ['All'],
+  difficulties = ['All'],
+  muscleGroups = ['All'],
+  durations = ['All'],
+  category, 
+  difficulty, 
+  muscleGroup, 
+  duration,
+  onCategoryChange, 
+  onDifficultyChange, 
+  onMuscleGroupChange, 
+  onDurationChange,
 }) {
   return (
     <div className="flex items-center justify-between gap-4 flex-wrap">
-
+      
+      {/* Kategoritë (Butonat) */}
       <div className="flex items-center gap-2 flex-wrap">
         {categories.map(cat => (
           <button
@@ -51,10 +58,26 @@ export function FilterBar({
         ))}
       </div>
 
+      {/* Dropdown-at e Filtrave */}
       <div className="flex items-center gap-2 flex-wrap">
-        <FilterSelect label="Difficulty"   value={difficulty}  options={difficulties} onChange={onDifficultyChange} />
-        <FilterSelect label="Muscle Group" value={muscleGroup} options={muscleGroups} onChange={onMuscleGroupChange} />
-        <FilterSelect label="Duration"     value={duration}    options={durations}    onChange={onDurationChange} />
+        <FilterSelect 
+          label="Difficulty"   
+          value={difficulty}   
+          options={difficulties} 
+          onChange={onDifficultyChange} 
+        />
+        <FilterSelect 
+          label="Muscle Group" 
+          value={muscleGroup}  
+          options={muscleGroups} 
+          onChange={onMuscleGroupChange} 
+        />
+        <FilterSelect 
+          label="Duration"     
+          value={duration}     
+          options={durations}    
+          onChange={onDurationChange} 
+        />
       </div>
 
     </div>

@@ -10,9 +10,10 @@ function ContinueCard({ item }) {
       transition={{ type: 'spring', stiffness: 380, damping: 24 }}
       className="flex-none w-[290px] bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden flex cursor-pointer"
     >
+      {/* Pjesa vizuale - tani përdorim vetëm PLACEHOLDER pasi nuk kemi URL nga backend */}
       <div className="relative w-[112px] flex-none">
         <img
-          src={item.thumbnailUrl || PLACEHOLDER}
+          src={PLACEHOLDER}
           alt={item.title}
           className="w-full h-full object-cover"
           loading="lazy"
@@ -52,7 +53,8 @@ export function ContinueWatching({ items = [], loading = false }) {
     );
   }
 
-  if (!items.length) return null;
+  // Nëse nuk ka asgjë, komponenti nuk shfaqet
+  if (!items || items.length === 0) return null;
 
   return (
     <section>

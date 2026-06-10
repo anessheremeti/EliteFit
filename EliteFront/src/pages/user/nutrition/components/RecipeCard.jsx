@@ -37,7 +37,7 @@ export function RecipeCard({ recipe }) {
 
   return (
     <div
-      onClick={() => navigate(`/user/nutrition/${recipeId}`)}
+      onClick={() => navigate(`/users/nutrition/${recipeId}`)}
       className="group bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden cursor-pointer
                  hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
     >

@@ -18,7 +18,12 @@ export function WorkoutCard({ workout }) {
 
   const thumbnail = workout.thumbnailUrl || workout.thumbnail || PLACEHOLDER;
 
-  const handleClick = () => navigate(`/user/workouts/${workout.id}`);
+  // Llogaritja e minutave nga sekondat që vijnë nga DB (durationSeconds)
+  const durationMin = workout.durationSeconds 
+    ? Math.round(workout.durationSeconds / 60) 
+    : 0;
+
+  const handleClick = () => navigate(`/users/workouts/${workout.id}`);
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -43,9 +48,9 @@ export function WorkoutCard({ workout }) {
           loading="lazy"
         />
 
-        {/* Duration badge */}
+        {/* Duration badge - e kthyer në minuta */}
         <span className="absolute top-2 left-2 bg-black/60 text-white text-[11px] font-medium px-2 py-0.5 rounded-lg backdrop-blur-sm">
-          {workout.durationMin} min
+          {durationMin} min
         </span>
 
         {/* Difficulty badge */}
@@ -74,9 +79,16 @@ export function WorkoutCard({ workout }) {
 
       {/* Info row */}
       <div className="px-3 py-2.5 flex items-start justify-between gap-2">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-[11px] text-dark/40 font-medium mb-0.5">{workout.difficulty}</p>
           <p className="text-sm font-semibold text-dark leading-snug truncate">{workout.title}</p>
+          
+          {/* Shfaq kaloritë nëse ekzistojnë në DB */}
+          {workout.estimatedCaloriesBurned && (
+            <p className="text-[11px] text-emerald-600 font-medium mt-0.5">
+              🔥 {workout.estimatedCaloriesBurned} kcal
+            </p>
+          )}
         </div>
         <button
           onClick={handleLike}

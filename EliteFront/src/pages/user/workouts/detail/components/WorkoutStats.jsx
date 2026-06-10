@@ -24,25 +24,38 @@ function Stat({ icon: Icon, label, value, extra }) {
 export function WorkoutStats({ workout }) {
   const diffClass = DIFFICULTY_COLOR[workout.difficulty] ?? 'bg-gray-100 text-gray-600';
 
+  // Kthejmë sekondat nga DB në minuta
+  const durationMin = workout.durationSeconds 
+    ? Math.round(workout.durationSeconds / 60) 
+    : 0;
+
   return (
     <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5 space-y-1">
       <h3 className="text-sm font-bold text-dark mb-3">Workout Details</h3>
 
-      <Stat icon={Clock}    label="Duration"     value={`${workout.durationMin} min`} />
+      {/* Kohëzgjatja në minuta */}
+      <Stat icon={Clock} label="Duration" value={`${durationMin} min`} />
+      
+      {/* Vështirësia */}
       <Stat
         icon={Flame}
         label="Difficulty"
-        value={workout.difficulty}
+        value={workout.difficulty || 'Beginner'}
         extra={
           <span className={`ml-auto text-[11px] font-semibold px-2 py-0.5 rounded-full ${diffClass}`}>
-            {workout.difficulty}
+            {workout.difficulty || 'Beginner'}
           </span>
         }
       />
-      {workout.category    && <Stat icon={Tag}     label="Category"      value={workout.category} />}
-      {workout.muscleGroup && <Stat icon={Dumbbell} label="Muscle Group"  value={workout.muscleGroup} />}
-      {workout.videoTitle  && <Stat icon={Zap}     label="Exercise"      value={workout.videoTitle} />}
+      
+      {/* Kategoria dhe Grupet Muskujve nëse vijnë nga API */}
+      {workout.category && <Stat icon={Tag} label="Category" value={workout.category} />}
+      {workout.muscleGroup && <Stat icon={Dumbbell} label="Muscle Group" value={workout.muscleGroup} />}
+      
+      {/* Titulli i ushtrimit / videos kryesore */}
+      {workout.title && <Stat icon={Zap} label="Exercise" value={workout.title} />}
 
+      {/* Përshkrimi i stërvitjes */}
       {workout.description && (
         <div className="pt-3 border-t border-black/5 mt-2">
           <p className="text-xs text-dark/40 font-medium uppercase tracking-wide mb-1.5">About</p>

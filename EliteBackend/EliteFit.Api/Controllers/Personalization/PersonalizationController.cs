@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace EliteFit.Api.Controllers.Personalization
 {
@@ -32,17 +33,17 @@ namespace EliteFit.Api.Controllers.Personalization
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-
         [HttpGet("calorie-tracking")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CalorieTrackingDto))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCalorieTracking([FromQuery] GetCalorieTrackingQuery query)
+        public async Task<IActionResult> GetCalorieTracking([FromQuery] DateTime targetDate)
         {
-            if (query.TargetDate == default)
+            // Merre UserId nga token-i
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var query = new GetCalorieTrackingQuery
             {
-                query.TargetDate = DateTime.UtcNow;
-            }
+                UserId = userId,
+                TargetDate = targetDate == default ? DateTime.UtcNow : targetDate
+            };
 
             var result = await _mediator.Send(query);
             return Ok(result);

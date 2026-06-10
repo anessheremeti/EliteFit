@@ -10,6 +10,7 @@ namespace EliteFit.Domain.Interfaces.Repositories.Reports
     {
         // Tani kthen listën e historikut direkt nga Domain
         Task<List<UserWorkoutHistory>> GetWorkoutHistoryReportAsync(
+            string userId,
             DateTime? fromDate,
             DateTime? toDate,
             int? categoryId,

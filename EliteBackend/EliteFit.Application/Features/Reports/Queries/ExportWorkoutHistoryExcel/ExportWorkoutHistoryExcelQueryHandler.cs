@@ -20,11 +20,10 @@ namespace EliteFit.Application.Features.Reports.Queries.ExportWorkoutHistoryExce
         {
             // Marrim të dhënat nga Repository
             var histories = await _repository.GetWorkoutHistoryReportAsync(
-                request.FromDate, request.ToDate, request.CategoryId, cancellationToken);
+                request.UserId, request.FromDate, request.ToDate, request.CategoryId, cancellationToken);
 
-            // Konfigurimi i LicenseContext për EPPlus (OfficeOpenXml)
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
+            // RREGULLIMI: Konfigurimi i ri i licencës për EPPlus v8+
+            ExcelPackage.License.SetNonCommercialPersonal("EliteFit Developer");
             using (var package = new ExcelPackage())
             {
                 var worksheet = package.Workbook.Worksheets.Add("Historiku");

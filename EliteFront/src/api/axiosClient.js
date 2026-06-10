@@ -1,47 +1,66 @@
 import axios from 'axios';
 
-// 1. Krijimi i instancës bazë të Axios
+// ============================
+// 1. Create Axios Instance
+// ============================
 const axiosClient = axios.create({
-  // Zëvendësoje me portën e saktë të backend-it tënd (shiko launchSettings.json në .NET)
-  baseURL: 'https://localhost:7049/api', 
+  baseURL: 'https://localhost:7049/api',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
+  withCredentials: false, // JWT jo cookie-based
 });
 
-// 2. Request Interceptor: Kujdeset për dërgimin e Token-it automatikisht
+// ============================
+// 2. REQUEST INTERCEPTOR
+// ============================
 axiosClient.interceptors.request.use(
   (config) => {
-    // Lexojmë token-in që kemi ruajtur në localStorage gjatë Login-it
-    const token = localStorage.getItem('elitefit_token');
-    
-    // Nëse token-i ekziston, ia bashkëngjitim kërkesës në formatin Bearer
+    let token = localStorage.getItem('token');
+
+    // ============================
+    // CLEAN TOKEN (FIX EXTRA QUOTES)
+    // ============================
     if (token) {
+      token = token
+        .replace(/^"|"$/g, '') // heq quotes në fillim/fund
+        .replace(/"/g, '')     // heq quotes brenda
+        .trim();
+
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// 3. Response Interceptor (Opsionale por shumë e dobishme): Menaxhon gabimet globale
+// ============================
+// 3. RESPONSE INTERCEPTOR
+// ============================
 axiosClient.interceptors.response.use(
   (response) => {
-    // Nëse kërkesa ka kaluar me sukses, kthejmë direkt të dhënat (data)
+    // Kthen vetëm të dhënat (data) për të thjeshtuar punën në frontend
     return response.data;
   },
   (error) => {
-    // Logjika nëse backend-i kthen 401 Unauthorized (p.sh. ka skaduar token-i pas 60 minutave)
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('elitefit_token');
-      // Mund ta bësh redirect përdoruesin në login nëse dëshiron:
-      // window.location.href = '/login';
+    const status = error?.response?.status;
+
+    // ============================
+    // AUTO LOGOUT ON 401 (UNAUTHORIZED)
+    // ============================
+    if (status === 401) {
+      console.warn('[Axios] 401 Unauthorized → Duke pastruar sesionin...');
+      
+      // Rregullimi: Fshihen të gjitha çelësat që përdor aplikacioni yt
+      localStorage.removeItem('token');
+      localStorage.removeItem('elitefit_user');
+
+      // Ridrejto përdoruesin në login që të mos ngeci në faqe të bllokuar
+      window.location.href = '/login';
     }
-    
+
     return Promise.reject(error);
   }
 );

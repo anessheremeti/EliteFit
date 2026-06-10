@@ -5,8 +5,12 @@ import { FilterBar }        from './components/FilterBar';
 import { ContinueWatching } from './components/ContinueWatching';
 import { WorkoutCard }      from './components/WorkoutCard';
 import { WorkoutRow }       from './components/WorkoutRow';
-import { DIFFICULTIES, MUSCLE_GROUPS, DURATIONS } from './data/workouts';
 import { workoutService }   from '../../../services/workoutService';
+
+// Deklarimi i filtrave standardë që përputhen me opsionet e aplikacionit
+const DIFFICULTIES  = ['All', 'Beginner', 'Intermediate', 'Advanced'];
+const MUSCLE_GROUPS = ['All', 'Full Body', 'Upper Body', 'Lower Body', 'Core', 'Back'];
+const DURATIONS     = ['All', '< 15 min', '15–30 min', '30–45 min', '45–60 min', '60+ min'];
 
 const DURATION_RANGES = {
   '< 15 min':  [0,  14],
@@ -16,7 +20,7 @@ const DURATION_RANGES = {
   '60+ min':   [60, Infinity],
 };
 
-// Preferred display order for muscle group sections
+// Renditja e preferuar e seksioneve në faqen kryesore
 const SECTION_ORDER = ['Core', 'Upper Body', 'Lower Body', 'Full Body'];
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
@@ -61,7 +65,7 @@ export default function WorkoutsPage() {
         const data = await workoutService.getContinueWatching();
         if (!cancelled) setContinuing(data);
       } catch {
-        // user has no in-progress workouts — silent
+        // Përdoruesi nuk ka asnjë stërvitje në proces — dështon në heshtje
       } finally {
         if (!cancelled) setContLoading(false);
       }
@@ -74,6 +78,7 @@ export default function WorkoutsPage() {
 
   const hasFilters = category !== 'All' || difficulty !== 'All' || muscleGroup !== 'All' || duration !== 'All';
 
+  // Filtrimi i saktë në Frontend duke u bazuar në sekondat e backend-it
   const filtered = useMemo(() => {
     if (!hasFilters) return workouts;
     return workouts.filter(w => {
@@ -82,13 +87,15 @@ export default function WorkoutsPage() {
       if (muscleGroup !== 'All' && w.muscleGroup !== muscleGroup) return false;
       if (duration !== 'All') {
         const [min, max] = DURATION_RANGES[duration] ?? [0, Infinity];
-        if (w.durationMin < min || w.durationMin > max) return false;
+        // Kthejmë sekondat në minuta (nëse durationSeconds mungon, përdorim durationMin si fallback)
+        const durationInMinutes = w.durationSeconds ? Math.round(w.durationSeconds / 60) : (w.durationMin || 0);
+        if (durationInMinutes < min || durationInMinutes > max) return false;
       }
       return true;
     });
   }, [workouts, hasFilters, category, difficulty, muscleGroup, duration]);
 
-  // Group all workouts by muscleGroup for the sections layout
+  // Grupimi i videove sipas grupeve muskulore (Muscle Group)
   const sections = useMemo(() => {
     if (hasFilters) return [];
     const map = new Map();
@@ -97,7 +104,7 @@ export default function WorkoutsPage() {
       if (!map.has(key)) map.set(key, []);
       map.get(key).push(w);
     }
-    // Sort sections: known order first, then alphabetical for anything else
+    
     const entries = [...map.entries()];
     entries.sort(([a], [b]) => {
       const ai = SECTION_ORDER.indexOf(a);
@@ -111,8 +118,10 @@ export default function WorkoutsPage() {
   }, [workouts, hasFilters]);
 
   function clearFilters() {
-    setCategory('All'); setDifficulty('All');
-    setMuscleGroup('All'); setDuration('All');
+    setCategory('All'); 
+    setDifficulty('All');
+    setMuscleGroup('All'); 
+    setDuration('All');
   }
 
   return (
@@ -124,10 +133,10 @@ export default function WorkoutsPage() {
 
         <FilterBar
           categories={categories}
-          category={category}       onCategoryChange={setCategory}
-          difficulty={difficulty}   onDifficultyChange={setDifficulty}
-          muscleGroup={muscleGroup} onMuscleGroupChange={setMuscleGroup}
-          duration={duration}       onDurationChange={setDuration}
+          category={category}           onCategoryChange={setCategory}
+          difficulty={difficulty}       onDifficultyChange={setDifficulty}
+          muscleGroup={muscleGroup}     onMuscleGroupChange={setMuscleGroup}
+          duration={duration}           onDurationChange={setDuration}
           difficulties={DIFFICULTIES}
           muscleGroups={MUSCLE_GROUPS}
           durations={DURATIONS}
@@ -135,7 +144,7 @@ export default function WorkoutsPage() {
 
         <ContinueWatching items={continuing} loading={contLoading} />
 
-        {/* ── Sections layout (no active filters) ── */}
+        {/* ── Seksionet e grupuara (Kur nuk ka filtra aktivë) ── */}
         {!hasFilters && (
           loading ? (
             <div className="space-y-10">
@@ -161,7 +170,7 @@ export default function WorkoutsPage() {
           )
         )}
 
-        {/* ── Flat filtered grid (any filter active) ── */}
+        {/* ── Grid i rrafshët (Kur aktivizohet qoftë edhe një filtër) ── */}
         {hasFilters && (
           <section>
             <div className="flex items-baseline gap-2 mb-4">

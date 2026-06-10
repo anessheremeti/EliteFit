@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { RecipeCard } from './components/RecipeCard';
 import { RecipeFilterBar } from './components/RecipeFilterBar';
@@ -12,11 +12,11 @@ export default function RecipeFeedPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Mbajmë VETËM shtetin për kërkimin dhe faqen aktuale
+  // Shteti për kërkimin dhe faqen aktuale
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
-  // Thirrja e API-së nga backend-i [.NET]
+  // Thirrja e saktë e API-së për listën e recetave
   useEffect(() => {
     const fetchRecipesData = async () => {
       setLoading(true);
@@ -27,9 +27,11 @@ export default function RecipeFeedPage() {
         };
 
         const data = await getRecipes(queryParams);
-        setRecipes(Array.isArray(data) ? data : []);
+        // Menaxhimi i interceptorit të ri: nëse kthehet direkt array ose objekt me .data
+        const actualData = data?.data || data;
+        setRecipes(Array.isArray(actualData) ? actualData : []);
       } catch (err) {
-        setError('Ndodhi një gabim gjatë ngarkimit të recetave. Ju luten provoni përsëri.');
+        setError('Ndodhi një gabim gjatë ngarkimit të recetave. Ju lutem provoni përsëri.');
         console.error(err);
       } finally {
         setLoading(false);
@@ -37,19 +39,11 @@ export default function RecipeFeedPage() {
     };
 
     fetchRecipesData();
-  }, [search]); // Ri-thirret vetëm kur shkruan në kutinë e kërkimit
+  }, [search]); // Ri-thirret vetëm kur ndryshon kërkimi
 
-  // Filtrimi lokal i sigurt vetëm sipas Titullit (Përputhet me SQL Server-in tënd)
-  const filteredRecipes = useMemo(() => {
-    return recipes.filter(recipe => {
-      const recipeTitle = recipe.title || recipe.Title || '';
-      return recipeTitle.toLowerCase().includes(search.toLowerCase());
-    });
-  }, [recipes, search]);
-
-  // Logjika e ndarjes në faqe (Pagination)
-  const totalPages = Math.ceil(filteredRecipes.length / PAGE_SIZE) || 1;
-  const paginatedRecipes = filteredRecipes.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  // Logjika e ndarjes në faqe (Pagination) lokale bazuar në recetat e kthyer nga serveri
+  const totalPages = Math.ceil(recipes.length / PAGE_SIZE) || 1;
+  const paginatedRecipes = recipes.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -60,7 +54,7 @@ export default function RecipeFeedPage() {
           <p className="text-sm text-dark/45 mt-0.5">Explore our delicious recipes</p>
         </div>
 
-        {/* Shiriti i ri i kërkimit pa butona Breakfast/Dinner */}
+        {/* Shiriti i kërkimit */}
         <RecipeFilterBar
           search={search} 
           onSearchChange={(v) => { setSearch(v); setPage(1); }}
@@ -68,7 +62,7 @@ export default function RecipeFeedPage() {
 
         <div className="flex items-baseline gap-2">
           <span className="text-xs text-dark/40">
-            {loading ? 'Duke u ngarkuar...' : `${filteredRecipes.length} rezultate`}
+            {loading ? 'Duke u ngarkuar...' : `${recipes.length} rezultate`}
           </span>
         </div>
 
@@ -91,14 +85,14 @@ export default function RecipeFeedPage() {
           )}
         </div>
 
-        {/* Kur nuk gjendet asgjë nga kërkimi */}
-        {!loading && filteredRecipes.length === 0 && !error && (
+        {/* Kur nuk gjendet asgjë */}
+        {!loading && recipes.length === 0 && !error && (
           <div className="py-24 text-center text-dark/30">
             <p>Nuk u gjet asnjë recetë.</p>
           </div>
         )}
 
-        {/* Pagination Controls */}
+        {/* Navigimi i faqeve */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 pt-2">
             <button 

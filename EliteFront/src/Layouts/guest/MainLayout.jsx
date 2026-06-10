@@ -9,7 +9,8 @@ const MainLayout = () => {
   const location = useLocation();
 
   // Lista e rrugëve ku nuk dëshiron të shfaqet Navbar dhe Footer
-  const hideNavbarFooter = ["/login", "/signup"].includes(location.pathname);
+  const hideNavbarFooter = ["/login", "/signup","/onboarding","/onboarding/goals","/onboarding/profile","/onboarding/activity"].includes(location.pathname);
+     
 
   return (
     <div className="min-h-screen flex flex-col">

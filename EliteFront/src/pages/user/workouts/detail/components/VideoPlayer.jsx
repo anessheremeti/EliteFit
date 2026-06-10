@@ -9,8 +9,7 @@ function fmt(secs) {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-// Use stable refs for callbacks so the event-listener effect never needs to
-// re-run when the parent passes new function references.
+// Stable refs për callbacks në mënyrë që event-listener të mos ri-ekzekutohet pa nevojë
 function useCallbackRef(fn) {
   const ref = useRef(fn);
   useEffect(() => { ref.current = fn; }, [fn]);
@@ -38,18 +37,20 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
   const [loading,  setLoading]  = useState(true);
   const [showVol,  setShowVol]  = useState(false);
 
-  // Stable callback refs — event listeners only register once per src change
   const onPlayRef   = useCallbackRef(onPlay);
   const onPauseRef  = useCallbackRef(onPause);
   const onEndedRef  = useCallbackRef(onEnded);
 
-  // Expose play() / pause() to parent via ref
+  // Ndërtimi i URL-së së plotë nëse nga backend-i vjen vetëm si rrugë relative (path)
+  const videoSrc = src && !src.startsWith('http') && !src.startsWith('blob')
+    ? `${import.meta.env.VITE_API_BASE_URL || ''}${src}`
+    : src;
+
   useImperativeHandle(ref, () => ({
     play:  () => videoRef.current?.play(),
     pause: () => videoRef.current?.pause(),
   }), []);
 
-  // Auto-hide controls
   const resetHide = useCallback(() => {
     setControls(true);
     clearTimeout(hideTimer.current);
@@ -63,7 +64,6 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
     else resetHide();
   }, [playing, resetHide]);
 
-  // Video event listeners
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
@@ -97,16 +97,14 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
       v.removeEventListener('waiting',        onWait);
       v.removeEventListener('canplay',        onCan);
     };
-  }, [src]); // only re-register when src changes
+  }, [videoSrc]); 
 
-  // Fullscreen
   useEffect(() => {
     const onFsChange = () => setFs(!!document.fullscreenElement);
     document.addEventListener('fullscreenchange', onFsChange);
     return () => document.removeEventListener('fullscreenchange', onFsChange);
   }, []);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
@@ -166,7 +164,7 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
     try {
       if (!document.fullscreenElement) await wrapRef.current?.requestFullscreen();
       else await document.exitFullscreen();
-    } catch { /* browser may block */ }
+    } catch { /* bllokuar nga browser */ }
   };
 
   const handleToggleMute = () => {
@@ -210,7 +208,7 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
     >
       <video
         ref={videoRef}
-        src={src}
+        src={videoSrc}
         poster={poster}
         className="w-full h-full object-contain"
         onClick={handleVideoClick}
@@ -253,7 +251,7 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/90 via-black/50 to-transparent pt-12 pb-4 px-4"
+            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-12 pb-4 px-4"
           >
             {/* Progress bar */}
             <div className="group/seek relative h-5 flex items-center mb-3 cursor-pointer">

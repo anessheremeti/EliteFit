@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Flame, ShieldAlert, Loader2, FileText } from 'lucide-react';
-import axiosClient from '../../../api/axiosClient';
+import { getRecipeDetails } from '../../../../api/user/nutrition/nutritions'; // Importi i saktë
 
 export default function RecipeDetailPage() {
   const { id } = useParams();
@@ -16,15 +16,15 @@ export default function RecipeDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        // Thirrja e API-së në backend sipas ID-së specifike
-        const response = await axiosClient.get(`/api/recipes/${id}`);
+        // Thirrja e funksionit të pastër nga nutritions.js
+        const data = await getRecipeDetails(id); 
         
-        // Përshtatja nëse backend-i i kthen të dhënat direkt ose brenda një objekti 'data'
-        const data = response.data?.data || response.data;
-        setRecipe(data);
+        // Nxirr të dhënat duke marrë parasysh interceptorin e ri të Axios
+        const recipeData = data?.data || data;
+        setRecipe(recipeData);
       } catch (err) {
-        console.error("Gabim gjatë marrjes së detajeve të recetës:", err);
-        setError("Nuk u mundësua ngarkimi i recetës. Mund të mos ekzistojë ose ka një problem me serverin.");
+        console.error("Gabim gjatë marrjes së detajeve:", err);
+        setError("Nuk u mundësua ngarkimi i recetës.");
       } finally {
         setLoading(false);
       }
@@ -34,7 +34,6 @@ export default function RecipeDetailPage() {
       fetchRecipeDetail();
     }
   }, [id]);
-
   // Shteti i ngarkimit (Loading State)
   if (loading) {
     return (

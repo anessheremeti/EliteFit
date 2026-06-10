@@ -17,13 +17,16 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="EPPlus" Version="8.0.2" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="QuestPDF" Version="2026.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,9 +36,7 @@
   <ItemGroup>
     <Folder Include="DTOs\Recipes\" />
     <Folder Include="Common\" />
-    <Folder Include="Features\Personalization\Command\" />
-    <Folder Include="Features\Recipes\" />
-    <Folder Include="Features\Recipes\Commands\" />
+    <Folder Include="Features\Dashboard\" />
     <Folder Include="Features\Recipes\Queries\" />
     <Folder Include="Features\Reports\Commands\" />
   </ItemGroup>

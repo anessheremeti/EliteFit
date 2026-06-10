@@ -1,398 +1,260 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
-import { VideoPlayer }      from './components/VideoPlayer';
-import { WorkoutStats }     from './components/WorkoutStats';
-import { RelatedWorkouts }  from './components/RelatedWorkouts';
-import { WorkoutTimer }     from './components/WorkoutTimer';
-import { SessionStatsCard } from './components/SessionStatsCard';
-  import { workoutService }     from '../../../../services/workoutService';
-  import { exerciseLogService } from '../../../../services/exerciseLogService';
+import { FeaturedBanner } from '../components/FeaturedBanner';
+import { FilterBar } from '../components/FilterBar';
+import { ContinueWatching } from '../components/ContinueWatching';
+import { WorkoutCard }      from '../components/WorkoutCard';
+import { WorkoutRow }       from '../components/WorkoutRow';
 
-// Calories-per-minute by difficulty level
-const CAL_PER_MIN = { Beginner: 5, Intermediate: 8, Advanced: 12 };
-function estimateCalories(durationSeconds, difficulty) {
-  const rate = CAL_PER_MIN[difficulty] ?? 7;
-  return Math.max(1, Math.round((durationSeconds / 60) * rate));
-}
+// Importojmë API-n tonë të vërtetë të backend-it
+import WorkoutApi from '../../../../api/user/workout/workouts';
 
-// ─── Skeletons ────────────────────────────────────────────────────────────────
-function PlayerSkeleton() {
-  return (
-    <div className="space-y-4 animate-pulse">
-      <div className="aspect-video rounded-2xl bg-gray-200" />
-    </div>
-  );
-}
+// Konstanta e filtrave dinamikë që përputhen me modelin e backend-it tuaj
+const DIFFICULTIES  = ['All', 'Beginner', 'Intermediate', 'Advanced'];
+const MUSCLE_GROUPS = ['All', 'Full Body', 'Upper Body', 'Lower Body', 'Core', 'Back'];
+const DURATIONS     = ['All', '< 15 min', '15–30 min', '30–45 min', '45–60 min', '60+ min'];
 
-function StatsSkeleton() {
-  return (
-    <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5 space-y-4 animate-pulse">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="flex gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gray-100" />
-          <div className="flex-1 space-y-1.5">
-            <div className="h-2.5 bg-gray-100 rounded w-1/4" />
-            <div className="h-3.5 bg-gray-100 rounded w-1/2" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+// Llogaritja e minutave duke u bazuar në sekondat që vijnë nga databaza (DurationSeconds / 60)
+const DURATION_RANGES = {
+  '< 15 min':  [0,  14],
+  '15–30 min': [15, 30],
+  '30–45 min': [30, 45],
+  '45–60 min': [45, 60],
+  '60+ min':   [60, Infinity],
+};
 
-function LoggedToast({ visible }) {
-  if (!visible) return null;
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-2 px-3 py-2 bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-lg shrink-0"
-    >
-      <CheckCircle size={13} />
-      Session logged!
-    </motion.div>
-  );
-}
+const SECTION_ORDER = ['Core', 'Upper Body', 'Lower Body', 'Full Body'];
 
-// ─── Main component ───────────────────────────────────────────────────────────
-export default function WorkoutDetailPage() {
-  const { id }   = useParams();
-  const navigate = useNavigate();
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
+const item = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.25 } } };
 
-  // Workout / related data
-  const [workout,    setWorkout]    = useState(null);
-  const [related,    setRelated]    = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [relLoading, setRelLoading] = useState(true);
-  const [error,      setError]      = useState(null);
+export default function WorkoutsPage() {
+  const [workouts,    setWorkouts]    = useState([]);
+  const [featured,    setFeatured]    = useState([]);
+  const [continuing,  setContinuing]  = useState([]);
+  const [categories,  setCategories]  = useState(['All']);
+  const [loading,     setLoading]     = useState(true);
+  const [contLoading, setContLoading] = useState(true);
 
-  // Session stats (historical, refreshed after each log)
-  const [sessionStats,  setSessionStats]  = useState(null);
-  const [statsLoading,  setStatsLoading]  = useState(false);
-
-  // Logging state
-  const [isLogging,  setIsLogging]  = useState(false);
-  const [showToast,  setShowToast]  = useState(false);
-
-  // ── Timer state (driven by video events) ──────────────────────────────────
-  const [timerStatus,    setTimerStatus]    = useState('idle'); // 'idle'|'running'|'paused'
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
-
-  // Internal timer refs (never cause re-renders)
-  const tickRef        = useRef(null);   // setInterval handle
-  const runStartRef    = useRef(null);   // wall-clock when the current run began
-  const accumulatedRef = useRef(0);      // seconds from prior runs (before last resume)
-  const elapsedRef     = useRef(0);      // mirror of elapsedSeconds for use inside callbacks
-  const isFinishingRef = useRef(false);  // suppresses handleVideoPause during finish/reset
-  const isLoggingRef   = useRef(false);  // mirror of isLogging for use inside callbacks
-
-  // Imperative handle to play/pause the VideoPlayer from outside
-  const playerRef = useRef(null);
-
-  // Keep mirrors in sync
-  useEffect(() => { elapsedRef.current  = elapsedSeconds; }, [elapsedSeconds]);
-  useEffect(() => { isLoggingRef.current = isLogging;     }, [isLogging]);
-
-  // Live calorie estimate — updates every tick as the timer runs
-  const liveCalories = useMemo(() => {
-    if (!workout || elapsedSeconds < 1) return 0;
-    return estimateCalories(elapsedSeconds, workout.difficulty);
-  }, [elapsedSeconds, workout]);
-
-  // ── Timer primitives ───────────────────────────────────────────────────────
-
-  const startTick = useCallback(() => {
-    runStartRef.current = Date.now();
-    tickRef.current = setInterval(() => {
-      const since = Math.floor((Date.now() - runStartRef.current) / 1000);
-      setElapsedSeconds(accumulatedRef.current + since);
-    }, 500);
-  }, []);
-
-  const stopTick = useCallback(() => clearInterval(tickRef.current), []);
-
-  // Reset timer when navigating to a different workout (id changes)
-  useEffect(() => {
-    isFinishingRef.current = true;
-    clearInterval(tickRef.current);
-    accumulatedRef.current = 0;
-    setElapsedSeconds(0);
-    setTimerStatus('idle');
-    setSessionStats(null);
-    setShowToast(false);
-    setTimeout(() => { isFinishingRef.current = false; }, 150);
-  }, [id]);
-
-  // Cleanup interval on unmount
-  useEffect(() => () => clearInterval(tickRef.current), []);
-
-  // ── Session logging ────────────────────────────────────────────────────────
-
-  const autoLogSession = useCallback(async (durationSeconds) => {
-    if (!workout || isLoggingRef.current || durationSeconds < 5) return;
-
-    setIsLogging(true);
-    try {
-      await exerciseLogService.logExercise({
-        exerciseId      : workout.videoId ?? null,
-        workoutId       : parseInt(id, 10),
-        durationSeconds,
-        caloriesBurned  : estimateCalories(durationSeconds, workout.difficulty),
-        completedAt     : new Date().toISOString(),
-      });
-
-      if (workout.videoId) {
-        const updated = await exerciseLogService.getSessionStats(workout.videoId);
-        setSessionStats(updated);
-      }
-
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-    } catch { /* non-fatal */ } finally {
-      setIsLogging(false);
-    }
-  }, [workout, id]); // isLogging accessed via ref — not in deps
-
-  // ── Video event handlers ───────────────────────────────────────────────────
-
-  const handleVideoPlay = useCallback(() => {
-    startTick();
-    setTimerStatus('running');
-  }, [startTick]);
-
-  const handleVideoPause = useCallback(() => {
-    if (isFinishingRef.current) return; // finish/reset is already handling state
-    stopTick();
-    accumulatedRef.current = elapsedRef.current;
-    setTimerStatus('paused');
-  }, [stopTick]);
-
-  const handleVideoEnded = useCallback(() => {
-    if (isFinishingRef.current) return;
-    stopTick();
-    accumulatedRef.current = elapsedRef.current;
-    setTimerStatus('paused'); // session stays active — only Finish Workout ends it
-  }, [stopTick]);
-
-  // ── Timer button handlers (mirror video commands) ──────────────────────────
-
-  const handleTimerStart = useCallback(() => {
-    if (playerRef.current) {
-      playerRef.current.play(); // video fires play → handleVideoPlay → startTick
-    } else {
-      // No video mounted — run timer standalone
-      startTick();
-      setTimerStatus('running');
-    }
-  }, [startTick]);
-
-  const handleTimerPause = useCallback(() => {
-    if (playerRef.current) {
-      playerRef.current.pause(); // video fires pause → handleVideoPause → stopTick
-    } else {
-      stopTick();
-      accumulatedRef.current = elapsedRef.current;
-      setTimerStatus('paused');
-    }
-  }, [stopTick]);
-
-  const handleTimerResume = useCallback(() => {
-    if (playerRef.current) {
-      playerRef.current.play();
-    } else {
-      startTick();
-      setTimerStatus('running');
-    }
-  }, [startTick]);
-
-  const handleTimerFinish = useCallback(() => {
-    // Flag suppresses handleVideoPause from overwriting state
-    isFinishingRef.current = true;
-    if (playerRef.current) playerRef.current.pause();
-    stopTick();
-    const finalSeconds = elapsedRef.current;
-    accumulatedRef.current = 0;
-    setElapsedSeconds(0);
-    setTimerStatus('idle');
-    setTimeout(() => { isFinishingRef.current = false; }, 150);
-    autoLogSession(finalSeconds);
-  }, [stopTick, autoLogSession]);
-
-  const handleTimerReset = useCallback(() => {
-    isFinishingRef.current = true;
-    if (playerRef.current) playerRef.current.pause();
-    stopTick();
-    accumulatedRef.current = 0;
-    setElapsedSeconds(0);
-    setTimerStatus('idle');
-    setTimeout(() => { isFinishingRef.current = false; }, 150);
-  }, [stopTick]);
-
-  // ── Data fetching ──────────────────────────────────────────────────────────
+  const [category,    setCategory]    = useState('All');
+  const [difficulty,  setDifficulty]  = useState('All');
+  const [muscleGroup, setMuscleGroup] = useState('All');
+  const [duration,    setDuration]    = useState('All');
 
   useEffect(() => {
     let cancelled = false;
-    async function load() {
-      setLoading(true);
-      setError(null);
+
+    async function loadDataFromApi() {
       try {
-        const data = await workoutService.getWorkoutById(id);
-        if (!cancelled) setWorkout(data);
+        setLoading(true);
+        
+        // Thërrasim pikën tonë të re GET /api/Workouts/videos
+        const response = await WorkoutApi.getVideos();
+        
+        if (cancelled) return;
+
+        // Kujdesemi nëse përgjigja vjen si { data: [...] } apo direkt si varg [...]
+        const allVideos = Array.isArray(response) 
+          ? response 
+          : (response && Array.isArray(response.data) ? response.data : []);
+
+        setWorkouts(allVideos);
+
+        // Dinamike: Marrim 3 videot e para për slider-in kryesor (Sigurohemi me ?.slice)
+        setFeatured(allVideos.slice(0, 3));
+
+        // Dinamike: Gjenerojmë kategoritë automatikisht direkt nga ato që ekzistojnë në DB
+        const uniqueCategories = [...new Set(allVideos.map(v => v?.category).filter(Boolean))];
+        setCategories(['All', ...uniqueCategories]);
+
       } catch (err) {
-        if (!cancelled) setError(err.message || 'Failed to load workout.');
+        console.error('Gabim gjatë ngarkimit të videove nga backend:', err);
+        setWorkouts([]);
+        setFeatured([]);
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
-    load();
-    return () => { cancelled = true; };
-  }, [id]);
 
-  // Load historical session stats once we know the exercise (video) id
-  useEffect(() => {
-    if (!workout?.videoId) return;
-    let cancelled = false;
-    async function loadStats() {
-      setStatsLoading(true);
+    async function loadContinueWatching() {
       try {
-        const data = await exerciseLogService.getSessionStats(workout.videoId);
-        if (!cancelled) setSessionStats(data);
-      } catch { /* non-fatal */ } finally {
-        if (!cancelled) setStatsLoading(false);
+        setContLoading(true);
+        // Do të mbushet kur të jetë gati endpoint-i i historikut
+        setContinuing([]);
+      } catch (err) {
+        console.error('Gabim gjatë ngarkimit të historikut:', err);
+      } finally {
+        if (!cancelled) setContLoading(false);
       }
     }
-    loadStats();
-    return () => { cancelled = true; };
-  }, [workout?.videoId]);
 
-  // Load related workouts once category is known
-  useEffect(() => {
-    if (!workout) return;
-    let cancelled = false;
-    async function loadRelated() {
-      setRelLoading(true);
-      try {
-        const data = await workoutService.getRelatedWorkouts(id, workout.category);
-        if (!cancelled) setRelated(data);
-      } catch { /* silent */ } finally {
-        if (!cancelled) setRelLoading(false);
+    loadDataFromApi();
+    loadContinueWatching();
+
+    return () => { cancelled = true; };
+  }, []);
+
+  const hasFilters = category !== 'All' || difficulty !== 'All' || muscleGroup !== 'All' || duration !== 'All';
+
+  // Filtrimi në Frontend duke përdorur të dhënat camelCase nga C# API
+ // Filtrimi në Frontend me pastrim të karaktereve (të padukshme/hapësira)
+  const filtered = useMemo(() => {
+    if (!Array.isArray(workouts)) return [];
+    if (!hasFilters) return workouts;
+    
+    return workouts.filter(w => {
+      if (!w) return false;
+
+      // 1. Kategoritë (mbrojtje)
+      const matchesCategory = category === 'All' || 
+        (w.category?.toLowerCase().trim() === category.toLowerCase().trim());
+
+      // 2. Vështirësia (me .trim() dhe .toLowerCase() për siguri)
+      const diffVal = (w.difficultyLevel || w.difficulty || '').toLowerCase().trim();
+      const matchesDifficulty = difficulty === 'All' || (diffVal === difficulty.toLowerCase().trim());
+
+      // 3. Muscle Group
+      const matchesMuscle = muscleGroup === 'All' || 
+        (w.muscleGroup?.toLowerCase().trim() === muscleGroup.toLowerCase().trim());
+      
+      // 4. Kohëzgjatja (kjo ngelet siç është)
+      let matchesDuration = true;
+      if (duration !== 'All') {
+        const [min, max] = DURATION_RANGES[duration] ?? [0, Infinity];
+        const durationInMinutes = w.durationSeconds ? Math.round(w.durationSeconds / 60) : 0;
+        if (durationInMinutes < min || durationInMinutes > max) matchesDuration = false;
       }
-    }
-    loadRelated();
-    return () => { cancelled = true; };
-  }, [id, workout]);
 
-  // ── Render ─────────────────────────────────────────────────────────────────
+      return matchesCategory && matchesDifficulty && matchesMuscle && matchesDuration;
+    });
+  }, [workouts, hasFilters, category, difficulty, muscleGroup, duration]);
+
+  // Grupimi dinamik i rreshtave (Workout Rows) sipas fushës muscleGroup të databazës
+  const sections = useMemo(() => {
+    if (!Array.isArray(workouts) || hasFilters) return [];
+    
+    const map = new Map();
+    for (const w of workouts) {
+      if (!w) continue;
+      const key = w.muscleGroup ?? 'Other';
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(w);
+    }
+
+    const entries = [...map.entries()];
+    entries.sort(([a], [b]) => {
+      const ai = SECTION_ORDER.indexOf(a);
+      const bi = SECTION_ORDER.indexOf(b);
+      if (ai !== -1 && bi !== -1) return ai - bi;
+      if (ai !== -1) return -1;
+      if (bi !== -1) return 1;
+      return a.localeCompare(b);
+    });
+    return entries;
+  }, [workouts, hasFilters]);
+
+  function clearFilters() {
+    setCategory('All'); 
+    setDifficulty('All');
+    setMuscleGroup('All'); 
+    setDuration('All');
+  }
 
   return (
     <div className="min-h-screen bg-surface">
 
-      {/* Sticky header */}
-      <div className="sticky top-0 md:top-auto z-20 bg-surface/95 backdrop-blur-sm border-b border-black/5 px-4 md:px-6 py-3 flex items-center gap-3">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 -ml-1 rounded-xl text-dark/60 hover:text-dark hover:bg-white transition-colors"
-          aria-label="Go back"
-        >
-          <ArrowLeft size={20} />
-        </button>
+      <FeaturedBanner slides={featured} />
 
-        {workout && (
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <h1 className="text-base font-bold text-dark truncate">{workout.title}</h1>
-            {workout.category && (
-              <span className="shrink-0 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky/10 text-sky">
-                {workout.category}
-              </span>
+      <div className="px-6 py-5 space-y-8">
+
+        <FilterBar
+          categories={categories}
+          category={category}           onCategoryChange={setCategory}
+          difficulty={difficulty}       onDifficultyChange={setDifficulty}
+          muscleGroup={muscleGroup}     onMuscleGroupChange={setMuscleGroup}
+          duration={duration}           onDurationChange={setDuration}
+          difficulties={DIFFICULTIES}
+          muscleGroups={MUSCLE_GROUPS}
+          durations={DURATIONS}
+        />
+
+        <ContinueWatching items={continuing} loading={contLoading} />
+
+        {/* ── Seksionet Dinamike (Kur nuk ka filtra aktivë) ── */}
+        {!hasFilters && (
+          loading ? (
+            <div className="space-y-10">
+              {[1, 2, 3].map(i => (
+                <WorkoutRow key={i} title="" workouts={[]} loading />
+              ))}
+            </div>
+          ) : sections.length > 0 ? (
+            <div className="space-y-10">
+              {sections.map(([sectionTitle, sectionWorkouts]) => (
+                <WorkoutRow
+                  key={sectionTitle}
+                  title={sectionTitle}
+                  workouts={Array.isArray(sectionWorkouts) ? sectionWorkouts : []}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 text-dark/30 gap-2">
+              <span className="text-4xl">🏋️</span>
+              <p className="text-sm font-medium">Nuk ka asnjë video stërvitore në databazë.</p>
+            </div>
+          )
+        )}
+
+        {/* ── Grid-i i Filtruar (Kur aktivizohet ndonjë filtër) ── */}
+        {hasFilters && (
+          <section>
+            <div className="flex items-baseline gap-2 mb-4">
+              <h2 className="text-lg font-bold text-dark">
+                {category !== 'All' ? category : 'Rezultatet e Filtruara'}
+              </h2>
+              {!loading && (
+                <span className="text-sm text-dark/40">{filtered.length} stërvitje u gjetën</span>
+              )}
+            </div>
+
+            {loading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i} className="aspect-video rounded-2xl bg-gray-100 animate-pulse" />
+                ))}
+              </div>
+            ) : filtered.length > 0 ? (
+              <motion.div
+                key={`${category}-${difficulty}-${muscleGroup}-${duration}`}
+                variants={container}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+              >
+                {filtered.map(workout => (
+                  workout?.id ? (
+                    <motion.div key={workout.id} variants={item}>
+                      <WorkoutCard workout={workout} />
+                    </motion.div>
+                  ) : null
+                ))}
+              </motion.div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 text-dark/30 gap-2">
+                <span className="text-4xl">🏋️</span>
+                <p className="text-sm font-medium">Asnjë stërvitje nuk përputhet me filtrat e zgjedhur.</p>
+                <button
+                  onClick={clearFilters}
+                  className="mt-1 text-xs text-sky font-semibold hover:underline"
+                >
+                  Pastro filtrat
+                </button>
+              </div>
             )}
-          </div>
-        )}
-        {loading && <div className="h-4 w-40 bg-gray-200 rounded animate-pulse flex-1" />}
-
-        <LoggedToast visible={showToast} />
-      </div>
-
-      {/* Main content */}
-      <div className="px-4 md:px-6 py-5 max-w-7xl mx-auto">
-
-        {error && (
-          <div className="flex items-center gap-3 p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700">
-            <AlertCircle size={18} className="shrink-0" />
-            <p className="text-sm font-medium">{error}</p>
-          </div>
+          </section>
         )}
 
-        {!error && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-5"
-          >
-            {/* ── Left column ── */}
-            <div className="lg:col-span-2 space-y-4">
-
-              {/* Video player */}
-              {loading ? (
-                <PlayerSkeleton />
-              ) : workout?.videoUrl ? (
-                <VideoPlayer
-                  ref={playerRef}
-                  src={workout.videoUrl}
-                  poster={workout.thumbnailUrl ?? undefined}
-                  onPlay={handleVideoPlay}
-                  onPause={handleVideoPause}
-                  onEnded={handleVideoEnded}
-                />
-              ) : (
-                <div className="aspect-video rounded-2xl bg-gray-900 flex items-center justify-center">
-                  <div className="text-center text-white/40 space-y-2">
-                    <p className="text-3xl">🎬</p>
-                    <p className="text-sm font-medium">Video coming soon</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Session timer — synced to video */}
-              {!loading && workout && (
-                <WorkoutTimer
-                  elapsedSeconds={elapsedSeconds}
-                  status={timerStatus}
-                  liveCalories={liveCalories}
-                  onStart={handleTimerStart}
-                  onPause={handleTimerPause}
-                  onResume={handleTimerResume}
-                  onFinish={handleTimerFinish}
-                  onReset={handleTimerReset}
-                  disabled={isLogging}
-                />
-              )}
-
-              {/* Historical session stats */}
-              {!loading && workout && (
-                <SessionStatsCard stats={sessionStats} loading={statsLoading} />
-              )}
-
-              {/* Mobile: workout details */}
-              <div className="lg:hidden">
-                {loading ? <StatsSkeleton /> : workout && <WorkoutStats workout={workout} />}
-              </div>
-
-              {/* Mobile: related workouts */}
-              <div className="lg:hidden">
-                <RelatedWorkouts items={related} loading={relLoading} />
-              </div>
-            </div>
-
-            {/* ── Right column (desktop) ── */}
-            <div className="hidden lg:flex flex-col gap-5">
-              {loading ? <StatsSkeleton /> : workout && <WorkoutStats workout={workout} />}
-              <RelatedWorkouts items={related} loading={relLoading} />
-            </div>
-          </motion.div>
-        )}
       </div>
     </div>
   );

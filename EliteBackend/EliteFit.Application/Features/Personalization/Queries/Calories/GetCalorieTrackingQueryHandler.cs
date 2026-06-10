@@ -1,5 +1,6 @@
 ﻿using EliteFit.Application.DTOs.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Personalization;
+using EliteFit.Domain.Interfaces.Repositories.Workout;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,39 +14,37 @@ namespace EliteFit.Application.Features.Personalization.Queries.Calories
     {
         private readonly IUserProfileQueryRepository _userProfileRepository;
         private readonly IMealLogQueryRepository _mealLogRepository;
+        private readonly IWorkoutVideoRepository _workoutVideoRepository; // Injekto repozitorin e stërvitjeve
 
         public GetCalorieTrackingQueryHandler(
             IUserProfileQueryRepository userProfileRepository,
-            IMealLogQueryRepository mealLogRepository)
+            IMealLogQueryRepository mealLogRepository,
+            IWorkoutVideoRepository workoutRepository)
         {
             _userProfileRepository = userProfileRepository;
             _mealLogRepository = mealLogRepository;
+            _workoutVideoRepository = workoutRepository;
         }
 
         public async Task<CalorieTrackingDto> Handle(GetCalorieTrackingQuery request, CancellationToken cancellationToken)
         {
-            if (request.UserId <= 0)
-            {
-                throw new ArgumentException("Id e përdoruesit e pavlefshme.");
-            }
-
-            // 1. Nxirret synimi ditor i kalorive nga Profili i Përdoruesit (SQL)
             var dailyTarget = await _userProfileRepository.GetDailyCalorieTargetAsync(request.UserId, cancellationToken);
-            if (!dailyTarget.HasValue)
-            {
-                throw new KeyNotFoundException($"Nuk u gjet asnjë synim ditor i kalorive për përdoruesit me ID {request.UserId}. Ju lutem konfiguroni profilin tuaj.");
-            }
-
-            // 2. Nxirret shuma e kalorive të konsumuara për datën specifike (SQL)
             var totalConsumed = await _mealLogRepository.GetTotalCaloriesConsumedAsync(request.UserId, request.TargetDate, cancellationToken);
 
-            // 3. Kthehet objekti i plotë i përpunuar
+            // Marrja e të dhënave të reja nga DB
+            var totalWorkouts = await _workoutVideoRepository.GetCountByUserIdAsync(request.UserId, cancellationToken);
+            var totalHours = await _workoutVideoRepository.GetTotalHoursByUserIdAsync(request.UserId, cancellationToken);
+            var streak = await _workoutVideoRepository.GetCurrentStreakAsync(request.UserId, cancellationToken);
+
             return new CalorieTrackingDto
             {
                 UserId = request.UserId,
                 Date = request.TargetDate.Date,
-                DailyTargetCalories = dailyTarget.Value,
-                ConsumedCalories = totalConsumed
+                DailyTargetCalories = dailyTarget ?? 0,
+                ConsumedCalories = totalConsumed,
+                TotalWorkouts = totalWorkouts,
+                TotalTrainingHours = (int)totalHours,
+                CurrentStreak = streak
             };
         }
     }
