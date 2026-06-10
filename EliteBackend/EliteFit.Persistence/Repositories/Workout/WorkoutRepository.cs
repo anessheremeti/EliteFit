@@ -27,6 +27,7 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
     {
         var query = _context.WorkoutVideos
            .Include(v => v.VideoFile)
+           .Include("Category")
            .AsQueryable();
 
         if (categoryId.HasValue)
@@ -75,5 +76,66 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _context.SaveChangesAsync(cancellationToken);
+    }
+    public async Task<List<WorkoutVideo>> GetFeaturedVideosAsync(CancellationToken cancellationToken)
+    {
+        // Marrim 5 videot e fundit si të preferuara (ose mund të shtosh kolonën IsFeatured në model)
+        return await _context.WorkoutVideos
+            .OrderByDescending(v => v.Id)
+            .Take(5)
+            .ToListAsync(cancellationToken);
+    }
+    public async Task<List<UserWorkoutHistory>> GetUserHistoryAsync(int userId, CancellationToken cancellationToken)
+    {
+        return await _context.UserWorkoutHistories
+            .Include(h => h.Video) // Shumë e rëndësishme që të marrim të dhënat e videos
+            .Where(h => h.UserId == userId)
+            .OrderByDescending(h => h.CompletedAt)
+            .Take(10) // Marrim 10 të fundit, ose sa të duash
+            .ToListAsync(cancellationToken);
+    }
+    public async Task<int> GetCountByUserIdAsync(int userId, CancellationToken cancellationToken)
+    {
+        return await _context.UserWorkoutHistories
+            .CountAsync(h => h.UserId == userId, cancellationToken);
+    }
+
+    public async Task<double> GetTotalHoursByUserIdAsync(int userId, CancellationToken cancellationToken)
+    {
+        // SQL skema jote ka "TimeWatchedSeconds", jo "Duration"
+        var totalSeconds = await _context.UserWorkoutHistories
+            .Where(h => h.UserId == userId)
+            .SumAsync(h => h.TimeWatchedSeconds ?? 0, cancellationToken);
+
+        return totalSeconds / 3600.0; // Konvertimi në orë
+    }
+
+    public async Task<int> GetCurrentStreakAsync(int userId, CancellationToken cancellationToken)
+    {
+        // Hapi 1: Marrim datat duke kontrolluar për null
+        var dates = await _context.UserWorkoutHistories
+            .Where(h => h.UserId == userId && h.CompletedAt.HasValue)
+            .Select(h => h.CompletedAt!.Value.Date) // !.Value e kthen DateTime? në DateTime
+            .Distinct()
+            .OrderByDescending(d => d)
+            .ToListAsync(cancellationToken);
+
+        if (!dates.Any()) return 0;
+
+        int streak = 0;
+        DateTime lastDate = DateTime.UtcNow.Date;
+
+        // Logjika e Streak: Kontrollojmë nëse datat janë radhazi
+        foreach (var date in dates)
+        {
+            // Nëse data është sot ose dje, rrisim streak-un
+            if (date == lastDate || date == lastDate.AddDays(-1))
+            {
+                streak++;
+                lastDate = date;
+            }
+            else break;
+        }
+        return streak;
     }
 }

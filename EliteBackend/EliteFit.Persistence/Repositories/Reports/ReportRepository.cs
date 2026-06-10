@@ -20,6 +20,7 @@ namespace EliteFit.Persistence.Repositories.Reports
         }
 
         public async Task<List<UserWorkoutHistory>> GetWorkoutHistoryReportAsync(
+            string userId,
             DateTime? fromDate,
             DateTime? toDate,
             int? categoryId,

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogoutModal } from '../../../components/modal/LogoutModal';
-
+import { signalRService } from '../../../api/user/notifications/signalRService';
 const NotificationBadge = lazy(() => import('../../../components/NotificationBadge'));
 
 const links = [
@@ -74,13 +74,19 @@ export function UserSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+ // Add 'async' here
+const handleLogout = async () => {
+    try {
+        await signalRService.stopConnection();
+    } catch (err) {
+        console.error("Error stopping SignalR connection:", err);
+    }
+    
     localStorage.removeItem('elitefit_user');
     localStorage.removeItem('token');
     setLogoutOpen(false);
     navigate('/login', { replace: true });
-  };
-
+};
   const data = localStorage.getItem('elitefit_user');
   const user = data ? JSON.parse(data) : null;
 

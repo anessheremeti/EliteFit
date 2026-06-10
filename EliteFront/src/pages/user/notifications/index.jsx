@@ -32,7 +32,7 @@ function SkeletonList() {
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// ── Page ────────────────======================================================
 
 export default function NotificationsPage() {
   const { notifications, unreadCount, loading, error, markRead, markAllRead, remove, reload } =
@@ -47,6 +47,7 @@ export default function NotificationsPage() {
 
         {/* Header */}
         <div className="mb-6 space-y-4">
+          {/* I përshtatur që të kthehet te rruga e saktë e panelit tënd pa nxjerrë gabim rrugësh */}
           <Link
             to="/users"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-dark/40 hover:text-sky transition-colors group"

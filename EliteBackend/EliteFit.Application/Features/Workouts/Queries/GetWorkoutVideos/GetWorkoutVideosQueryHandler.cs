@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,13 +27,13 @@ namespace EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideos
                 Id = v.Id,
                 Title = v.Title,
                 Description = v.Description,
-                CategoryId = v.CategoryId,
-                DurationSeconds = v.DurationSeconds,
-                DifficultyLevel = v.DifficultyLevel,
+
+                DurationSeconds = v.DurationSeconds ?? 0,
+                Difficulty = v.DifficultyLevel,
                 MuscleGroup = v.MuscleGroup,
                 EstimatedCaloriesBurned = v.EstimatedCaloriesBurned,
 
-                // RREGULLIMI: Marrim linkun e YouTube nga FileEntity dhe e kalojmë në DTO
+                // Mbaje këtë rresht, sepse është thelbësor për të shfaqur videon në React:
                 VideoUrl = v.VideoFile != null ? v.VideoFile.FilePath : null
             }).ToList();
         }

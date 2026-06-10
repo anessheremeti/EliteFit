@@ -1,8 +1,10 @@
-﻿using MediatR;
+﻿using EliteFit.Application.DTOs.Workouts; // Shto këtë import
+using MediatR;
 
 namespace EliteFit.Application.Features.Workouts.Commands.CompleteWorkoutVideo
 {
-    public record CompleteWorkoutVideoCommand : IRequest<bool>
+    // Këtu ndryshohet nga <bool> në <WorkoutCompletionResultDto>
+    public class CompleteWorkoutVideoCommand : IRequest<WorkoutCompletionResultDto>
     {
         public int UserId { get; set; }
         public int VideoId { get; set; }

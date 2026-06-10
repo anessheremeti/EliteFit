@@ -7,7 +7,7 @@ using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
 using EliteFit.Domain.Interfaces.Repositories.Recipes.Queries;
 using EliteFit.Infrastructure;
-using EliteFit.Infrastructure.BackgroundServices;
+using EliteFit.Infrastructure.BackgroundServices; // Kjo siguron që StreakBackgroundWorker të gjendet!
 using EliteFit.Infrastructure.Services;
 using EliteFit.Persistence;
 using EliteFit.Persistence.Persistence.Context;
@@ -28,6 +28,8 @@ using tusdotnet;
 using tusdotnet.Models;
 using tusdotnet.Models.Configuration;
 using tusdotnet.Stores;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,6 +109,8 @@ builder.Services.AddScoped<EliteFit.Domain.Interfaces.Repositories.IGoalReposito
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationService>();
 
+// (Më poshtë, pas app.UseRouting() dhe app.UseAuthorization())
+
 // Regjistrimi i shërbimit në prapavijë për Streak
 builder.Services.AddHostedService<StreakBackgroundWorker>();
 
@@ -162,14 +166,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // CORS i përditësuar për të mbështetur saktë React dhe Tus Headers
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
         policy.WithOrigins("http://localhost:5173")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials()
-              .WithExposedHeaders("Upload-Key", "X-Context-Id", "Location", "Upload-Offset", "Upload-Length", "Tus-Version", "Tus-Resumable", "Tus-Extension", "Tus-Max-Size"));
+              .WithExposedHeaders("Upload-Key", "X-Context-Id", "Location", "Upload-Offset", "Upload-Length", "Tus-Version", "Tus-Resumable", "Tus-Extension", "Tus-Max-Size"));*/
+
+// CORS
+// Zëvendësoje me këtë version:
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // Specifiko origjinën ekzakte
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials(); // Kjo është e detyrueshme për SignalR
+    });
 });
 
 var app = builder.Build();
@@ -252,7 +268,6 @@ app.UseTus(httpContext => new DefaultTusConfiguration
 });
 // ===================================================================
 
-app.MapHub<EliteFit.Infrastructure.SignalR.NotificationHub>("/hubs/notifications");
 
 // Test endpoints
 app.MapGet("/test-mongo", ([Microsoft.AspNetCore.Mvc.FromServices] MongoDbContext mongo) =>
@@ -272,8 +287,23 @@ if (app.Environment.IsDevelopment())
 }
 
 // Renditja e mbetur e Middleware-ve
+app.UseCors("AllowAll");
+
+// 2. Routing
+app.UseRouting(); 
+
+// 3. Autentifikimi dhe Autorizimi
+app.UseAuthentication();
+app.UseAuthorization();
+
+// 4. Endpoints (Controllers dhe Hubs)
+app.MapControllers();
+app.MapHub<EliteFit.Infrastructure.SignalR.NotificationHub>("/hubs/notifications");
+
+app.Run();
+/*app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-app.Run();
+app.MapHub<EliteFit.Infrastructure.SignalR.NotificationHub>("/hubs/notifications"); // MapHub duhet të jetë këtu
+app.Run();*/

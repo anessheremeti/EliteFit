@@ -1,25 +1,60 @@
-import axiosClient from '../axiosClient'; // Sigurohu që path-i është i saktë
+import axiosClient from '../../axiosClient';
 
-export const workoutApi = {
+const WorkoutApi = {
+    /**
+     * Merr listën e videove stërvitore nga backend-i.
+     */
+    getVideos: async (query = {}) => {
+        const response = await axiosClient.get('/Workouts/videos', { params: query });
+        return response.data;
+    },
 
-  getVideos: (params) => {
-    return axiosClient.get('/workouts/videos', { params });
-  },
+    /**
+     * Merr të gjithë filtrat dinamikë nga databaza (Categories, Difficulties, MuscleGroups, Durations).
+     * Endpoint: GET /api/Workouts/filters
+     */
+    getFilters: async () => {
+        const response = await axiosClient.get('/Workouts/filters');
+        return response.data;
+    },
 
-  /**
-   * Përfundon një video stërvitore dhe regjistron progresin
-   * @param {Object} command - Objekti që përmban workoutId dhe kohëzgjatjen
-   */
-  completeVideo: (command) => {
-    return axiosClient.post('/workouts/complete-video', command);
-  },
+    /**
+     * Merr videot për banerin kryesor (FeaturedBanner).
+     * Endpoint: GET /api/Workouts/featured
+     */
+    getFeaturedVideos: async () => {
+        const response = await axiosClient.get('/Workouts/featured'); 
+        return response.data;
+    },
 
-  
-  createVideo: (formData) => {
-    return axiosClient.post('/workouts/videos', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  }
+    /**
+     * Merr listën e videove për "Continue Watching".
+     * Endpoint: GET /api/Workouts/continue-watching
+     */
+    getContinueWatching: async () => {
+        const response = await axiosClient.get('/Workouts/continue-watching');
+        return response.data;
+    },
+
+    /**
+     * Krijon/Ngarkon një video të re stërvitore në sistem.
+     */
+    createVideo: async (command) => {
+        const response = await axiosClient.post('/Workouts/videos', command, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    },
+
+    /**
+     * Regjistron përfundimin e stërvitjes.
+     */
+    completeVideo: async (command) => {
+        const response = await axiosClient.post('/Workouts/complete-video', command);
+        return response.data;
+    }
 };
+
+export default WorkoutApi;

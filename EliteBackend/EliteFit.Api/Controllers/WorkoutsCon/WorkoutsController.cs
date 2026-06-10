@@ -1,3 +1,4 @@
+
 ﻿using EliteFit.Api.DTOs;
 using EliteFit.Application.Features.Exercise.Queries.GetExerciseCategories;
 using EliteFit.Application.Features.Workouts.Commands.CompleteWorkoutVideo;
@@ -11,24 +12,101 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideos;
+using EliteFit.Application.Features.Workouts.Commands.CompleteWorkoutVideo;
+using EliteFit.Application.Features.Workouts.Commands.CreateWorkoutVideo;
+using EliteFit.Application.Features.Workouts.Queries.GetContinueWatching; // Shto këtë import
+using Microsoft.AspNetCore.Authorization;
+using EliteFit.Application.Features.Workouts.Queries.GetFeaturedVideos;
+using Microsoft.EntityFrameworkCore;
+using EliteFit.Persistence.Persistence.Context;
+using EliteFit.Application.Features.Exercise.Queries.GetExerciseCategories;
 
 namespace EliteFit.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class WorkoutsController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public WorkoutsController(IMediator mediator)
+        private readonly ApplicationDbContext _context; // 1. Shto këtë variabël
+        public WorkoutsController(IMediator mediator,ApplicationDbContext context)
         {
             _mediator = mediator;
+            _context = context;
         }
 
         // 1. MERR TË GJITHA VIDEOT
         [HttpGet("videos")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetVideos([FromQuery] GetWorkoutVideosQuery query)
         {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpGet("featured")]
+        [AllowAnonymous] // Lejohet që vizitorët ta shohin banerin pa qenë të loguar
+        public async Task<IActionResult> GetFeatured()
+        {
+            var result = await _mediator.Send(new GetFeaturedVideosQuery());
+            return Ok(result);
+        }
+        [HttpGet("filters")]
+        public async Task<IActionResult> GetFilters()
+        {
+            // 1. Marrim kategoritë nga tabela ExerciseCategories
+            var categories = await _context.ExerciseCategories
+                .Select(c => c.Name)
+                .Distinct()
+                .ToListAsync();
+            categories.Insert(0, "All"); // Shtojmë "All" në fillim
+
+            // 2. Marrim vështirësitë unike direkt nga videot
+            var difficulties = await _context.WorkoutVideos
+                .Where(v => !string.IsNullOrEmpty(v.DifficultyLevel))
+                .Select(v => v.DifficultyLevel)
+                .Distinct()
+                .ToListAsync();
+            difficulties.Insert(0, "All");
+
+            // 3. Marrim grupet e muskujve unike direkt nga videot
+            var muscleGroups = await _context.WorkoutVideos
+                .Where(v => !string.IsNullOrEmpty(v.MuscleGroup))
+                .Select(v => v.MuscleGroup)
+                .Distinct()
+                .ToListAsync();
+            muscleGroups.Insert(0, "All");
+
+            // 4. Për Durations (Kohëzgjatjen)
+            // Këto janë "intervale" (ranges), ndaj është më mirë t'i lësh hardcoded kështu siç i ke. 
+            // Krijimi i intervaleve dinamike nga DB kërkon logjikë të panevojshme dhe ngadalëson API-në.
+            var durations = new[] { "All", "< 15 min", "15–30 min", "30–45 min", "45–60 min", "60+ min" };
+
+            // Kthejmë përgjigjen
+            return Ok(new
+            {
+                Categories = categories,
+                Difficulties = difficulties,
+                MuscleGroups = muscleGroups,
+                Durations = durations
+            });
+        }
+        // Endpoint i ri për Continue Watching
+        [HttpGet("continue-watching")]
+        public async Task<IActionResult> GetContinueWatching()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int loggedInUserId))
+            {
+                return Unauthorized(new { message = "Përdoruesi nuk është i autorizuar!" });
+            }
+
+            var query = new GetContinueWatchingQuery { UserId = loggedInUserId };
             var result = await _mediator.Send(query);
             return Ok(result);
         }
@@ -37,6 +115,7 @@ namespace EliteFit.Api.Controllers
         [HttpGet("categories")]
         public async Task<IActionResult> GetCategories()
         {
+
             // Mund të krijosh një Query të thjeshtë në Application layer: GetExerciseCategoriesQuery
             // Për thjeshtësi po e paraqesim thirrjen përmes Mediator
             var categories = await _mediator.Send(new GetExerciseCategoriesQuery());
@@ -103,12 +182,28 @@ namespace EliteFit.Api.Controllers
         }
 
         // 5. PËRFUNDO VIDEO
+   
+
+
         [HttpPost("complete-video")]
         public async Task<IActionResult> CompleteVideo([FromBody] CompleteWorkoutVideoCommand command)
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int loggedInUserId))
+            {
+                return Unauthorized(new { message = "Përdoruesi nuk është i autorizuar!" });
+            }
+
+            command.UserId = loggedInUserId;
+
             var result = await _mediator.Send(command);
-            if (!result) return NotFound(new { message = "Videoja stërvitore nuk u gjet!" });
-            return Ok(new { message = "Historiku u regjistrua me sukses!" });
+
+            if (result == null)
+            {
+                return NotFound(new { message = "Videoja stërvitore nuk u gjet ose nuk ekziston!" });
+            }
+
+            return Ok(result);
         }
     }
 

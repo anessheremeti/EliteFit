@@ -39,7 +39,23 @@ namespace EliteFit.Persistence.Repositories
                 existing.DailyCalorieTarget = profile.DailyCalorieTarget;
             }
         }
+        public async Task<UserProfile> GetUserProfileAsync(int userId, CancellationToken cancellationToken)
+        {
+            // Këtu shto logjikën e databazës, p.sh:
+            return await _context.UserProfiles.FirstOrDefaultAsync(u => u.UserId == userId, cancellationToken);
+        }
 
+        public async Task UpdateUserProfileAsync(UserProfile profile, CancellationToken cancellationToken)
+        {
+            // Këtu shto logjikën e përditësimit, p.sh:
+            _context.UserProfiles.Update(profile);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        public async Task AddAsync(UserProfile profile)
+        {
+            // Kjo bën thjesht INSERT në bazë
+            await _context.UserProfiles.AddAsync(profile);
+        }
         public async Task SaveChangesAsync()
             => await _context.SaveChangesAsync();
     }

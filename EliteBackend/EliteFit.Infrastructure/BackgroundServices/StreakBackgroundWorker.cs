@@ -1,11 +1,12 @@
 ﻿using EliteFit.Domain.Interfaces.Repositories.Gamification;
+using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Services; // Sigurohu që kjo ndodhet këtu për IRealTimeNotificationService
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EliteFit.Infrastructure.BackgroundServices
@@ -32,6 +33,8 @@ namespace EliteFit.Infrastructure.BackgroundServices
                     using (var scope = _serviceProvider.CreateScope())
                     {
                         var repository = scope.ServiceProvider.GetRequiredService<IUserStreakRepository>();
+                        var notificationService = scope.ServiceProvider.GetRequiredService<IRealTimeNotificationService>();
+
                         var allStreaks = await repository.GetAllStreaksAsync(stoppingToken);
                         var yesterday = DateTime.UtcNow.Date.AddDays(-1);
 
@@ -39,23 +42,34 @@ namespace EliteFit.Infrastructure.BackgroundServices
                         {
                             if (streak.LastActivityDate.HasValue && streak.LastActivityDate.Value.Date < yesterday)
                             {
-                                // Përdoruesi ka harruar më shumë se një ditë pa kryer aktivitet!
+                                string titulli = "";
+                                string mesazhi = "";
+
                                 if (streak.StreakFreezeCount.HasValue && streak.StreakFreezeCount.Value > 0)
                                 {
-                                    // Përdor Streak Freeze nëse ka në dispozicion
                                     streak.StreakFreezeCount -= 1;
-                                    streak.LastActivityDate = DateTime.UtcNow.Date.AddDays(-1); // i jepet edhe një ditë kohë
+                                    streak.LastActivityDate = DateTime.UtcNow.Date.AddDays(-1);
+
+                                    titulli = "Streak Freeze u përdor! 🧊";
+                                    mesazhi = "Sapo u shpëtua seria juaj e ditëve aktive! Kryeni një aktivitet sot që mos ta humbni atë.";
+
                                     _logger.LogInformation($"User {streak.UserId} përdori Streak Freeze.");
                                 }
                                 else
                                 {
-                                    // Resetohet në 0 sepse nuk ka as freeze count
                                     streak.CurrentStreak = 0;
+
+                                    titulli = "Seria u ndërpre 😢";
+                                    mesazhi = "Ju nuk keni qenë aktiv ditët e fundit, streak-u juaj u rikthye në 0. Filloni sot një stërvitje të re!";
+
                                     _logger.LogInformation($"User {streak.UserId} i u bë reset Streak në 0.");
                                 }
 
                                 streak.UpdatedAt = DateTime.UtcNow;
                                 await repository.UpdateAsync(streak, stoppingToken);
+
+                                // Dërgimi i njoftimit live
+                                await notificationService.SendNotificationToUserAsync(streak.UserId, titulli, mesazhi, "streak_alert");
                             }
                         }
                     }
@@ -65,7 +79,6 @@ namespace EliteFit.Infrastructure.BackgroundServices
                     _logger.LogError(ex, "Gabim gjatë ekzekutimit të Streak Background Worker.");
                 }
 
-                // Ekzekutohet çdo 24 orë (ose mund ta ndryshosh sipas dëshirës)
                 await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
             }
         }

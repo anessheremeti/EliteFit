@@ -63,6 +63,7 @@ function LoadingSkeleton() {
 export function SessionStatsCard({ stats, loading }) {
   if (loading) return <LoadingSkeleton />;
 
+  // Kontrolli nëse nuk ka statistika fare nga backend-i ose totalSessions është 0
   if (!stats || stats.totalSessions === 0) {
     return (
       <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5">
@@ -79,6 +80,7 @@ export function SessionStatsCard({ stats, loading }) {
     );
   }
 
+  // Kontrollon nëse përdoruesi ka arritur rekorde personale (Personal Bests)
   const hasBests = stats.bestCalories > 0 || stats.bestDurationSeconds > 0;
 
   return (
@@ -89,12 +91,13 @@ export function SessionStatsCard({ stats, loading }) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <StatItem icon={BarChart2}    label="Sessions"     value={stats.totalSessions}                      color="sky"    />
-        <StatItem icon={Flame}        label="Calories"     value={`${stats.totalCalories} kcal`}            color="orange" />
-        <StatItem icon={Clock}        label="Total Time"   value={formatDuration(stats.totalSeconds)}       color="green"  />
+        <StatItem icon={BarChart2}    label="Sessions"     value={stats.totalSessions}                       color="sky"    />
+        <StatItem icon={Flame}        label="Calories"     value={`${stats.totalCalories || 0} kcal`}        color="orange" />
+        <StatItem icon={Clock}        label="Total Time"   value={formatDuration(stats.totalSeconds)}        color="green"  />
         <StatItem icon={CalendarClock} label="Last Session" value={formatDate(stats.lastCompletedAt)}       color="purple" />
       </div>
 
+      {/* Seksioni i rekordeve personale - shfaqet vetëm nëse ka të dhëna valid nga DB */}
       {hasBests && (
         <div className="pt-3 border-t border-black/5">
           <div className="flex items-center gap-1.5 mb-2">

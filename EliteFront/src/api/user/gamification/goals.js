@@ -14,3 +14,8 @@ export const assignUserGoals = async (userId, goalIds) => {
   });
   return response;
 };
+
+export const getUserGoals = async (userId) => {
+  const response = await axiosClient.get(`/Goals/user/${userId}`);
+  return response;
+};

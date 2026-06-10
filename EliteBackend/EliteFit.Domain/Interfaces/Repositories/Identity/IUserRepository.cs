@@ -8,7 +8,11 @@ namespace EliteFit.Domain.Interfaces.Repositories
         Task<User?> GetByIdAsync(int id);
         Task<bool> EmailExistsAsync(string email);
         Task AddAsync(User user);
+        void Update(User user);
         Task SaveChangesAsync();
+
+        Task DeleteAsync(int id, CancellationToken ct = default); // Hard Delete
+        Task<User?> GetUserWithAllergiesAsync(int id, CancellationToken ct = default);
 
         Task<List<User>> GetAllWithRolesAsync(CancellationToken ct = default);
         Task<bool> SetActiveStatusAsync(int id, bool isActive, CancellationToken ct = default);

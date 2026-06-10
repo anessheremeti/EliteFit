@@ -47,6 +47,9 @@ const Settings       = lazy(() => import('./pages/user/settings/AccountSettings.
 const Notifications  = lazy(() => import('./pages/user/notifications/index.jsx'));
 const NutritionPage = lazy(() => import('./pages/user/nutrition/index.jsx'));
 const RecipeDetailPage = lazy(() =>import('./pages/user/nutrition/detail/RecipeDetailPage.jsx'));
+const Goals = lazy(() => import('./pages/user/onboarding/index.jsx'));
+const WorkoutDetailPage = lazy(() => import('./pages/user/workouts/detail/WorkoutDetailPage.jsx'));
+
 /* ==========================================================================
     2. LOADING FALLBACK
    ========================================================================== */
@@ -170,11 +173,12 @@ const routes = [
     children: [
       { index: true,              element: UserDashboard },
       { path: 'workouts',         element: workoutVideos },
+      { path: 'workouts/:id',     element: WorkoutDetailPage }, // <── KJO ËSHTË LINJA E RE E SHTUAR
       { path: 'notifications',    element: Notifications },
       { path: 'profile',          element: Settings      },
       { path: 'nutrition',        element: NutritionPage },
       { path: 'nutrition/:id', element: RecipeDetailPage },
-      { path: 'goals',              element: OnboardingGoals },
+      { path: 'goals',              element: Goals },
     ],
   },
 ];

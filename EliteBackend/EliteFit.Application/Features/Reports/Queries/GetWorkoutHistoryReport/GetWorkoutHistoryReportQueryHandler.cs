@@ -21,6 +21,7 @@ namespace EliteFit.Application.Features.Reports.Queries.GetWorkoutHistoryReport
         public async Task<List<WorkoutHistoryReportDto>> Handle(GetWorkoutHistoryReportQuery request, CancellationToken cancellationToken)
         {
             var histories = await _repository.GetWorkoutHistoryReportAsync(
+                 request.UserId,
                 request.FromDate,
                 request.ToDate,
                 request.CategoryId,

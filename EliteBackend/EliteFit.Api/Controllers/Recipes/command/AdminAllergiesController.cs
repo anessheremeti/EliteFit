@@ -23,7 +23,8 @@ namespace EliteFit.Api.Controllers.Recipes.Command
         }
 
         // 1. GET ALL (me Search dhe Pagination): api/admin/allergies?searchTerm=nuts&pageNumber=1&pageSize=10
-        private async Task<ActionResult<List<AdminAllergyDto>>> GetAll([FromQuery] GetAdminAllergiesQuery query)
+        [HttpGet]
+        public async Task<ActionResult<List<AdminAllergyDto>>> GetAll([FromQuery] GetAdminAllergiesQuery query)
         {
             var result = await _mediator.Send(query);
             return Ok(result);
@@ -34,7 +35,9 @@ namespace EliteFit.Api.Controllers.Recipes.Command
         public async Task<IActionResult> Create([FromBody] CreateAllergyCommand command)
         {
             var allergyId = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetAll), new { id = allergyId }, new { Id = allergyId, Message = "Alergjia u krijua me sukses!" });
+
+            // Ndryshohet nga CreatedAtAction në Ok ose StatusCode
+            return StatusCode(201, new { Id = allergyId, Message = "Alergjia u krijua me sukses!" });
         }
 
         // 3. UPDATE: api/admin/allergies/5

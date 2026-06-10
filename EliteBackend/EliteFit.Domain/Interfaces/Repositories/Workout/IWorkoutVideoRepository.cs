@@ -15,9 +15,17 @@ namespace EliteFit.Domain.Interfaces.Repositories.Workout
 
         Task AddHistoryAsync(UserWorkoutHistory history, CancellationToken cancellationToken);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
+ 
         Task UpdateAsync(WorkoutVideo workoutVideo, CancellationToken cancellationToken);
         Task DeleteAsync(WorkoutVideo workoutVideo, CancellationToken cancellationToken);
 
 
+
+        Task<List<WorkoutVideo>> GetFeaturedVideosAsync(CancellationToken cancellationToken);
+        Task<List<UserWorkoutHistory>> GetUserHistoryAsync(int userId, CancellationToken cancellationToken);
+
+        Task<int> GetCountByUserIdAsync(int userId, CancellationToken cancellationToken);
+        Task<double> GetTotalHoursByUserIdAsync(int userId, CancellationToken cancellationToken);
+        Task<int> GetCurrentStreakAsync(int userId, CancellationToken cancellationToken);
     }
 }

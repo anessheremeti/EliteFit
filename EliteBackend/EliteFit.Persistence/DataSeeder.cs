@@ -202,7 +202,7 @@ namespace EliteFit.Persistence
             ");
             */
 
-            var existing = (await db.Roles.Select(r => r.Name).ToListAsync()).ToHashSet();
+               var existing = (await db.Roles.Select(r => r.Name).ToListAsync()).ToHashSet();
 
             var defaults = new[]
             {
