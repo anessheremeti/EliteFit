@@ -20,6 +20,7 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
     public async Task<WorkoutVideo?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await _context.WorkoutVideos
+            .Include(v => v.VideoFile) // Bën Eager Loading për të marrë të dhënat e videos
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
     }
     // 1. Implementimi i Query-t (Leximi me filtra)
@@ -137,5 +138,73 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
             else break;
         }
         return streak;
+    }
+    // Shto këtë metodë brenda klasës sate: WorkoutVideoRepository.cs
+    public async Task<(List<WorkoutVideo> Videos, int TotalCount)> SearchWorkoutVideosAsync(
+        string? searchTerm,
+        string? difficulty,
+        string? muscleGroup,
+        string? duration,
+        string? sortBy,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        // Fillojmë query-n bazë me Eager Loading (.Include) për Navigation Properties
+        var query = _context.WorkoutVideos
+            .Include(v => v.VideoFile) // Tabela Files (për VideoUrl)
+            .Include("Category")       // Tabela ExerciseCategories (për Category Name)
+            .AsQueryable();
+
+        // 1. FILTRI: Search Bar (Titull ose Përshkrim)
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            query = query.Where(v => v.Title.ToLower().Contains(term) ||
+                                     v.Description.ToLower().Contains(term));
+        }
+
+        // 2. FILTRAT: Dropdowns nga UI
+        if (!string.IsNullOrWhiteSpace(difficulty) && difficulty != "All")
+        {
+            query = query.Where(v => v.DifficultyLevel == difficulty);
+        }
+
+        if (!string.IsNullOrWhiteSpace(muscleGroup) && muscleGroup != "All")
+        {
+            query = query.Where(v => v.MuscleGroup == muscleGroup);
+        }
+
+        if (!string.IsNullOrWhiteSpace(duration) && duration != "All")
+        {
+            query = duration switch
+            {
+                "Short" => query.Where(v => v.DurationSeconds <= 900),
+                "Medium" => query.Where(v => v.DurationSeconds > 900 && v.DurationSeconds <= 1800),
+                "Long" => query.Where(v => v.DurationSeconds > 1800),
+                _ => query
+            };
+        }
+
+        // 3. Llogaritja e totalit para se të aplikohet Pagination
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        // 4. RENDITJA (Sorting)
+        // 4. RENDITJA (Sorting) - RREGULLUAR
+        query = sortBy switch
+        {
+            "short" => query.OrderBy(v => v.DurationSeconds),       // Përputhet me "short" nga React
+            "long" => query.OrderByDescending(v => v.DurationSeconds), // Përputhet me "long"
+            "calories" => query.OrderByDescending(v => v.EstimatedCaloriesBurned), // Përputhet me "calories"
+            _ => query.OrderByDescending(v => v.Id) // Default
+        };
+
+        // 5. PAGINATION (Faqezimi)
+        var videos = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (videos, totalCount);
     }
 }

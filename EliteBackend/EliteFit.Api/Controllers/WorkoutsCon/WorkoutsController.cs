@@ -6,25 +6,17 @@ using EliteFit.Application.Features.Workouts.Commands.CreateWorkoutVideo;
 using EliteFit.Application.Features.Workouts.Commands.DeleteWorkoutVideo;
 using EliteFit.Application.Features.Workouts.Commands.UpdateWorkoutVideo;
 using EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideos;
-// Supozojmë se këtu ke namespace-in për Query e kategorive, nëse jo, mund ta krijosh ose t'i thërrasësh direkt me Repo.
-// Për shembull: using EliteFit.Application.Features.Workouts.Queries.GetExerciseCategories; 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideos;
-using EliteFit.Application.Features.Workouts.Commands.CompleteWorkoutVideo;
-using EliteFit.Application.Features.Workouts.Commands.CreateWorkoutVideo;
+
 using EliteFit.Application.Features.Workouts.Queries.GetContinueWatching; // Shto këtë import
 using Microsoft.AspNetCore.Authorization;
 using EliteFit.Application.Features.Workouts.Queries.GetFeaturedVideos;
 using Microsoft.EntityFrameworkCore;
 using EliteFit.Persistence.Persistence.Context;
-using EliteFit.Application.Features.Exercise.Queries.GetExerciseCategories;
+using EliteFit.Application.Features.Workouts.Queries.GetWorkoutVideoById;
+using EliteFit.Application.Features.Workouts.Queries.SearchWorkoutsQuery;
 
 namespace EliteFit.Api.Controllers
 {
@@ -49,6 +41,17 @@ namespace EliteFit.Api.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
+        [HttpGet("videos/{id}")]
+        public async Task<IActionResult> GetVideoById(int id)
+        {
+            var result = await _mediator.Send(new GetWorkoutVideoByIdQuery(id));
+
+            if (result == null)
+                return NotFound(new { message = $"Videoja me ID {id} nuk ekziston." });
+
+            return Ok(result);
+        }
+
         [HttpGet("featured")]
         [AllowAnonymous] // Lejohet që vizitorët ta shohin banerin pa qenë të loguar
         public async Task<IActionResult> GetFeatured()
@@ -56,7 +59,16 @@ namespace EliteFit.Api.Controllers
             var result = await _mediator.Send(new GetFeaturedVideosQuery());
             return Ok(result);
         }
+
+        [HttpGet("search")]
+        [AllowAnonymous] // Lejohet kërkimi pa pasur nevojë për login token
+        public async Task<IActionResult> SearchWorkouts([FromQuery] SearchWorkoutsQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result); // Kthen direkt List<WorkoutVideoDto> pa wrapper
+        }
         [HttpGet("filters")]
+   
         public async Task<IActionResult> GetFilters()
         {
             // 1. Marrim kategoritë nga tabela ExerciseCategories
@@ -85,8 +97,7 @@ namespace EliteFit.Api.Controllers
             // 4. Për Durations (Kohëzgjatjen)
             // Këto janë "intervale" (ranges), ndaj është më mirë t'i lësh hardcoded kështu siç i ke. 
             // Krijimi i intervaleve dinamike nga DB kërkon logjikë të panevojshme dhe ngadalëson API-në.
-            var durations = new[] { "All", "< 15 min", "15–30 min", "30–45 min", "45–60 min", "60+ min" };
-
+            var durations = new[] { "All", "Short", "Medium", "Long" };
             // Kthejmë përgjigjen
             return Ok(new
             {
@@ -121,8 +132,7 @@ namespace EliteFit.Api.Controllers
             var categories = await _mediator.Send(new GetExerciseCategoriesQuery());
             return Ok(categories);
         }
-
-        // 2. KRIJO VIDEO (SHTO)
+    
         [HttpPost("create-video")]
         public async Task<IActionResult> CreateVideo([FromBody] CreateWorkoutVideoRequestDto request)
         {

@@ -2,7 +2,7 @@
 using EliteFit.Application.Features.Gamification.Queries.QuickFixTip;
 using EliteFit.Domain.Entities;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -21,9 +21,9 @@ namespace EliteFit.Application.Features.Gamification.Command.QuickFixTip
         IRequestHandler<DeleteQuickFixTipCommand, bool>
     {
         private readonly IQuickFixTipRepository _repository;
-        private readonly IRealTimeNotificationService _notificationService;
+        private readonly INotificationService _notificationService;
 
-        public QuickFixTipCommandHandler(IQuickFixTipRepository repository, IRealTimeNotificationService notificationService)
+        public QuickFixTipCommandHandler(IQuickFixTipRepository repository, INotificationService notificationService)
         {
             _repository = repository;
             _notificationService = notificationService;
@@ -69,11 +69,15 @@ namespace EliteFit.Application.Features.Gamification.Command.QuickFixTip
 
             var tipId = await _repository.AddAsync(newTip, cancellationToken);
 
-            // Njoftojmë të gjithë përdoruesit e lidhur në WebSocket për këshillën e re
+            // RREGULLUAR: Komentuam njoftimin global pasi INotificationService nuk e suporton momentalisht.
+            // Nëse shtoni metodën SendNotificationToAllAsync në të ardhmen, mund t'i hiqni komentet.
+
+            /*
             await _notificationService.SendNotificationToAllAsync(
                 "Këshillë e re e shpejtë 💡",
                 $"Sapo u shtua një këshillë e re në kategorinë: {request.Category}. Shikoje tani!"
             );
+            */
 
             return tipId;
         }

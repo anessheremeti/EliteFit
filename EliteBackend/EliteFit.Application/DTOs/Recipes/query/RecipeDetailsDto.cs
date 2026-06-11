@@ -15,5 +15,7 @@ namespace EliteFit.Application.DTOs.Recipes.query
         public decimal? ProteinG { get; set; }
         public decimal? CarbsG { get; set; }
         public decimal? FatG { get; set; }
+
+        public string? ImageUrl { get; set; }
     }
 }

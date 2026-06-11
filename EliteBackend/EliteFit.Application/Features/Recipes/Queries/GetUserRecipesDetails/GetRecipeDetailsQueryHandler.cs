@@ -34,7 +34,8 @@ namespace EliteFit.Application.Features.Recipes.Queries.GetUserRecipesDetails
                 Calories = recipe.Calories,
                 ProteinG = recipe.ProteinG,
                 CarbsG = recipe.CarbsG,
-                FatG = recipe.FatG
+                FatG = recipe.FatG,
+                ImageUrl = recipe.ImageFile?.FilePath
             };
         }
     }

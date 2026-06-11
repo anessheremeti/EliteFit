@@ -24,6 +24,7 @@ export const signalRService = {
         .build();
 
       connection.on('ReceiveNotification', (notification) => {
+          console.log('[SignalR] Notification received:', notification);
         onNotificationReceived?.(notification);
       });
 

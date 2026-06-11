@@ -1,6 +1,6 @@
 ﻿using EliteFit.Application.DTOs.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -16,9 +16,9 @@ namespace EliteFit.Application.Features.Gamification.Command.UserBadge
             IRequestHandler<GetUserBadgesQuery, List<UserBadgeDto>>
     {
         private readonly IUserBadgeRepository _repository;
-        private readonly IRealTimeNotificationService _notificationService;
+        private readonly INotificationService _notificationService;
 
-        public BadgeTriggerEngineHandler(IUserBadgeRepository repository, IRealTimeNotificationService notificationService)
+        public BadgeTriggerEngineHandler(IUserBadgeRepository repository, INotificationService notificationService)
         {
             _repository = repository;
             _notificationService = notificationService;
@@ -45,8 +45,8 @@ namespace EliteFit.Application.Features.Gamification.Command.UserBadge
 
                     await _repository.AddUserBadgeAsync(newBadge, cancellationToken);
 
-                    // Njoftojmë direkt përdoruesin në ekran që sapo fitoi medaljen e re
-                    await _notificationService.SendNotificationToUserAsync(
+                    // NDRECHUR: U hoq .ToString() pasi SendNotificationAsync pret 'int' si argument të parë
+                    await _notificationService.SendNotificationAsync(
                         notification.UserId,
                         "Medalje e re e fituar! 🏆",
                         "Urime! Keni fituar medaljen për 10 stërvitje të përfunduara me sukses."

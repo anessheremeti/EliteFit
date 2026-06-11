@@ -1,6 +1,6 @@
 ﻿using EliteFit.Application.DTOs.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
+using EliteFit.Domain.Interfaces.Services; // <-- SHTUAR: Për INotificationService
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -16,9 +16,9 @@ namespace EliteFit.Application.Features.Gamification.Command.Streak
            IRequestHandler<GetUserStreakQuery, UserStreakDto?>
     {
         private readonly IUserStreakRepository _repository;
-        private readonly IRealTimeNotificationService _notificationService;
+        private readonly INotificationService _notificationService; // <-- NDRYSHUAR Tipi
 
-        public StreakCommandHandler(IUserStreakRepository repository, IRealTimeNotificationService notificationService)
+        public StreakCommandHandler(IUserStreakRepository repository, INotificationService notificationService) // <-- NDRYSHUAR Konstruktori
         {
             _repository = repository;
             _notificationService = notificationService;
@@ -64,7 +64,8 @@ namespace EliteFit.Application.Features.Gamification.Command.Streak
             // Dërgojmë njoftim WebSocket nëse përdoruesi vazhdon serinë mbi 1 ditë
             if (streakIncreased && streak.CurrentStreak > 1)
             {
-                await _notificationService.SendNotificationToUserAsync(
+                // <-- NDRYSHUAR në SendNotificationAsync njëlloj si te Badge
+                await _notificationService.SendNotificationAsync(
                     request.UserId,
                     "Ditë e suksesshme! 🔥",
                     $"Ju keni një seri (streak) prej {streak.CurrentStreak} ditësh rresht! Vazhdoni kështu!"

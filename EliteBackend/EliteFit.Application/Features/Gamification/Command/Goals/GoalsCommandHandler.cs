@@ -1,7 +1,7 @@
 ﻿using EliteFit.Application.DTOs.Gamification;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
-using EliteFit.Domain.Interfaces.Repositories.Recipes.Command;
-using EliteFit.Domain.Entities; // <-- Sigurohu që e ke këtë për të aksesuar Entitetin Goal
+using EliteFit.Domain.Interfaces.Services; // <-- SHTUAR: Për INotificationService
+using EliteFit.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -19,6 +19,7 @@ namespace EliteFit.Application.Features.Gamification.Command.Goals
 
     // Komanda për të fshirë (Kthen true/false)
     public record DeleteGoalCommand(int Id) : IRequest<bool>;
+
     public class GoalsCommandHandler :
             IRequestHandler<GetAllGoalsQuery, List<GoalDto>>,
             IRequestHandler<GetUserGoalsQuery, List<GoalDto>>,
@@ -29,9 +30,9 @@ namespace EliteFit.Application.Features.Gamification.Command.Goals
             IRequestHandler<DeleteGoalCommand, bool>
     {
         private readonly IGoalRepository _repository;
-        private readonly IRealTimeNotificationService _notificationService;
+        private readonly INotificationService _notificationService; // <-- NDRYSHUAR Tipi
 
-        public GoalsCommandHandler(IGoalRepository repository, IRealTimeNotificationService notificationService)
+        public GoalsCommandHandler(IGoalRepository repository, INotificationService notificationService) // <-- NDRYSHUAR Konstruktori
         {
             _repository = repository;
             _notificationService = notificationService;
@@ -69,8 +70,9 @@ namespace EliteFit.Application.Features.Gamification.Command.Goals
 
             await _repository.AddUserGoalsAsync(newGoals, cancellationToken);
 
-            // 3. Njoftimi
-            await _notificationService.SendNotificationToUserAsync(
+            // 3. Njoftimi 
+            // <-- NDRYSHUAR në SendNotificationAsync njëlloj si te Badge
+            await _notificationService.SendNotificationAsync(
                 request.UserId,
                 "Qëllime të reja 🎯",
                 "Ju janë caktuar qëllime të reja për stërvitjet tuaja!"

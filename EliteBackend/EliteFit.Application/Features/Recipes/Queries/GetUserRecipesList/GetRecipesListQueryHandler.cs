@@ -32,7 +32,8 @@ namespace EliteFit.Application.Features.Recipes.Queries.GetUserRecipesList
                 Id = r.Id,
                 Title = r.Title,
                 Calories = r.Calories,
-                ProteinG = r.ProteinG
+                ProteinG = r.ProteinG, 
+             ImageUrl = r.ImageFile != null ? r.ImageFile.FilePath : null
             }).ToList();
         }
     }

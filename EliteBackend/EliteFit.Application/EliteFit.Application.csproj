@@ -8,11 +8,8 @@
 
   <ItemGroup>
     <Compile Remove="Features\Personalization\Query\**" />
-    <Compile Remove="Interfaces\**" />
     <EmbeddedResource Remove="Features\Personalization\Query\**" />
-    <EmbeddedResource Remove="Interfaces\**" />
     <None Remove="Features\Personalization\Query\**" />
-    <None Remove="Interfaces\**" />
   </ItemGroup>
 
   <ItemGroup>

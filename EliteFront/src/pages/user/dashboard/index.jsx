@@ -79,11 +79,14 @@ export default function UserDashboard() {
       try {
         setLoading(true)
 
+        // 1. SHTO KËTË RRESHT KËTU: Krijojmë datën e sotme
+        const today = new Date().toISOString().split('T')[0];
+
         // Ekzekutojmë thirrjet paralelisht që dashboard-i të ngarkohet sa më shpejt
         const [calorieRes, badgesRes, streakRes, tipsRes] = await Promise.allSettled([
-          getCalorieTracking(currentUserId),
-          getUserBadges(currentUserId),
-          getUserStreak(currentUserId),
+          getCalorieTracking(today), // Tani React e di çfarë është 'today'
+          getUserBadges(currentUserId), 
+          getUserStreak(currentUserId), 
           getQuickFixTips()
         ])
 

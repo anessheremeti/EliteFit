@@ -6,34 +6,46 @@ const WorkoutApi = {
      */
     getVideos: async (query = {}) => {
         const response = await axiosClient.get('/Workouts/videos', { params: query });
-        return response.data;
+        return response; // RREGULLUAR: Interceptori e ka hequr .data
     },
 
     /**
-     * Merr të gjithë filtrat dinamikë nga databaza (Categories, Difficulties, MuscleGroups, Durations).
-     * Endpoint: GET /api/Workouts/filters
+     * Merr një video specifike sipas ID-së.
      */
-    getFilters: async () => {
-        const response = await axiosClient.get('/Workouts/filters');
-        return response.data;
+    getVideoById: async (id) => {
+        const response = await axiosClient.get(`/Workouts/videos/${id}`);
+        return response; // RREGULLUAR: Kthen direkt objektin e stërvitjes
     },
 
+    /**
+     * Merr të gjithë filtrat dinamikë nga databaza.
+     */
+        getFilters: async () => {
+            const response = await axiosClient.get('/Workouts/filters');
+            return response; // RREGULLUAR
+        },
+  /**
+     * Merr listën e videove stërvitore me filtra të avancuar nga backend-i.
+     */
+    searchVideos: async (filters = {}) => {
+        // filters mund të përmbajë: query, difficulty, muscleGroup, categoryId, sortBy
+        const response = await axiosClient.get('/Workouts/search', { params: filters });
+        return response;
+    },
     /**
      * Merr videot për banerin kryesor (FeaturedBanner).
-     * Endpoint: GET /api/Workouts/featured
      */
     getFeaturedVideos: async () => {
         const response = await axiosClient.get('/Workouts/featured'); 
-        return response.data;
+        return response; // RREGULLUAR
     },
 
     /**
      * Merr listën e videove për "Continue Watching".
-     * Endpoint: GET /api/Workouts/continue-watching
      */
     getContinueWatching: async () => {
         const response = await axiosClient.get('/Workouts/continue-watching');
-        return response.data;
+        return response; // RREGULLUAR
     },
 
     /**
@@ -45,7 +57,7 @@ const WorkoutApi = {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data;
+        return response; // RREGULLUAR
     },
 
     /**
@@ -53,7 +65,7 @@ const WorkoutApi = {
      */
     completeVideo: async (command) => {
         const response = await axiosClient.post('/Workouts/complete-video', command);
-        return response.data;
+        return response; // RREGULLUAR
     }
 };
 
