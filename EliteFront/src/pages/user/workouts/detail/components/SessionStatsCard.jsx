@@ -11,11 +11,15 @@ function formatDuration(totalSeconds) {
 
 function formatDate(dateStr) {
   if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    month: 'short',
-    day:   'numeric',
-    year:  'numeric',
-  });
+  try {
+    return new Date(dateStr).toLocaleDateString(undefined, {
+      month: 'short',
+      day:   'numeric',
+      year:  'numeric',
+    });
+  } catch (e) {
+    return '—';
+  }
 }
 
 const ICON_COLORS = {
@@ -63,8 +67,17 @@ function LoadingSkeleton() {
 export function SessionStatsCard({ stats, loading }) {
   if (loading) return <LoadingSkeleton />;
 
-  // Kontrolli nëse nuk ka statistika fare nga backend-i ose totalSessions është 0
-  if (!stats || stats.totalSessions === 0) {
+  // Përshtatja: Kontroll i sigurt nëse nuk ka statistika ose totalSessions është 0/undefined
+  const totalSessions = stats?.totalSessions || 0;
+  const totalCalories = stats?.totalCalories || 0;
+  // Suporton si 'totalSeconds' ashtu edhe 'totalDurationSeconds' varësisht si e ka emëruar backend-i
+  const totalSeconds = stats?.totalSeconds ?? stats?.totalDurationSeconds ?? 0;
+  const lastCompletedAt = stats?.lastCompletedAt || null;
+
+  const bestCalories = stats?.bestCalories || 0;
+  const bestDurationSeconds = stats?.bestDurationSeconds || 0;
+
+  if (!stats || totalSessions === 0) {
     return (
       <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5">
         <div className="flex items-center gap-2 mb-3">
@@ -80,8 +93,8 @@ export function SessionStatsCard({ stats, loading }) {
     );
   }
 
-  // Kontrollon nëse përdoruesi ka arritur rekorde personale (Personal Bests)
-  const hasBests = stats.bestCalories > 0 || stats.bestDurationSeconds > 0;
+  // Kontrollon nëse përdoruesi ka arritur rekorde personale
+  const hasBests = bestCalories > 0 || bestDurationSeconds > 0;
 
   return (
     <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5 space-y-4">
@@ -91,13 +104,13 @@ export function SessionStatsCard({ stats, loading }) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <StatItem icon={BarChart2}    label="Sessions"     value={stats.totalSessions}                       color="sky"    />
-        <StatItem icon={Flame}        label="Calories"     value={`${stats.totalCalories || 0} kcal`}        color="orange" />
-        <StatItem icon={Clock}        label="Total Time"   value={formatDuration(stats.totalSeconds)}        color="green"  />
-        <StatItem icon={CalendarClock} label="Last Session" value={formatDate(stats.lastCompletedAt)}       color="purple" />
+        <StatItem icon={BarChart2}      label="Sessions"     value={totalSessions}                       color="sky"    />
+        <StatItem icon={Flame}          label="Calories"     value={`${totalCalories} kcal`}            color="orange" />
+        <StatItem icon={Clock}          label="Total Time"   value={formatDuration(totalSeconds)}        color="green"  />
+        <StatItem icon={CalendarClock} label="Last Session" value={formatDate(lastCompletedAt)}       color="purple" />
       </div>
 
-      {/* Seksioni i rekordeve personale - shfaqet vetëm nëse ka të dhëna valid nga DB */}
+      {/* Seksioni i rekordeve personale */}
       {hasBests && (
         <div className="pt-3 border-t border-black/5">
           <div className="flex items-center gap-1.5 mb-2">
@@ -105,14 +118,14 @@ export function SessionStatsCard({ stats, loading }) {
             <p className="text-[11px] text-dark/40 font-medium uppercase tracking-wide">Personal Bests</p>
           </div>
           <div className="flex gap-4 flex-wrap">
-            {stats.bestCalories > 0 && (
+            {bestCalories > 0 && (
               <span className="text-xs text-dark/70">
-                🔥 <span className="font-semibold text-dark">{stats.bestCalories} kcal</span>
+                🔥 <span className="font-semibold text-dark">{bestCalories} kcal</span>
               </span>
             )}
-            {stats.bestDurationSeconds > 0 && (
+            {bestDurationSeconds > 0 && (
               <span className="text-xs text-dark/70">
-                ⏱ <span className="font-semibold text-dark">{formatDuration(stats.bestDurationSeconds)}</span>
+                ⏱ <span className="font-semibold text-dark">{formatDuration(bestDurationSeconds)}</span>
               </span>
             )}
           </div>

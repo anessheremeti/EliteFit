@@ -27,5 +27,14 @@ namespace EliteFit.Domain.Interfaces.Repositories.Workout
         Task<int> GetCountByUserIdAsync(int userId, CancellationToken cancellationToken);
         Task<double> GetTotalHoursByUserIdAsync(int userId, CancellationToken cancellationToken);
         Task<int> GetCurrentStreakAsync(int userId, CancellationToken cancellationToken);
+        Task<(List<WorkoutVideo> Videos, int TotalCount)> SearchWorkoutVideosAsync(
+    string? searchTerm,
+    string? difficulty,
+    string? muscleGroup,
+    string? duration,
+    string? sortBy,
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken);
     }
 }

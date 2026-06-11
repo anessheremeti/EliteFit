@@ -12,17 +12,17 @@ const DIET_COLORS = {
 export function RecipeCard({ recipe }) {
   const navigate = useNavigate();
 
-  // Sigurohemi që kapim ID-në pavarësisht nëse vjen si 'id' apo 'Id'
+  const BACKEND_BASE_URL = 'https://localhost:7049';
+
+  // Sigurohemi që kapim ID-në pa pasur problem shkronjat e mëdha/vogla
   const recipeId = recipe.id || recipe.Id;
   const title = recipe.title || recipe.Title || 'Pa titull';
   const calories = recipe.calories !== undefined ? recipe.calories : recipe.Calories;
   
-  // Përshtatja e makronutrientëve me kolonat e SQL Server-it tënd
   const protein = recipe.proteinG ?? recipe.ProteinG ?? recipe.protein_g;
   const carbs = recipe.carbsG ?? recipe.CarbsG ?? recipe.carbs_g;
   const fat = recipe.fatG ?? recipe.FatG ?? recipe.fat_g;
 
-  // Nëse nuk kemi kohë specifike nga backend-i, vendosim 0 si plan rezervë
   const prepTime = recipe.prepTimeMin ?? recipe.PrepTimeMin ?? 0;
   const cookTime = recipe.cookTimeMin ?? recipe.CookTimeMin ?? 0;
   const totalTime = prepTime + cookTime;
@@ -32,8 +32,21 @@ export function RecipeCard({ recipe }) {
   const category = recipe.category ?? recipe.Category;
   const dietType = recipe.dietType ?? recipe.DietType ?? 'Standard';
   
-  // Alergjenët mund të vijnë si listë objektesh apo stringjesh (i kthejmë në masiv të thjeshtë tekstesh)
   const allergens = recipe.allergens || recipe.Allergens || [];
+
+  // RREGULLIMI I FOTOS: Evitimi i rreptë i double-slash ("//")
+  const rawImageUrl = recipe.imageUrl || recipe.ImageUrl;
+  let finalImageUrl = null;
+
+  if (rawImageUrl) {
+    if (rawImageUrl.startsWith('http')) {
+      finalImageUrl = rawImageUrl;
+    } else {
+      const cleanPath = rawImageUrl.replace(/\\/g, '/');
+      const hasLeadingSlash = cleanPath.startsWith('/');
+      finalImageUrl = `${BACKEND_BASE_URL}${hasLeadingSlash ? '' : '/'}${cleanPath}`;
+    }
+  }
 
   return (
     <div
@@ -43,9 +56,9 @@ export function RecipeCard({ recipe }) {
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-        {recipe.imageUrl || recipe.ImageUrl ? (
+        {finalImageUrl ? (
           <img
-            src={recipe.imageUrl || recipe.ImageUrl}
+            src={finalImageUrl}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"

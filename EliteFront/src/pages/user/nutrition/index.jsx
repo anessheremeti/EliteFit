@@ -16,7 +16,7 @@ export default function RecipeFeedPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
-  // Thirrja e saktë e API-së për listën e recetave
+  // Thirrja e API-së për listën e recetave
   useEffect(() => {
     const fetchRecipesData = async () => {
       setLoading(true);
@@ -27,7 +27,8 @@ export default function RecipeFeedPage() {
         };
 
         const data = await getRecipes(queryParams);
-        // Menaxhimi i interceptorit të ri: nëse kthehet direkt array ose objekt me .data
+        
+        // Menaxhimi i interceptorit: nëse kthehet direkt array ose objekt me .data
         const actualData = data?.data || data;
         setRecipes(Array.isArray(actualData) ? actualData : []);
       } catch (err) {
@@ -39,11 +40,20 @@ export default function RecipeFeedPage() {
     };
 
     fetchRecipesData();
-  }, [search]); // Ri-thirret vetëm kur ndryshon kërkimi
+  }, [search]); // Ri-thirret kur ndryshon kërkimi
 
-  // Logjika e ndarjes në faqe (Pagination) lokale bazuar në recetat e kthyer nga serveri
-  const totalPages = Math.ceil(recipes.length / PAGE_SIZE) || 1;
-  const paginatedRecipes = recipes.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  // RREGULLIMI KRYESOR: Filtrimi lokal në bazë të emrit (Title / title)
+  const filteredRecipes = recipes.filter(recipe => {
+    if (!search) return true;
+    
+    // Kontrollon të dyja variantet pasi C# vjen me 'Title' por nganjëherë interceptori e kthen 'title'
+    const recipeName = recipe.title || recipe.Title || recipe.instructions || recipe.Instructions || '';
+    return recipeName.toLowerCase().includes(search.toLowerCase());
+  });
+
+  // Logjika e ndarjes në faqe (Pagination) bazuar mbi recetat e filtruara tashmë
+  const totalPages = Math.ceil(filteredRecipes.length / PAGE_SIZE) || 1;
+  const paginatedRecipes = filteredRecipes.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -62,7 +72,7 @@ export default function RecipeFeedPage() {
 
         <div className="flex items-baseline gap-2">
           <span className="text-xs text-dark/40">
-            {loading ? 'Duke u ngarkuar...' : `${recipes.length} rezultate`}
+            {loading ? 'Duke u ngarkuar...' : `${filteredRecipes.length} rezultate`}
           </span>
         </div>
 
@@ -85,10 +95,10 @@ export default function RecipeFeedPage() {
           )}
         </div>
 
-        {/* Kur nuk gjendet asgjë */}
-        {!loading && recipes.length === 0 && !error && (
+        {/* Kur nuk gjendet asgjë pas filtrimit */}
+        {!loading && filteredRecipes.length === 0 && !error && (
           <div className="py-24 text-center text-dark/30">
-            <p>Nuk u gjet asnjë recetë.</p>
+            <p>Nuk u gjet asnjë recetë me emrin "{search}".</p>
           </div>
         )}
 

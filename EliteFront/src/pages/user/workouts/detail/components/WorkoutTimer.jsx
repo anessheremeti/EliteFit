@@ -19,10 +19,10 @@ const STATUS_HINT = {
  * Controlled display component. Të gjitha gjendjet e timer-it menaxhohen nga prindi.
  * Props:
  * elapsedSeconds – koha aktuale e seancës në sekonda
- * status          – 'idle' | 'running' | 'paused'
+ * status          – 'idle' | 'running' | 'paused' (Trajton edhe 'Idle', 'Running', 'Paused' nga .NET)
  * liveCalories    – kalorive e llogaritura live për këtë seancë
  * onStart/onPause/onResume/onFinish/onReset – funksionet callback për veprime
- * disabled        – bllokon butonat destruktivë gjatë ruajtjes në databazë
+ * disabled        – bllokon të gjithë butonat gjatë ruajtjes në databazë
  */
 export function WorkoutTimer({
   elapsedSeconds = 0,
@@ -35,7 +35,10 @@ export function WorkoutTimer({
   onReset,
   disabled = false,
 }) {
-  // Sigurohemi që kaloritë shfaqen si numër i plotë (p.sh. 42 kcal në vend të 42.15)
+  // Sigurohemi që statusi funksionon edhe nëse backend-i i kthen me shkronjë të madhe (PascalCase)
+  const normalizedStatus = String(status).toLowerCase();
+  
+  // Sigurohemi që kaloritë shfaqen si numër i plotë
   const displayCalories = Math.round(liveCalories);
 
   return (
@@ -49,7 +52,7 @@ export function WorkoutTimer({
         </div>
 
         {/* Live calorie badge — shfaqet vetëm kur nis stërvitja */}
-        {status !== 'idle' && (
+        {normalizedStatus !== 'idle' && (
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-100 border-solid animate-pulse">
             <Flame size={12} className="text-orange-500 fill-orange-500" />
             <span className="text-xs font-semibold text-orange-600 tabular-nums">
@@ -65,14 +68,14 @@ export function WorkoutTimer({
           {formatTime(elapsedSeconds)}
         </span>
         <p className="text-xs text-dark/40 mt-2 font-medium">
-          {STATUS_HINT[status]}
+          {STATUS_HINT[normalizedStatus] || STATUS_HINT['idle']}
         </p>
       </div>
 
       {/* Action buttons bllok sipas gjendjes së stërvitjes */}
       <div className="flex items-center justify-center gap-2">
 
-        {status === 'idle' && (
+        {normalizedStatus === 'idle' && (
           <button
             onClick={onStart}
             disabled={disabled}
@@ -84,12 +87,13 @@ export function WorkoutTimer({
           </button>
         )}
 
-        {status === 'running' && (
+        {normalizedStatus === 'running' && (
           <>
             <button
               onClick={onPause}
+              disabled={disabled}
               className="flex items-center gap-2 px-4 py-2.5 bg-amber-100 text-amber-700 rounded-xl font-semibold text-sm
-                         hover:bg-amber-200 active:scale-95 transition-all"
+                         hover:bg-amber-200 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Pause size={15} />
               Pause
@@ -106,12 +110,13 @@ export function WorkoutTimer({
           </>
         )}
 
-        {status === 'paused' && (
+        {normalizedStatus === 'paused' && (
           <>
             <button
               onClick={onResume}
+              disabled={disabled}
               className="flex items-center gap-2 px-4 py-2.5 bg-sky text-white rounded-xl font-semibold text-sm
-                         hover:bg-sky/90 active:scale-95 transition-all"
+                         hover:bg-sky/90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Play size={15} fill="currentColor" />
               Resume
@@ -127,7 +132,9 @@ export function WorkoutTimer({
             </button>
             <button
               onClick={onReset}
-              className="p-2.5 rounded-xl text-dark/40 hover:text-dark hover:bg-gray-100 active:scale-95 transition-all"
+              disabled={disabled}
+              className="p-2.5 rounded-xl text-dark/40 hover:text-dark hover:bg-gray-100 active:scale-95 transition-all 
+                         disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Reset timer"
             >
               <RotateCcw size={15} />

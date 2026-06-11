@@ -80,6 +80,7 @@ const response = await axios.get('https://localhost:7049/api/ExerciseCategories'
   }
 
   // Ruajtja ose Editimi
+// Ruajtja ose Editimi
   const handleSave = async (e) => {
     e.preventDefault()
     if (!form.title || !form.videoUrl) {
@@ -87,7 +88,7 @@ const response = await axios.get('https://localhost:7049/api/ExerciseCategories'
       return;
     }
 
-    setLoading(true) // RREGULLUAR: Ishte gabim loading(true)
+    setLoading(true) 
 
     const workoutPayload = {
       ...(editingId && { id: editingId }),
@@ -103,21 +104,23 @@ const response = await axios.get('https://localhost:7049/api/ExerciseCategories'
 
     try {
       if (editingId) {
-        await axios.put('https://localhost:7049/api/workouts/update-video', workoutPayload);
+        // RREGULLUAR: Përdoret adminApi që të mos anashkalohet Token-i i sigurisë
+        await adminApi.updateWorkout(editingId, workoutPayload);
       } else {
-        await axios.post('https://localhost:7049/api/workouts/create-video', workoutPayload);
+        // RREGULLUAR: Përdoret adminApi për dërgimin e saktë të kërkesës POST
+        await adminApi.createWorkout(workoutPayload);
       }
       
       handleCloseModal();
       fetchWorkouts();
     } catch (apiError) {
       console.error("Gabimi nga API:", apiError);
-      alert("Dështoi ruajtja e stërvitjes. Shikoni konsolën.");
+      // Pasi interceptori yt e paketon gabimin, mund t'ia shfaqësh përdoruesit mesazhin ekzaktesisht nga backend-i
+      alert(`Dështoi ruajtja e stërvitjes: ${apiError.message || "Shikoni konsolën."}`);
     } finally {
       setLoading(false);
     }
   }
-
   // Fshirja
   const handleDelete = async (id) => {
     if (!window.confirm("Jeni i sigurt që doni të fshini këtë stërvitje?")) return;

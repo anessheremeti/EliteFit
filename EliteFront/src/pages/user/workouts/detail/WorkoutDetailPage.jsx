@@ -1,261 +1,304 @@
-import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { FeaturedBanner } from '../components/FeaturedBanner';
-import { FilterBar } from '../components/FilterBar';
-import { ContinueWatching } from '../components/ContinueWatching';
-import { WorkoutCard }      from '../components/WorkoutCard';
-import { WorkoutRow }       from '../components/WorkoutRow';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion'; // Shtohet AnimatePresence për animacionet e mbylljes
+import { X, CheckCircle, Clock } from 'lucide-react'; // Ikona për popup-in
 
-// Importojmë API-n tonë të vërtetë të backend-it
+// Komponentët e importuar si Named Exports
+import { VideoPlayer } from './components/VideoPlayer';
+import { WorkoutStats } from './components/WorkoutStats';
+import { WorkoutTimer } from './components/WorkoutTimer';
+import { SessionStatsCard } from './components/SessionStatsCard';
+import { RelatedWorkouts } from './components/RelatedWorkouts';
+
+// Importojmë API-n
 import WorkoutApi from '../../../../api/user/workout/workouts';
 
-// Konstanta e filtrave dinamikë që përputhen me modelin e backend-it tuaj
-const DIFFICULTIES  = ['All', 'Beginner', 'Intermediate', 'Advanced'];
-const MUSCLE_GROUPS = ['All', 'Full Body', 'Upper Body', 'Lower Body', 'Core', 'Back'];
-const DURATIONS     = ['All', '< 15 min', '15–30 min', '30–45 min', '45–60 min', '60+ min'];
+export default function WorkoutDetailPage() {
+  const { id } = useParams(); 
+  const navigate = useNavigate();
+  console.log("ID-ja e kapur nga URL:", id);
+  
+  const [workout, setWorkout] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-// Llogaritja e minutave duke u bazuar në sekondat që vijnë nga databaza (DurationSeconds / 60)
-const DURATION_RANGES = {
-  '< 15 min':  [0,  14],
-  '15–30 min': [15, 30],
-  '30–45 min': [30, 45],
-  '45–60 min': [45, 60],
-  '60+ min':   [60, Infinity],
-};
+  // --- SHTETET E REJA PËR TIMERIN DHE KALORITË LIVE ---
+  const [status, setStatus] = useState('idle'); // 'idle' | 'running' | 'paused'
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [liveCalories, setLiveCalories] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
-const SECTION_ORDER = ['Core', 'Upper Body', 'Lower Body', 'Full Body'];
+  // --- SHTETI I RI PËR POPUP NOTIFICATION ---
+  const [notification, setNotification] = useState(null);
 
-const container = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
-const item = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.25 } } };
-
-export default function WorkoutsPage() {
-  const [workouts,    setWorkouts]    = useState([]);
-  const [featured,    setFeatured]    = useState([]);
-  const [continuing,  setContinuing]  = useState([]);
-  const [categories,  setCategories]  = useState(['All']);
-  const [loading,     setLoading]     = useState(true);
-  const [contLoading, setContLoading] = useState(true);
-
-  const [category,    setCategory]    = useState('All');
-  const [difficulty,  setDifficulty]  = useState('All');
-  const [muscleGroup, setMuscleGroup] = useState('All');
-  const [duration,    setDuration]    = useState('All');
-
+  // 1. Ngarkimi i detajeve të stërvitjes nga API
   useEffect(() => {
     let cancelled = false;
 
-    async function loadDataFromApi() {
+    async function fetchWorkoutDetail() {
       try {
         setLoading(true);
-        
-        // Thërrasim pikën tonë të re GET /api/Workouts/videos
-        const response = await WorkoutApi.getVideos();
-        
+        setError(null);
+
+        const response = await WorkoutApi.getVideoById(id);
         if (cancelled) return;
+        
+        let finalWorkout = null;
+        if (!response) {
+          finalWorkout = null;
+        } else if (response.data) {
+          finalWorkout = response.data;
+        } else {
+          finalWorkout = response;
+        }
 
-        // Kujdesemi nëse përgjigja vjen si { data: [...] } apo direkt si varg [...]
-        const allVideos = Array.isArray(response) 
-          ? response 
-          : (response && Array.isArray(response.data) ? response.data : []);
+        if (Array.isArray(finalWorkout)) {
+          finalWorkout = finalWorkout[0];
+        }
 
-        setWorkouts(allVideos);
-
-        // Dinamike: Marrim 3 videot e para për slider-in kryesor (Sigurohemi me ?.slice)
-        setFeatured(allVideos.slice(0, 3));
-
-        // Dinamike: Gjenerojmë kategoritë automatikisht direkt nga ato që ekzistojnë në DB
-        const uniqueCategories = [...new Set(allVideos.map(v => v?.category).filter(Boolean))];
-        setCategories(['All', ...uniqueCategories]);
+        if (finalWorkout && (finalWorkout.id || finalWorkout.title)) {
+          setWorkout(finalWorkout);
+        } else {
+          setError('Kjo stërvitje nuk ekziston në databazë.');
+        }
 
       } catch (err) {
-        console.error('Gabim gjatë ngarkimit të videove nga backend:', err);
-        setWorkouts([]);
-        setFeatured([]);
+        console.error('Gabim gjatë ngarkimit të detajeve të stërvitjes:', err);
+        setError('Ndodhi një gabim gjatë ngarkimit të stërvitjes.');
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    async function loadContinueWatching() {
-      try {
-        setContLoading(true);
-        // Do të mbushet kur të jetë gati endpoint-i i historikut
-        setContinuing([]);
-      } catch (err) {
-        console.error('Gabim gjatë ngarkimit të historikut:', err);
-      } finally {
-        if (!cancelled) setContLoading(false);
-      }
+    if (id) {
+      fetchWorkoutDetail();
     }
 
-    loadDataFromApi();
-    loadContinueWatching();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
-    return () => { cancelled = true; };
+  // 2. MOTORRI I TIMERT
+  useEffect(() => {
+    let interval = null;
+
+    if (status === 'running') {
+      const totalSec = workout?.durationSeconds || 1800; 
+      const totalCal = workout?.estimatedCaloriesBurned || 300; 
+      const caloriesPerSecond = totalCal / totalSec;
+
+      interval = setInterval(() => {
+        setElapsedSeconds((prev) => {
+          const nextSeconds = prev + 1;
+          setLiveCalories(nextSeconds * caloriesPerSecond);
+
+          if (nextSeconds >= totalSec) {
+            clearInterval(interval);
+            setStatus('paused');       
+            handleFinishWorkout();     
+          }
+
+          return nextSeconds;
+        });
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [status, workout]);
+
+  // 3. AUTO-CLOSE PËR POPUP-IN (Mbyll njoftimin automatikisht pas 6 sekondave)
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
+  // 4. LIDHJA ME SIGNALR (Nëse dëshiron që popup-i të kape dhe mesazhet direkte nga konsola e SignalR)
+  useEffect(() => {
+    const handleSignalRNotification = (event) => {
+      if (event.detail) {
+        setNotification(event.detail);
+      }
+    };
+
+    window.addEventListener('signalr-popup', handleSignalRNotification);
+    return () => window.removeEventListener('signalr-popup', handleSignalRNotification);
   }, []);
 
-  const hasFilters = category !== 'All' || difficulty !== 'All' || muscleGroup !== 'All' || duration !== 'All';
+  // 5. FUNKSIONI FINAL: Ruajtja e progresit dhe shfaqja e Popup-it në vend të alert()
+  const handleFinishWorkout = async () => {
+    if (disabled || elapsedSeconds === 0) return;
+    setDisabled(true);
+    setStatus('paused');
 
-  // Filtrimi në Frontend duke përdorur të dhënat camelCase nga C# API
- // Filtrimi në Frontend me pastrim të karaktereve (të padukshme/hapësira)
-  const filtered = useMemo(() => {
-    if (!Array.isArray(workouts)) return [];
-    if (!hasFilters) return workouts;
-    
-    return workouts.filter(w => {
-      if (!w) return false;
+    const minimumSecondsRequired = 10;
+    const isCompleted = elapsedSeconds >= minimumSecondsRequired;
 
-      // 1. Kategoritë (mbrojtje)
-      const matchesCategory = category === 'All' || 
-        (w.category?.toLowerCase().trim() === category.toLowerCase().trim());
-
-      // 2. Vështirësia (me .trim() dhe .toLowerCase() për siguri)
-      const diffVal = (w.difficultyLevel || w.difficulty || '').toLowerCase().trim();
-      const matchesDifficulty = difficulty === 'All' || (diffVal === difficulty.toLowerCase().trim());
-
-      // 3. Muscle Group
-      const matchesMuscle = muscleGroup === 'All' || 
-        (w.muscleGroup?.toLowerCase().trim() === muscleGroup.toLowerCase().trim());
+    try {
+      const command = {
+        videoId: parseInt(id),          
+        timeWatchedSeconds: elapsedSeconds, 
+        caloriesBurned: Math.round(liveCalories), 
+      };
       
-      // 4. Kohëzgjatja (kjo ngelet siç është)
-      let matchesDuration = true;
-      if (duration !== 'All') {
-        const [min, max] = DURATION_RANGES[duration] ?? [0, Infinity];
-        const durationInMinutes = w.durationSeconds ? Math.round(w.durationSeconds / 60) : 0;
-        if (durationInMinutes < min || durationInMinutes > max) matchesDuration = false;
-      }
-
-      return matchesCategory && matchesDifficulty && matchesMuscle && matchesDuration;
-    });
-  }, [workouts, hasFilters, category, difficulty, muscleGroup, duration]);
-
-  // Grupimi dinamik i rreshtave (Workout Rows) sipas fushës muscleGroup të databazës
-  const sections = useMemo(() => {
-    if (!Array.isArray(workouts) || hasFilters) return [];
-    
-    const map = new Map();
-    for (const w of workouts) {
-      if (!w) continue;
-      const key = w.muscleGroup ?? 'Other';
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push(w);
+      await WorkoutApi.completeVideo(command);
+      
+      // SHFAQJA E POPUP-IT ME STRUKTURËN E SAKTË TË KONSOLËS TËNDE
+      setNotification({
+        title: isCompleted ? "Workout Completed 💪" : "Progress Saved ⏱️",
+        message: isCompleted 
+          ? `Urime! Përfundove stërvitjen "${workout?.title || 'Stërvitje'}" dhe dogje ${Math.round(liveCalories)} kcal.`
+          : "Progresi i stërvitjes u ruajt si i papërfunduar në profilin tënd.",
+        createdAt: new Date().toISOString()
+      });
+      
+      setStatus('idle');
+      setElapsedSeconds(0);
+      setLiveCalories(0);
+    } catch (error) {
+      console.error("Gabim gjatë ruajtjes së sesionit në DB:", error);
+      setNotification({
+        title: "Gabim ⚠️",
+        message: "Ndodhi një gabim i papritur gjatë ruajtjes së sesionit të stërvitjes.",
+        createdAt: new Date().toISOString()
+      });
+    } finally {
+      setDisabled(false);
     }
+  };
 
-    const entries = [...map.entries()];
-    entries.sort(([a], [b]) => {
-      const ai = SECTION_ORDER.indexOf(a);
-      const bi = SECTION_ORDER.indexOf(b);
-      if (ai !== -1 && bi !== -1) return ai - bi;
-      if (ai !== -1) return -1;
-      if (bi !== -1) return 1;
-      return a.localeCompare(b);
-    });
-    return entries;
-  }, [workouts, hasFilters]);
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-3">
+        <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-medium text-dark/60">Duke ngarkuar stërvitjen...</p>
+      </div>
+    );
+  }
 
-  function clearFilters() {
-    setCategory('All'); 
-    setDifficulty('All');
-    setMuscleGroup('All'); 
-    setDuration('All');
+  if (error || !workout) {
+    return (
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-4 p-6 text-center">
+        <span className="text-4xl">⚠️</span>
+        <p className="text-base font-semibold text-dark/70">{error || 'Stërvitja nuk u gjet!'}</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-sky-500 text-white rounded-xl text-sm font-medium shadow hover:bg-sky-600 transition-all"
+        >
+          Kthehu prapa
+        </button>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-surface">
-
-      <FeaturedBanner slides={featured} />
-
-      <div className="px-6 py-5 space-y-8">
-
-        <FilterBar
-          categories={categories}
-          category={category}           onCategoryChange={setCategory}
-          difficulty={difficulty}       onDifficultyChange={setDifficulty}
-          muscleGroup={muscleGroup}     onMuscleGroupChange={setMuscleGroup}
-          duration={duration}           onDurationChange={setDuration}
-          difficulties={DIFFICULTIES}
-          muscleGroups={MUSCLE_GROUPS}
-          durations={DURATIONS}
-        />
-
-        <ContinueWatching items={continuing} loading={contLoading} />
-
-        {/* ── Seksionet Dinamike (Kur nuk ka filtra aktivë) ── */}
-        {!hasFilters && (
-          loading ? (
-            <div className="space-y-10">
-              {[1, 2, 3].map(i => (
-                <WorkoutRow key={i} title="" workouts={[]} loading />
-              ))}
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen bg-surface p-6 relative"
+    >
+      
+      {/* ========================================================= */}
+      {/* KOMPONENTI I POPUP-IT (TOAST NOTIFICATION) */}
+      {/* ========================================================= */}
+      <AnimatePresence>
+        {notification && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, scale: 0.9, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
+            exit={{ opacity: 0, y: -20, scale: 0.9, x: "-50%" }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-gray-100 flex gap-3.5 items-start"
+          >
+            <div className={`p-2 rounded-xl text-white mt-0.5 shadow-sm ${notification.title.includes("Completed") ? 'bg-emerald-500' : 'bg-amber-500'}`}>
+              {notification.title.includes("Completed") ? <CheckCircle size={20} /> : <Clock size={20} />}
             </div>
-          ) : sections.length > 0 ? (
-            <div className="space-y-10">
-              {sections.map(([sectionTitle, sectionWorkouts]) => (
-                <WorkoutRow
-                  key={sectionTitle}
-                  title={sectionTitle}
-                  workouts={Array.isArray(sectionWorkouts) ? sectionWorkouts : []}
-                />
-              ))}
+            
+            <div className="flex-1 space-y-0.5 pr-2">
+              <h4 className="text-sm font-black text-dark tracking-tight">{notification.title}</h4>
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">{notification.message}</p>
+              <span className="text-[10px] text-dark/35 block pt-1">
+                {new Date(notification.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
             </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-dark/30 gap-2">
-              <span className="text-4xl">🏋️</span>
-              <p className="text-sm font-medium">Nuk ka asnjë video stërvitore në databazë.</p>
-            </div>
-          )
+
+            <button 
+              onClick={() => setNotification(null)}
+              className="p-1 hover:bg-gray-100 rounded-lg text-dark/30 hover:text-dark transition-colors"
+            >
+              <X size={16} />
+            </button>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* ── Grid-i i Filtruar (Kur aktivizohet ndonjë filtër) ── */}
-        {hasFilters && (
-          <section>
-            <div className="flex items-baseline gap-2 mb-4">
-              <h2 className="text-lg font-bold text-dark">
-                {category !== 'All' ? category : 'Rezultatet e Filtruara'}
-              </h2>
-              {!loading && (
-                <span className="text-sm text-dark/40">{filtered.length} stërvitje u gjetën</span>
-              )}
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 text-sm font-bold text-dark/50 hover:text-dark mb-6 transition-colors"
+      >
+        ← Kthehu te Stërvitjet
+      </button>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* KOLONA E TRUPIT KRYESOR (Majtas) */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          <VideoPlayer 
+            src={workout.videoUrl || workout.url} 
+            poster={workout.thumbnailUrl} 
+            onPlay={() => setStatus('running')}
+            onPause={() => setStatus('paused')}
+            onEnded={handleFinishWorkout}
+          />
+
+          <div className="space-y-2">
+            <h1 className="text-2xl font-black text-dark tracking-tight">{workout.title}</h1>
+            
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="px-3 py-1 bg-gray-100 text-xs font-bold rounded-full text-dark/70">
+                🏋️ {workout.muscleGroup || 'Trup i Plotë'}
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-xs font-bold rounded-full text-dark/70">
+                ⚡ {workout.difficulty || workout.difficultyLevel || 'Beginner'}
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-xs font-bold rounded-full text-dark/70">
+                ⏱️ {workout.durationSeconds ? `${Math.round(workout.durationSeconds / 60)} min` : 'N/A'}
+              </span>
             </div>
 
-            {loading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="aspect-video rounded-2xl bg-gray-100 animate-pulse" />
-                ))}
-              </div>
-            ) : filtered.length > 0 ? (
-              <motion.div
-                key={`${category}-${difficulty}-${muscleGroup}-${duration}`}
-                variants={container}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-              >
-                {filtered.map(workout => (
-                  workout?.id ? (
-                    <motion.div key={workout.id} variants={item}>
-                      <WorkoutCard workout={workout} />
-                    </motion.div>
-                  ) : null
-                ))}
-              </motion.div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-dark/30 gap-2">
-                <span className="text-4xl">🏋️</span>
-                <p className="text-sm font-medium">Asnjë stërvitje nuk përputhet me filtrat e zgjedhur.</p>
-                <button
-                  onClick={clearFilters}
-                  className="mt-1 text-xs text-sky font-semibold hover:underline"
-                >
-                  Pastro filtrat
-                </button>
-              </div>
-            )}
-          </section>
-        )}
+            <p className="text-gray-600 leading-relaxed pt-3 text-sm">
+              {workout.description || 'Nuk ka asnjë përshkrim shtesë për këtë stërvitje.'}
+            </p>
+          </div>
+
+          <hr className="border-gray-100" />
+
+          <WorkoutTimer 
+            status={status} 
+            elapsedSeconds={elapsedSeconds} 
+            liveCalories={liveCalories}
+            disabled={disabled}
+            onStart={() => setStatus('running')}
+            onPause={() => setStatus('paused')}
+            onResume={() => setStatus('running')}
+            onFinish={handleFinishWorkout}
+            onReset={() => { setElapsedSeconds(0); setLiveCalories(0); setStatus('idle'); }}
+          />
+        </div>
+
+        {/* KOLONA ANËSORE (Djathtas) */}
+        <div className="space-y-6">
+          <WorkoutStats workout={workout} />
+          <SessionStatsCard stats={workout.stats || workout} loading={false} />
+          <RelatedWorkouts currentWorkout={workout} />
+        </div>
 
       </div>
-    </div>
+    </motion.div>
   );
 }

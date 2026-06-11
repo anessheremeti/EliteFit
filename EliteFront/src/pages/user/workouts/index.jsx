@@ -5,20 +5,8 @@ import { FilterBar }        from './components/FilterBar';
 import { ContinueWatching } from './components/ContinueWatching';
 import { WorkoutCard }      from './components/WorkoutCard';
 import { WorkoutRow }       from './components/WorkoutRow';
-import { workoutService }   from '../../../services/workoutService';
-
-// Deklarimi i filtrave standardë që përputhen me opsionet e aplikacionit
-const DIFFICULTIES  = ['All', 'Beginner', 'Intermediate', 'Advanced'];
-const MUSCLE_GROUPS = ['All', 'Full Body', 'Upper Body', 'Lower Body', 'Core', 'Back'];
-const DURATIONS     = ['All', '< 15 min', '15–30 min', '30–45 min', '45–60 min', '60+ min'];
-
-const DURATION_RANGES = {
-  '< 15 min':  [0,  14],
-  '15–30 min': [15, 30],
-  '30–45 min': [30, 45],
-  '45–60 min': [45, 60],
-  '60+ min':   [60, Infinity],
-};
+import { workoutService }   from '../../../services/workoutService'; 
+import WorkoutApi           from '../../../api/user/workout/workouts'; 
 
 // Renditja e preferuar e seksioneve në faqen kryesore
 const SECTION_ORDER = ['Core', 'Upper Body', 'Lower Body', 'Full Body'];
@@ -27,34 +15,66 @@ const container = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } 
 const item = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.25 } } };
 
 export default function WorkoutsPage() {
-  const [workouts,    setWorkouts]    = useState([]);
-  const [featured,    setFeatured]    = useState([]);
-  const [continuing,  setContinuing]  = useState([]);
-  const [categories,  setCategories]  = useState(['All']);
-  const [loading,     setLoading]     = useState(true);
-  const [contLoading, setContLoading] = useState(true);
+  // State-at për videot
+  const [workouts, setWorkouts]           = useState([]); 
+  const [searchResults, setSearchResults] = useState([]); 
+  const [featured, setFeatured]           = useState([]);
+  const [continuing, setContinuing]       = useState([]);
+  
+  // State-at për opsionet e filtrave
+  const [categories, setCategories]       = useState(['All']); 
+  const [difficulties, setDifficulties]   = useState(['All']); 
+  const [muscleGroups, setMuscleGroups]   = useState(['All']); 
+  const [durations, setDurations]         = useState(['All']); 
 
-  const [category,    setCategory]    = useState('All');
-  const [difficulty,  setDifficulty]  = useState('All');
-  const [muscleGroup, setMuscleGroup] = useState('All');
-  const [duration,    setDuration]    = useState('All');
+  // Loading states
+  const [loading, setLoading]             = useState(true);
+  const [contLoading, setContLoading]     = useState(true);
 
+  // State-at e vlerave aktive (Zgjedhjet e përdoruesit)
+  const [category, setCategory]           = useState('All');
+  const [difficulty, setDifficulty]       = useState('All');
+  const [muscleGroup, setMuscleGroup]     = useState('All');
+  const [duration, setDuration]           = useState('All');
+  const [searchQuery, setSearchQuery]     = useState(''); 
+  const [sortBy, setSortBy]               = useState(''); 
+
+  // Kontrollojmë nëse ka ndonjë filtër aktiv
+  const hasFilters = 
+    category !== 'All' || 
+    difficulty !== 'All' || 
+    muscleGroup !== 'All' || 
+    duration !== 'All' || 
+    searchQuery.trim() !== '' || 
+    sortBy !== '';
+
+  // 1. NGARKIMI FILLESTAR
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       try {
-        const [all, feat, cats] = await Promise.all([
-          workoutService.getAll(),
-          workoutService.getFeatured(3),
-          workoutService.getCategories(),
+        const [all, feat, cats, dbFilters] = await Promise.all([
+          workoutService.getAll(),         
+          workoutService.getFeatured(3),   
+          workoutService.getCategories(),  
+          WorkoutApi.getFilters(),         // Kthen direkt të dhënat për shkak të interceptorit
         ]);
+        
         if (cancelled) return;
+
         setWorkouts(all);
         setFeatured(feat);
         setCategories(['All', ...cats]);
+        
+        // RREGULLIM: Interceptori e ka hequr fushën '.data', dbFilters vjen i pastër
+       if (dbFilters) {
+  setDifficulties(dbFilters.difficulties || ['All']);
+  setMuscleGroups(dbFilters.muscleGroups || ['All']);
+  setDurations(dbFilters.durations || ['All']);
+}
       } catch (err) {
-        console.error('Failed to load workouts:', err);
+        console.error('Failed to load initial data:', err);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -62,10 +82,10 @@ export default function WorkoutsPage() {
 
     async function loadContinue() {
       try {
-        const data = await workoutService.getContinueWatching();
+        const data = await workoutService.getContinueWatching(); 
         if (!cancelled) setContinuing(data);
       } catch {
-        // Përdoruesi nuk ka asnjë stërvitje në proces — dështon në heshtje
+        // Përdoruesi nuk ka stërvitje në proces
       } finally {
         if (!cancelled) setContLoading(false);
       }
@@ -76,30 +96,50 @@ export default function WorkoutsPage() {
     return () => { cancelled = true; };
   }, []);
 
-  const hasFilters = category !== 'All' || difficulty !== 'All' || muscleGroup !== 'All' || duration !== 'All';
+  // 2. KËRKIMI I FILTRUAR NË BACKEND (Debounced)
+  useEffect(() => {
+    if (!hasFilters) return;
 
-  // Filtrimi i saktë në Frontend duke u bazuar në sekondat e backend-it
-  const filtered = useMemo(() => {
-    if (!hasFilters) return workouts;
-    return workouts.filter(w => {
-      if (category    !== 'All' && w.category    !== category)    return false;
-      if (difficulty  !== 'All' && w.difficulty  !== difficulty)  return false;
-      if (muscleGroup !== 'All' && w.muscleGroup !== muscleGroup) return false;
-      if (duration !== 'All') {
-        const [min, max] = DURATION_RANGES[duration] ?? [0, Infinity];
-        // Kthejmë sekondat në minuta (nëse durationSeconds mungon, përdorim durationMin si fallback)
-        const durationInMinutes = w.durationSeconds ? Math.round(w.durationSeconds / 60) : (w.durationMin || 0);
-        if (durationInMinutes < min || durationInMinutes > max) return false;
+    const delayDebounce = setTimeout(async () => {
+      setLoading(true);
+      try {
+        // RREGULLIM: Emrat e parametrave përputhen 100% me SearchWorkoutsQuery në C#
+        const params = {
+          searchTerm: searchQuery.trim() !== '' ? searchQuery.trim() : undefined,
+          difficulty: difficulty !== 'All' ? difficulty : undefined,
+          muscleGroup: muscleGroup !== 'All' ? muscleGroup : undefined,
+          duration: duration !== 'All' ? duration : undefined,
+          sortBy: sortBy !== '' ? sortBy : undefined,
+          // Nëse backend juaj në query merr emrin e kategorisë:
+          // category: category !== 'All' ? category : undefined
+        };
+
+        const response = await WorkoutApi.searchVideos(params);
+        
+        // RREGULLIM: Interceptori e kthen direkt listën, jo response.data
+        if (response) {
+          // Filtruesi lokal në frontend për kategorinë nëse nuk e kalon në backend API
+          let finalData = response;
+          if (category !== 'All') {
+            finalData = response.filter(w => w.category === category);
+          }
+          setSearchResults(finalData);
+        }
+      } catch (err) {
+        console.error('Gabim gjatë kërkimit:', err);
+      } finally {
+        setLoading(false);
       }
-      return true;
-    });
-  }, [workouts, hasFilters, category, difficulty, muscleGroup, duration]);
+    }, 400);
 
-  // Grupimi i videove sipas grupeve muskulore (Muscle Group)
+    return () => clearTimeout(delayDebounce);
+  }, [category, difficulty, muscleGroup, duration, searchQuery, sortBy, hasFilters]);
+
+  // Grupimi i videove për pamjen Default (Kur nuk ka filtra aktivë)
   const sections = useMemo(() => {
     if (hasFilters) return [];
     const map = new Map();
-    for (const w of workouts) {
+    for (const w of workouts) { 
       const key = w.muscleGroup ?? 'Other';
       if (!map.has(key)) map.set(key, []);
       map.get(key).push(w);
@@ -122,6 +162,8 @@ export default function WorkoutsPage() {
     setDifficulty('All');
     setMuscleGroup('All'); 
     setDuration('All');
+    setSearchQuery('');
+    setSortBy('');
   }
 
   return (
@@ -132,19 +174,17 @@ export default function WorkoutsPage() {
       <div className="px-6 py-5 space-y-8">
 
         <FilterBar
-          categories={categories}
-          category={category}           onCategoryChange={setCategory}
-          difficulty={difficulty}       onDifficultyChange={setDifficulty}
-          muscleGroup={muscleGroup}     onMuscleGroupChange={setMuscleGroup}
-          duration={duration}           onDurationChange={setDuration}
-          difficulties={DIFFICULTIES}
-          muscleGroups={MUSCLE_GROUPS}
-          durations={DURATIONS}
+          categories={categories}       category={category}           onCategoryChange={setCategory}
+          difficulties={difficulties}   difficulty={difficulty}       onDifficultyChange={setDifficulty}
+          muscleGroups={muscleGroups}   muscleGroup={muscleGroup}     onMuscleGroupChange={setMuscleGroup}
+          durations={durations}         duration={duration}           onDurationChange={setDuration}
+          searchQuery={searchQuery}     onSearchChange={setSearchQuery}
+          sortBy={sortBy}               onSortByChange={setSortBy}
         />
 
         <ContinueWatching items={continuing} loading={contLoading} />
 
-        {/* ── Seksionet e grupuara (Kur nuk ka filtra aktivë) ── */}
+        {/* Seksionet e grupuara (Kur nuk ka filtra) */}
         {!hasFilters && (
           loading ? (
             <div className="space-y-10">
@@ -170,7 +210,7 @@ export default function WorkoutsPage() {
           )
         )}
 
-        {/* ── Grid i rrafshët (Kur aktivizohet qoftë edhe një filtër) ── */}
+        {/* Grid i rrafshët (Kur ka filtra/search) */}
         {hasFilters && (
           <section>
             <div className="flex items-baseline gap-2 mb-4">
@@ -178,7 +218,7 @@ export default function WorkoutsPage() {
                 {category !== 'All' ? category : 'Filtered Workouts'}
               </h2>
               {!loading && (
-                <span className="text-sm text-dark/40">{filtered.length} workouts</span>
+                <span className="text-sm text-dark/40">{searchResults.length} workouts</span>
               )}
             </div>
 
@@ -188,15 +228,15 @@ export default function WorkoutsPage() {
                   <div key={i} className="aspect-video rounded-2xl bg-gray-100 animate-pulse" />
                 ))}
               </div>
-            ) : filtered.length > 0 ? (
+            ) : searchResults.length > 0 ? (
               <motion.div
-                key={`${category}-${difficulty}-${muscleGroup}-${duration}`}
+                key={`${category}-${difficulty}-${muscleGroup}-${duration}-${searchQuery}-${sortBy}`}
                 variants={container}
                 initial="hidden"
                 animate="show"
                 className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
               >
-                {filtered.map(workout => (
+                {searchResults.map(workout => (
                   <motion.div key={workout.id} variants={item}>
                     <WorkoutCard workout={workout} />
                   </motion.div>
