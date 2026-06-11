@@ -4,7 +4,7 @@ import { adminApi } from '../../../../services/adminApi'; // Rregullo rrugën
 import { ErrorBanner, FieldLabel, FieldInput, ModalWrapper } from './SharedUI';
 
 // Zëvendësoje me URL-në e saktë të serverit tënd për të shfaqur fotot
-const BASE_IMAGE_URL = 'https://localhost:7049'; 
+const BASE_IMAGE_URL = 'https://localhost:5193'; 
 
 export default function BadgesTab({ isModalOpen, onClose, onOpenModal }) {
   const [badges, setBadges] = useState([]);
@@ -100,7 +100,7 @@ export default function BadgesTab({ isModalOpen, onClose, onOpenModal }) {
         formData.append('Entity', 'Badge'); 
         
         // Kthehet ID e file-it të sapokrijuar
-        const uploadedFileId = await adminApi.uploadFile(formData);
+        const uploadedFileId = await adminApi.uploadBadgeIcon(formData);
         finalBadgeIconId = uploadedFileId;
       }
 

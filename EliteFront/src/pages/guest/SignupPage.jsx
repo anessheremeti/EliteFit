@@ -77,6 +77,7 @@ export default function SignupPage() {
       if (!res.ok) throw new Error(data.message || 'Registration failed.');
       const roles = data.roles ?? [];
       localStorage.setItem('token', data.token);
+      localStorage.setItem('refreshToken', data.refreshToken);
       localStorage.setItem('elitefit_user', JSON.stringify({ email: data.email, fullName: data.fullName, roles }));
       setSuccess('Account created! Redirecting...');
       const destination = roles.includes('Admin') ? '/staff' : '/users';

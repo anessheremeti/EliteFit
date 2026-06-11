@@ -46,7 +46,7 @@ export default function WorkoutsTab({ isModalOpen, onClose, onOpenModal }) {
   // Metoda për të lexuar kategoritë nga API i ri
   const fetchCategories = async () => {
     try {
-const response = await axios.get('https://localhost:7049/api/ExerciseCategories')
+const response = await axios.get('https://localhost:5193/api/ExerciseCategories')
       setCategories(response.data)
     } catch (error) {
       console.error("Gabim në leximin e kategorive:", error)

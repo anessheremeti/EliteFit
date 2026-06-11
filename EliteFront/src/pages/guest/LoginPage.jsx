@@ -41,6 +41,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.message || 'Login failed.');
       const roles = data.roles ?? [];
       localStorage.setItem('token', data.token);
+      localStorage.setItem('refreshToken', data.refreshToken);
       localStorage.setItem('elitefit_user', JSON.stringify({
         email: data.email,
         fullName: data.fullName,

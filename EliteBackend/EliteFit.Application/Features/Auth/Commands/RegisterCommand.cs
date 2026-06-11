@@ -1,6 +1,8 @@
 using EliteFit.Application.DTOs.Auth;
+using EliteFit.Application.Features.Auth.Queries;
 using EliteFit.Domain.Entities;
 using EliteFit.Domain.Interfaces.Repositories;
+using EliteFit.Domain.Interfaces.Repositories.Identity;
 using EliteFit.Domain.Interfaces.Services;
 using MediatR;
 
@@ -10,42 +12,40 @@ namespace EliteFit.Application.Features.Auth.Commands
 
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthResponse>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
-        private readonly IPasswordService _passwordService;
-        private readonly IJwtTokenService _jwtService;
+        private readonly IUserRepository         _userRepository;
+        private readonly IRoleRepository         _roleRepository;
+        private readonly IPasswordService        _passwordService;
+        private readonly IJwtTokenService        _jwtService;
+        private readonly IRefreshTokenRepository _refreshTokens;
 
         private const string DefaultRole = "Member";
 
         public RegisterCommandHandler(
-            IUserRepository userRepository,
-            IRoleRepository roleRepository,
-            IPasswordService passwordService,
-            IJwtTokenService jwtService)
+            IUserRepository         userRepository,
+            IRoleRepository         roleRepository,
+            IPasswordService        passwordService,
+            IJwtTokenService        jwtService,
+            IRefreshTokenRepository refreshTokens)
         {
-            _userRepository = userRepository;
-            _roleRepository = roleRepository;
+            _userRepository  = userRepository;
+            _roleRepository  = roleRepository;
             _passwordService = passwordService;
-            _jwtService = jwtService;
+            _jwtService      = jwtService;
+            _refreshTokens   = refreshTokens;
         }
 
-        public async Task<AuthResponse> Handle(RegisterCommand command, CancellationToken cancellationToken)
+        public async Task<AuthResponse> Handle(RegisterCommand command, CancellationToken ct)
         {
             var req = command.Request;
 
             if (await _userRepository.EmailExistsAsync(req.Email.ToLowerInvariant()))
                 throw new InvalidOperationException("This email is already registered.");
 
-            // 1. Resolve the default role BEFORE writing anything to the database.
-            //    Fail fast with a clear error rather than creating a user with no role.
-            var defaultRole = await _roleRepository.GetByNameAsync(DefaultRole, cancellationToken)
+            var defaultRole = await _roleRepository.GetByNameAsync(DefaultRole, ct)
                 ?? throw new InvalidOperationException(
                     $"Default role '{DefaultRole}' does not exist. " +
                     "Ensure the roles table has been seeded correctly before accepting registrations.");
 
-            // 2. Build the full object graph (User + UserRole) in memory.
-            //    EF Core resolves the UserId foreign key automatically via the navigation
-            //    property and inserts both rows inside a single implicit transaction.
             var user = new User
             {
                 FirstName    = req.FirstName,
@@ -55,27 +55,33 @@ namespace EliteFit.Application.Features.Auth.Commands
                 IsActive     = true,
                 UserRoles    = new List<UserRole>
                 {
-                    new UserRole
-                    {
-                        RoleId     = defaultRole.Id,
-                        AssignedAt = DateTime.UtcNow,
-                    }
+                    new() { RoleId = defaultRole.Id, AssignedAt = DateTime.UtcNow }
                 }
             };
 
-            // 3. Single SaveChangesAsync = one atomic DB transaction.
-            //    If either the users or user_roles insert fails the whole unit rolls back.
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
-            // 4. Return auth response with the verified role name (never hardcoded).
-            var roleNames = new List<string> { defaultRole.Name };
-            var token = _jwtService.GenerateToken(
-                user.Id, user.Email!, $"{user.FirstName} {user.LastName}", roleNames);
+            var roleNames   = new List<string> { defaultRole.Name };
+            var accessToken = _jwtService.GenerateToken(user.Id, user.Email!, $"{user.FirstName} {user.LastName}", roleNames);
+            var rawRefresh  = _jwtService.GenerateRefreshToken();
+
+            await _refreshTokens.AddAsync(new RefreshToken
+            {
+                UserId    = user.Id,
+                TokenHash = LoginQueryHandler.Hash(rawRefresh),
+                ExpiresAt = DateTime.UtcNow.AddDays(_jwtService.RefreshTokenExpiryDays),
+                CreatedAt = DateTime.UtcNow,
+            });
+            await _refreshTokens.SaveChangesAsync();
 
             return new AuthResponse(
-                token, user.Email!, $"{user.FirstName} {user.LastName}",
-                DateTime.UtcNow.AddHours(1), roleNames);
+                accessToken,
+                rawRefresh,
+                user.Email!,
+                $"{user.FirstName} {user.LastName}",
+                DateTime.UtcNow.AddMinutes(_jwtService.AccessTokenExpiryMinutes),
+                roleNames);
         }
     }
 }

@@ -306,6 +306,26 @@ namespace EliteFit.Persistence.Persistence.Context
                 entity.HasOne(ua => ua.Allergy).WithMany(a => a.UserAllergies).HasForeignKey(ua => ua.AllergyId).OnDelete(DeleteBehavior.Cascade);
             });
 
+            // ── refresh_tokens ────────────────────────────────────────────────
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.ToTable("refresh_tokens");
+                entity.HasKey(rt => rt.Id);
+                entity.Property(rt => rt.Id).HasColumnName("id");
+                entity.Property(rt => rt.UserId).HasColumnName("user_id");
+                entity.Property(rt => rt.TokenHash).HasColumnName("token_hash").HasMaxLength(512).IsRequired();
+                entity.Property(rt => rt.ExpiresAt).HasColumnName("expires_at");
+                entity.Property(rt => rt.RevokedAt).HasColumnName("revoked_at");
+
+                entity.HasOne(rt => rt.User)
+                    .WithMany(u => u.RefreshTokens)
+                    .HasForeignKey(rt => rt.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(rt => rt.TokenHash).HasDatabaseName("IX_refresh_tokens_token_hash").IsUnique();
+                entity.HasIndex(rt => rt.UserId).HasDatabaseName("IX_refresh_tokens_user_id");
+            });
+
             // ── password_reset_tokens ─────────────────────────────────────────
             modelBuilder.Entity<PasswordResetToken>(entity =>
             {
