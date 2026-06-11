@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:5193/api'
+const BASE = 'https://localhost:7049/api'
 
 function authHeaders() {
   return {

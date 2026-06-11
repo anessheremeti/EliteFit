@@ -6,7 +6,7 @@ import {
   getRefreshToken,
 } from '../utils/tokenManager';
 
-const BASE_URL = 'http://localhost:5193/api';
+const BASE_URL = 'https://localhost:7049/api';
 
 const apiClient = axios.create({ baseURL: BASE_URL });
 

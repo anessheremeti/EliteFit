@@ -12,7 +12,7 @@ const DIET_COLORS = {
 export function RecipeCard({ recipe }) {
   const navigate = useNavigate();
 
-  const BACKEND_BASE_URL = 'https://localhost:5193';
+  const BACKEND_BASE_URL = 'https://localhost:7049';
 
   // Sigurohemi që kapim ID-në pa pasur problem shkronjat e mëdha/vogla
   const recipeId = recipe.id || recipe.Id;

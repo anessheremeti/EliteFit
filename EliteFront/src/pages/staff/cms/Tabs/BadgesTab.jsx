@@ -4,7 +4,7 @@ import { adminApi } from '../../../../services/adminApi'; // Rregullo rrugën
 import { ErrorBanner, FieldLabel, FieldInput, ModalWrapper } from './SharedUI';
 
 // Zëvendësoje me URL-në e saktë të serverit tënd për të shfaqur fotot
-const BASE_IMAGE_URL = 'https://localhost:5193'; 
+const BASE_IMAGE_URL = 'https://localhost:7049'; 
 
 export default function BadgesTab({ isModalOpen, onClose, onOpenModal }) {
   const [badges, setBadges] = useState([]);

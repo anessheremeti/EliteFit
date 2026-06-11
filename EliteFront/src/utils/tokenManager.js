@@ -6,7 +6,7 @@
  */
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:5193/api';
+const API_BASE = 'https://localhost:7049/api';
 
 // ── Shared refresh state ─────────────────────────────────────────────────────
 

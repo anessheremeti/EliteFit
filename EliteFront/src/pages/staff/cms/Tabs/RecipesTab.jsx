@@ -14,7 +14,7 @@ const INITIAL_FORM = {
   imageFileId: ''
 }
 
-const BACKEND_URL = 'https://localhost:5193';
+const BACKEND_URL = 'https://localhost:7049';
 
 export default function RecipesTab({ isModalOpen, onClose, onOpenModal }) {
   const [recipes, setRecipes] = useState([])

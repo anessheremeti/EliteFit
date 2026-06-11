@@ -10,7 +10,7 @@ namespace EliteFit.Persistence
     {
         public static async Task SeedAsync(ApplicationDbContext db)
         {
-            await MarkBaselineMigrationAsync(db);
+            // HEQUR: MarkBaselineMigrationAsync nuk duhet për MSSQL pasi migrimet menaxhohen nga fillimi
             await EnsureRefreshTokensTableAsync(db);
             await SeedRolesAsync(db);
             await SeedPermissionsAsync(db);
@@ -19,49 +19,32 @@ namespace EliteFit.Persistence
             await BackfillMissingMemberRolesAsync(db);
         }
 
-        // Records the MySQL baseline migration in __EFMigrationsHistory so that
-        // future `dotnet ef database update` commands don't try to re-create tables.
-        private static async Task MarkBaselineMigrationAsync(ApplicationDbContext db)
-        {
-            const string migrationId = "20260611125944_InitialMySql";
-            try
-            {
-                await db.Database.ExecuteSqlRawAsync(@"
-                    CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
-                        `MigrationId`    varchar(150) NOT NULL,
-                        `ProductVersion` varchar(32)  NOT NULL,
-                        PRIMARY KEY (`MigrationId`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-                ");
-                await db.Database.ExecuteSqlRawAsync(@$"
-                    INSERT IGNORE INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-                    VALUES ('{migrationId}', '8.0.25');
-                ");
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"[Seed] MarkBaselineMigration failed: {ex.Message}");
-            }
-        }
-
         private static async Task EnsureRefreshTokensTableAsync(ApplicationDbContext db)
         {
             try
             {
+                // Përshtatur plotësisht për sintaksën e MSSQL Server (T-SQL)
                 await db.Database.ExecuteSqlRawAsync(@"
-                    CREATE TABLE IF NOT EXISTS `refresh_tokens` (
-                        `id`         int           NOT NULL AUTO_INCREMENT,
-                        `user_id`    int           NOT NULL,
-                        `token_hash` varchar(512)  NOT NULL,
-                        `expires_at` datetime(6)   NOT NULL,
-                        `revoked_at` datetime(6)   NULL,
-                        `created_at` datetime(6)   NULL DEFAULT CURRENT_TIMESTAMP(6),
-                        PRIMARY KEY (`id`),
-                        UNIQUE KEY `IX_refresh_tokens_token_hash` (`token_hash`),
-                        KEY        `IX_refresh_tokens_user_id`   (`user_id`),
-                        CONSTRAINT `FK_refresh_tokens_users_user_id`
-                            FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                    IF OBJECT_ID(N'[dbo].[refresh_tokens]', N'U') IS NULL
+                    BEGIN
+                        CREATE TABLE [dbo].[refresh_tokens] (
+                            [id]          int IDENTITY(1,1) NOT NULL,
+                            [user_id]     int           NOT NULL,
+                            [token_hash]  nvarchar(512) NOT NULL,
+                            [expires_at]  datetime2(6)  NOT NULL,
+                            [revoked_at]  datetime2(6)  NULL,
+                            [created_at]  datetime2(6)  NULL DEFAULT GETDATE(),
+                            CONSTRAINT [PK_refresh_tokens] PRIMARY KEY ([id]),
+                            CONSTRAINT [FK_refresh_tokens_users_user_id] 
+                                FOREIGN KEY ([user_id]) REFERENCES [users] ([id]) ON DELETE CASCADE
+                        );
+
+                        CREATE UNIQUE INDEX [IX_refresh_tokens_token_hash] 
+                            ON [dbo].[refresh_tokens] ([token_hash]);
+
+                        CREATE INDEX [IX_refresh_tokens_user_id] 
+                            ON [dbo].[refresh_tokens] ([user_id]);
+                    END;
                 ");
             }
             catch (Exception ex)
@@ -71,14 +54,11 @@ namespace EliteFit.Persistence
         }
 
         // ── Backfill ───────────────────────────────────────────────────────────
-        // Users registered before the RegisterCommand role-persistence fix have
-        // no user_roles row. Assign them "Member" so they can log in.
         private static async Task BackfillMissingMemberRolesAsync(ApplicationDbContext db)
         {
             var memberRole = await db.Roles.FirstOrDefaultAsync(r => r.Name == "Member");
             if (memberRole is null) return;
 
-            // Find user IDs that have zero role assignments
             var assignedUserIds = await db.UserRoles
                 .Select(ur => ur.UserId)
                 .Distinct()
@@ -105,8 +85,6 @@ namespace EliteFit.Persistence
         }
 
         // ── Default test users ─────────────────────────────────────────────────
-        // Creates one Admin and one Member account on first startup.
-        // Credentials are printed to the console so you can log in immediately.
         private static async Task SeedDefaultUsersAsync(ApplicationDbContext db)
         {
             await SeedUserIfMissing(db, "admin@elitefit.com", "Admin", "User", "Admin123!", "Admin");
@@ -151,107 +129,10 @@ namespace EliteFit.Persistence
             Console.WriteLine($"[Seed] Created {roleName} — email: {email}  password: {plainPassword}");
         }
 
-        // Metodat e mëposhtme që nuk të duhen më janë të komentuara plotësished
-        /* private static async Task EnsureNotificationsColumnsAsync(ApplicationDbContext db)
-        {
-            // Create table for fresh installs (migration may not have run)
-            await db.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS `Notifications` (
-                    `Id`        int          NOT NULL AUTO_INCREMENT,
-                    `UserId`    int          NOT NULL,
-                    `Type`      varchar(100) NULL,
-                    `Title`     varchar(500) NULL,
-                    `Message`   longtext     NULL,
-                    `IsRead`    tinyint(1)   NOT NULL DEFAULT 0,
-                    `CreatedAt` datetime(6)  NULL DEFAULT CURRENT_TIMESTAMP(6),
-                    PRIMARY KEY (`Id`),
-                    CONSTRAINT `FK_Notifications_users_UserId`
-                        FOREIGN KEY (`UserId`) REFERENCES `users` (`id`) ON DELETE CASCADE
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-            ");
-
-            try
-            {
-                await db.Database.ExecuteSqlRawAsync(@"
-                    ALTER TABLE `Notifications`
-                    ADD COLUMN `CreatedAt` datetime(6) NULL DEFAULT CURRENT_TIMESTAMP(6);
-                ");
-            }
-            catch (Exception ex) when (ex.Message.Contains("Duplicate column"))
-            {
-                // Column already exists — nothing to do
-            }
-        }*/
-
-        // ── audit_logs ─────────────────────────────────────────────────────────
-        /* private static async Task EnsureAuditLogsTableAsync(ApplicationDbContext db)
-          {
-              await db.Database.ExecuteSqlRawAsync(@"
-                  CREATE TABLE IF NOT EXISTS `audit_logs` (
-                      `id`          varchar(36)   NOT NULL,
-                      `user_id`     int           NULL,
-                      `user_name`   varchar(255)  NULL,
-                      `action`      varchar(100)  NULL,
-                      `entity`      varchar(100)  NULL,
-                      `entity_id`   int           NULL,
-                      `old_value`   longtext      NULL,
-                      `new_value`   longtext      NULL,
-                      `ip_address`  varchar(50)   NULL,
-                      `endpoint`    varchar(500)  NULL,
-                      `http_method` varchar(10)   NULL,
-                      `trace_id`    varchar(100)  NULL,
-                      `created_at`  datetime(6)   NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-                      PRIMARY KEY (`id`),
-                      KEY `IX_audit_logs_user_id`    (`user_id`),
-                      KEY `IX_audit_logs_entity`     (`entity`),
-                      KEY `IX_audit_logs_action`     (`action`),
-                      KEY `IX_audit_logs_created_at` (`created_at`)
-                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-              ");
-
-              foreach (var (col, ddl) in new[]
-              {
-                  ("endpoint",   "ALTER TABLE `audit_logs` ADD COLUMN `endpoint`   varchar(500) NULL"),
-                  ("http_method","ALTER TABLE `audit_logs` ADD COLUMN `http_method` varchar(10)  NULL"),
-                  ("trace_id",   "ALTER TABLE `audit_logs` ADD COLUMN `trace_id`   varchar(100) NULL"),
-                  ("user_name",  "ALTER TABLE `audit_logs` ADD COLUMN `user_name`  varchar(255) NULL"),
-              })
-              {
-                  _ = col; // suppress unused-variable warning
-                  try { await db.Database.ExecuteSqlRawAsync(ddl); }
-                  catch (Exception ex) when (ex.Message.Contains("Duplicate column")) { }
-              }
-          }*/
-
-        /* private static async Task EnsureSettingsTableAsync(ApplicationDbContext db)
-         {
-             await db.Database.ExecuteSqlRawAsync(@"
-                 CREATE TABLE IF NOT EXISTS `Settings` (
-                     `Id`          int          NOT NULL AUTO_INCREMENT,
-                     `Key`         varchar(500) NOT NULL,
-                     `Value`       longtext     NULL,
-                     `Description` longtext     NULL,
-                     PRIMARY KEY (`Id`)
-                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-             ");
-         }
-        */
-
         // ── Roles ─────────────────────────────────────────────────────────────
         private static async Task SeedRolesAsync(ApplicationDbContext db)
         {
-            /* KJO PJESË NUK TY DUHET MË SEPSE E KRIJON MIGRATION-I
-            await db.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS `roles` (
-                    `id`          int NOT NULL AUTO_INCREMENT,
-                    `name`        varchar(50) NOT NULL,
-                    `description` longtext    NULL,
-                    PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-            ");
-            */
-
-               var existing = (await db.Roles.Select(r => r.Name).ToListAsync()).ToHashSet();
+            var existing = (await db.Roles.Select(r => r.Name).ToListAsync()).ToHashSet();
 
             var defaults = new[]
             {
@@ -276,17 +157,6 @@ namespace EliteFit.Persistence
         // ── Permissions ────────────────────────────────────────────────────────
         private static async Task SeedPermissionsAsync(ApplicationDbContext db)
         {
-            /* KJO PJESË NUK TY DUHET MË SEPSE E KRIJON MIGRATION-I
-            await db.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS `permissions` (
-                    `id`          int NOT NULL AUTO_INCREMENT,
-                    `name`        varchar(50) NOT NULL,
-                    `description` longtext    NOT NULL,
-                    PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-            ");
-            */
-
             var existing = (await db.Permissions.Select(p => p.Name).ToListAsync()).ToHashSet();
 
             var defaults = new[]
@@ -333,30 +203,11 @@ namespace EliteFit.Persistence
         // ── RolePermissions ────────────────────────────────────────────────────
         private static async Task SeedRolePermissionsAsync(ApplicationDbContext db)
         {
-            /* KJO PJESË NUK TY DUHET MË SEPSE E KRIJON MIGRATION-I
-            await db.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS `RolePermissions` (
-                    `Id`           int NOT NULL AUTO_INCREMENT,
-                    `RoleId`       int NOT NULL,
-                    `PermissionId` int NOT NULL,
-                    PRIMARY KEY (`Id`),
-                    KEY `IX_RolePermissions_RoleId`       (`RoleId`),
-                    KEY `IX_RolePermissions_PermissionId` (`PermissionId`),
-                    CONSTRAINT `FK_RolePermissions_roles_RoleId`
-                        FOREIGN KEY (`RoleId`)       REFERENCES `roles`       (`id`) ON DELETE CASCADE,
-                    CONSTRAINT `FK_RolePermissions_permissions_PermissionId`
-                        FOREIGN KEY (`PermissionId`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-            ");
-            */
-
-            // Resolve actual IDs from the database (do NOT assume hardcoded IDs)
             var permsByName = await db.Permissions.ToDictionaryAsync(p => p.Name, p => p.Id);
             var rolesByName = await db.Roles.ToDictionaryAsync(r => r.Name, r => r.Id);
 
             if (permsByName.Count == 0 || rolesByName.Count == 0) return;
 
-            // Track what already exists to make this idempotent
             var existingPairs = (await db.RolePermissions
                 .Select(rp => new { rp.RoleId, rp.PermissionId })
                 .ToListAsync())
@@ -373,16 +224,13 @@ namespace EliteFit.Persistence
                     toAdd.Add(new RolePermission { RoleId = rid, PermissionId = pid });
             }
 
-            // Admin gets every permission
             foreach (var permName in Permissions.All())
                 Assign("Admin", permName);
 
-            // Trainer — video access
             Assign("Trainer", Permissions.Videos.View);
             Assign("Trainer", Permissions.Videos.Create);
             Assign("Trainer", Permissions.Videos.Update);
 
-            // Nutritionist — recipe access
             Assign("Nutritionist", Permissions.Recipes.View);
             Assign("Nutritionist", Permissions.Recipes.Create);
             Assign("Nutritionist", Permissions.Recipes.Update);

@@ -33,7 +33,15 @@ namespace EliteFit.Persistence.Repositories.Reports
                         join cat in _context.Set<ExerciseCategory>() on video.CategoryId equals cat.Id into catGroup
                         from subCat in catGroup.DefaultIfEmpty() // Left Join në rast se ndonjë video s'ka kategori
                         select new { history, video, u, subCat };
-
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // Supozojmë që UserId në tabelën tënde është tip INT. 
+                // Meqenëse nga kërkesa (Tokeni) vjen si String, duhet ta konvertojmë në INT.
+                if (int.TryParse(userId, out int parsedUserId))
+                {
+                    query = query.Where(x => x.history.UserId == parsedUserId);
+                }
+            }
             // Aplikimi i filtrave dinamikë
             if (fromDate.HasValue)
             {

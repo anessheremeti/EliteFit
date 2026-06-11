@@ -98,9 +98,12 @@ builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationSer
 builder.Services.AddHostedService<StreakBackgroundWorker>();
 
 // MySQL Connection
-var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection")!;
+/*var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(defaultConn, ServerVersion.AutoDetect(defaultConn)));
+    options.UseMySql(defaultConn, ServerVersion.AutoDetect(defaultConn)));*/
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // MongoDB Connection
 builder.Services.AddSingleton<IMongoClient>(sp =>
@@ -229,8 +232,8 @@ app.MapGet("/test-mongo", ([Microsoft.AspNetCore.Mvc.FromServices] MongoDbContex
     catch { return "MongoDB Failed ❌"; }
 });
 
-app.MapGet("/test-mysql", async (ApplicationDbContext db) =>
-    await db.Database.CanConnectAsync() ? "MySQL Connected ✅" : "MySQL Failed ❌");
+/*app.MapGet("/test-mysql", async (ApplicationDbContext db) =>
+    await db.Database.CanConnectAsync() ? "MySQL Connected ✅" : "MySQL Failed ❌");*/
 
 // Mapimi i Kontrollorëve dhe Hub-it të SignalR
 app.MapControllers();

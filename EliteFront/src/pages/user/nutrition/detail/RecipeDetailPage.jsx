@@ -11,7 +11,7 @@ export default function RecipeDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BACKEND_BASE_URL = 'https://localhost:5193';
+  const BACKEND_BASE_URL = 'https://localhost:7049';
 
   useEffect(() => {
     const fetchRecipeDetail = async () => {

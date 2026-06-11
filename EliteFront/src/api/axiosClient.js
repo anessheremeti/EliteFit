@@ -6,7 +6,7 @@ import {
 } from '../utils/tokenManager';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:5193/api',
+  baseURL: 'https://localhost:7049/api',
   headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
   withCredentials: false,
 });

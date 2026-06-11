@@ -469,51 +469,55 @@ function UsersTab() {
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-black/5 text-dark/40 text-xs font-medium uppercase tracking-wider">
-              <th className="pb-3">Emri</th>
-              <th className="pb-3">Email</th>
-              <th className="pb-3">Roli</th>
-              <th className="pb-3">Statusi</th>
-              <th className="pb-3 text-right">Veprimi</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-black/5 text-sm">
-            {loading
-              ? Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} cols={5} />)
-              : visible.length === 0
-                ? <tr><td colSpan={5} className="py-12 text-center text-dark/30 text-sm">Nuk u gjet asnjë përdorues</td></tr>
-                : visible.map(user => (
-                  <tr key={user.id} className="hover:bg-surface/10 transition-colors">
-                    <td className="py-4 font-bold text-dark">{user.fullName}</td>
-                    <td className="py-4 text-dark/60">{user.email}</td>
-                    <td className="py-4">
-                      <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${
-                        user.role === 'Admin'        ? 'bg-red-50 text-red-600'    :
-                        user.role === 'Trainer' || user.role === 'Nutritionist'
-                                                     ? 'bg-purple-50 text-purple-600'
-                                                     : 'bg-gray-100 text-gray-600'
-                      }`}>{user.role ?? 'Member'}</span>
-                    </td>
-                    <td className="py-4">
-                      <span className={`text-xs font-bold px-2 py-1 rounded-lg ${
-                        user.isActive ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-400'
-                      }`}>{user.isActive ? 'Aktiv' : 'Joaktiv'}</span>
-                    </td>
-                    <td className="py-4 text-right">
-                      <button onClick={() => setActionUser(user)}
-                        className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-all ${
-                          user.isActive ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-green-50 text-green-600 hover:bg-green-100'
-                        }`}>
-                        {user.isActive ? <><UserX size={14} /> Deaktivizo</> : <><UserCheck size={14} /> Aktivizo</>}
-                      </button>
-                    </td>
-                  </tr>
-                ))
-            }
-          </tbody>
-        </table>
+    <table className="w-full text-left border-collapse">
+  <thead>
+    <tr className="border-b border-black/5 text-dark/40 text-xs font-medium uppercase tracking-wider">
+      <th className="pb-3">Emri</th>
+      <th className="pb-3">Email</th>
+      <th className="pb-3">Roli</th>
+      <th className="pb-3">Statusi</th>
+      <th className="pb-3 text-right">Veprimi</th>
+    </tr>
+  </thead>
+  <tbody className="divide-y divide-black/5 text-sm">
+    {loading
+      ? Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} cols={5} />)
+      : visible.length === 0
+        ? <tr><td colSpan={5} className="py-12 text-center text-dark/30 text-sm">Nuk u gjet asnjë përdorues</td></tr>
+        : visible.map(user => {
+            const mainRole = user.roles && user.roles.length > 0 ? user.roles[0].roleName : 'Member';
+
+            return (
+              <tr key={user.id} className="hover:bg-surface/10 transition-colors">
+                <td className="py-4 font-bold text-dark">{user.fullName}</td>
+                <td className="py-4 text-dark/60">{user.email}</td>
+                <td className="py-4">
+                  <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${
+                    mainRole === 'Admin'        ? 'bg-red-50 text-red-600'    :
+                    mainRole === 'Trainer' || mainRole === 'Nutritionist'
+                                                ? 'bg-purple-50 text-purple-600'
+                                                : 'bg-gray-100 text-gray-600'
+                  }`}>{mainRole}</span>
+                </td>
+                <td className="py-4">
+                  <span className={`text-xs font-bold px-2 py-1 rounded-lg ${
+                    user.isActive ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-400'
+                  }`}>{user.isActive ? 'Aktiv' : 'Joaktiv'}</span>
+                </td>
+                <td className="py-4 text-right">
+                  <button onClick={() => setActionUser(user)}
+                    className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-all ${
+                      user.isActive ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-green-50 text-green-600 hover:bg-green-100'
+                    }`}>
+                    {user.isActive ? <><UserX size={14} /> Deaktivizo</> : <><UserCheck size={14} /> Aktivizo</>}
+                  </button>
+                </td>
+              </tr>
+            );
+          })
+    }
+  </tbody>
+</table>
       </div>
     </>
   )

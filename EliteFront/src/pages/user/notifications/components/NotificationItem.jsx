@@ -13,18 +13,22 @@ const TYPE_CONFIG = {
 }
 
 // ── Relative timestamp ─────────────────────────────────────────────────────────
-
 function formatTime(iso) {
-  const diff = Date.now() - new Date(iso).getTime()
-  const m = 60_000, h = 3_600_000, d = 86_400_000
-  if (diff < m)     return 'Just now'
-  if (diff < h)     return `${Math.floor(diff / m)}m ago`
-  if (diff < d)     return `${Math.floor(diff / h)}h ago`
-  if (diff < 2 * d) return 'Yesterday'
-  if (diff < 7 * d) return `${Math.floor(diff / d)}d ago`
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  // Sigurohu që po krijon një objekt Date që respekton kohën UTC
+  // Shto "Z" nëse mungon, për të parandaluar konvertimin në kohë lokale
+  const date = new Date(iso.includes('Z') ? iso : iso + 'Z');
+  const diff = Date.now() - date.getTime();
+  
+  const m = 60_000, h = 3_600_000, d = 86_400_000;
+  
+  if (diff < m) return 'Just now';
+  if (diff < h) return `${Math.floor(diff / m)}m ago`;
+  if (diff < d) return `${Math.floor(diff / h)}h ago`;
+  if (diff < 2 * d) return 'Yesterday';
+  if (diff < 7 * d) return `${Math.floor(diff / d)}d ago`;
+  
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
-
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function NotificationItem({ notification, onRead, onDelete }) {
