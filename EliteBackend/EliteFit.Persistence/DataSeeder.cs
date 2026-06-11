@@ -10,15 +10,64 @@ namespace EliteFit.Persistence
     {
         public static async Task SeedAsync(ApplicationDbContext db)
         {
-            // await EnsureAuditLogsTableAsync(db);   // Ky le të rrijë i komentuar
-            // await EnsureSettingsTableAsync(db);    // Ky le të rrijë i komentuar
-            // await EnsureNotificationsColumnsAsync(db); // Ky le të rrijë i komentuar
-
-            await SeedRolesAsync(db);              // Këtë bëje aktiv!
-            await SeedPermissionsAsync(db);        // Këtë bëje aktiv!
-            await SeedRolePermissionsAsync(db);    // Këtë bëje aktiv! (Tani punon sepse metoda më poshtë nuk është më e bllokuar)
-            await SeedDefaultUsersAsync(db);       // Këtë bëje aktiv!
+            await MarkBaselineMigrationAsync(db);
+            await EnsureRefreshTokensTableAsync(db);
+            await SeedRolesAsync(db);
+            await SeedPermissionsAsync(db);
+            await SeedRolePermissionsAsync(db);
+            await SeedDefaultUsersAsync(db);
             await BackfillMissingMemberRolesAsync(db);
+        }
+
+        // Records the MySQL baseline migration in __EFMigrationsHistory so that
+        // future `dotnet ef database update` commands don't try to re-create tables.
+        private static async Task MarkBaselineMigrationAsync(ApplicationDbContext db)
+        {
+            const string migrationId = "20260611125944_InitialMySql";
+            try
+            {
+                await db.Database.ExecuteSqlRawAsync(@"
+                    CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
+                        `MigrationId`    varchar(150) NOT NULL,
+                        `ProductVersion` varchar(32)  NOT NULL,
+                        PRIMARY KEY (`MigrationId`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                ");
+                await db.Database.ExecuteSqlRawAsync(@$"
+                    INSERT IGNORE INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
+                    VALUES ('{migrationId}', '8.0.25');
+                ");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[Seed] MarkBaselineMigration failed: {ex.Message}");
+            }
+        }
+
+        private static async Task EnsureRefreshTokensTableAsync(ApplicationDbContext db)
+        {
+            try
+            {
+                await db.Database.ExecuteSqlRawAsync(@"
+                    CREATE TABLE IF NOT EXISTS `refresh_tokens` (
+                        `id`         int           NOT NULL AUTO_INCREMENT,
+                        `user_id`    int           NOT NULL,
+                        `token_hash` varchar(512)  NOT NULL,
+                        `expires_at` datetime(6)   NOT NULL,
+                        `revoked_at` datetime(6)   NULL,
+                        `created_at` datetime(6)   NULL DEFAULT CURRENT_TIMESTAMP(6),
+                        PRIMARY KEY (`id`),
+                        UNIQUE KEY `IX_refresh_tokens_token_hash` (`token_hash`),
+                        KEY        `IX_refresh_tokens_user_id`   (`user_id`),
+                        CONSTRAINT `FK_refresh_tokens_users_user_id`
+                            FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                ");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[Seed] EnsureRefreshTokensTable failed: {ex.Message}");
+            }
         }
 
         // ── Backfill ───────────────────────────────────────────────────────────

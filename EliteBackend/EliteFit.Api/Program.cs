@@ -97,9 +97,10 @@ builder.Services.AddScoped<IRealTimeNotificationService, RealTimeNotificationSer
 // Shërbimi në prapavijë (Background Worker)
 builder.Services.AddHostedService<StreakBackgroundWorker>();
 
-// SQL Server Connection
+// MySQL Connection
+var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySql(defaultConn, ServerVersion.AutoDetect(defaultConn)));
 
 // MongoDB Connection
 builder.Services.AddSingleton<IMongoClient>(sp =>

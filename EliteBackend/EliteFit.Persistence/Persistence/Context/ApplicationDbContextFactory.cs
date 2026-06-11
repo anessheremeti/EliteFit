@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace EliteFit.Persistence.Persistence.Context
 {
@@ -15,13 +16,14 @@ namespace EliteFit.Persistence.Persistence.Context
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(path)
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("appsettings.Development.json", optional: true)
                 .Build();
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0)));
 
             return new ApplicationDbContext(optionsBuilder.Options, new HttpContextAccessor());
         }

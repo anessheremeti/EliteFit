@@ -25,6 +25,12 @@ namespace EliteFit.Persistence.Repositories
         public async Task<User?> GetByIdAsync(int id)
             => await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
+        public async Task<User?> GetByIdWithRolesAsync(int id)
+            => await _context.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
         public async Task<bool> EmailExistsAsync(string email)
             => await _context.Users.AnyAsync(u => u.Email == email);
 
@@ -47,14 +53,14 @@ namespace EliteFit.Persistence.Repositories
             => await _context.Users.AddAsync(user);
 
         public void Update(User user)
-            => _context.Users.Update(user); // Përdoret edhe për ndryshim fjalëkalimi (PasswordHash)
+            => _context.Users.Update(user); // Pï¿½rdoret edhe pï¿½r ndryshim fjalï¿½kalimi (PasswordHash)
 
         public async Task SaveChangesAsync()
             => await _context.SaveChangesAsync();
 
         public async Task DeleteAsync(int id, CancellationToken ct = default)
         {
-            // Hard Delete: Gjejmë përdoruesin me gjithë lidhjet (varësisht nga Cascade Delete në DbContext)
+            // Hard Delete: Gjejmï¿½ pï¿½rdoruesin me gjithï¿½ lidhjet (varï¿½sisht nga Cascade Delete nï¿½ DbContext)
             var user = await _context.Users.FindAsync(new object[] { id }, ct);
             if (user != null)
             {

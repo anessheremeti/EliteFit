@@ -1,6 +1,7 @@
 using EliteFit.Domain.Interfaces.Repositories;
 using EliteFit.Domain.Interfaces.Repositories.Exercise;
 using EliteFit.Domain.Interfaces.Repositories.Gamification;
+using EliteFit.Domain.Interfaces.Repositories.Identity;
 using EliteFit.Domain.Interfaces.Repositories.Media;
 using EliteFit.Domain.Interfaces.Repositories.Personalization;
 using EliteFit.Domain.Interfaces.Repositories.Reports;
@@ -26,6 +27,7 @@ namespace EliteFit.Persistence
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IPermissionResolver, DbPermissionResolver>();
             services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IAllergyRepository, AllergyRepository>();
             services.AddScoped<EliteFit.Domain.Interfaces.Repositories.IGoalRepository, EliteFit.Persistence.Repositories.GoalRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();

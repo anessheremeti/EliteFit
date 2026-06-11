@@ -2,6 +2,7 @@ using EliteFit.Application.DTOs.Auth;
 using EliteFit.Application.Features.Auth.Commands;
 using EliteFit.Application.Features.Auth.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EliteFit.Api.Controllers
@@ -10,12 +11,12 @@ namespace EliteFit.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator     _mediator;
         private readonly IConfiguration _configuration;
 
         public AuthController(IMediator mediator, IConfiguration configuration)
         {
-            _mediator = mediator;
+            _mediator      = mediator;
             _configuration = configuration;
         }
 
@@ -33,17 +34,39 @@ namespace EliteFit.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Issues a new access + refresh token pair.
+        /// The old refresh token is immediately revoked (token rotation).
+        /// If a revoked token is replayed, ALL sessions for that user are wiped.
+        /// </summary>
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+        {
+            var result = await _mediator.Send(new RefreshTokenCommand(request.RefreshToken));
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Revokes the supplied refresh token so it can never be used again.
+        /// </summary>
+        [HttpPost("logout")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout([FromBody] RefreshRequest request)
+        {
+            await _mediator.Send(new LogoutCommand(request.RefreshToken));
+            return NoContent();
+        }
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var frontendBaseUrl = _configuration["AppSettings:FrontendBaseUrl"] ?? "http://localhost:5173";
             var devLink = await _mediator.Send(new ForgotPasswordCommand(request, frontendBaseUrl));
 
-            // Always return 200 — never reveal whether an email is registered.
-            // devLink is non-null only when Email:Enabled = false (development mode).
             return Ok(new
             {
-                message = "If that email is registered, you will receive a reset link shortly.",
+                message      = "If that email is registered, you will receive a reset link shortly.",
                 devResetLink = devLink
             });
         }
@@ -55,4 +78,6 @@ namespace EliteFit.Api.Controllers
             return Ok(new { message = "Your password has been reset successfully. You can now log in." });
         }
     }
+
+    public record RefreshRequest(string RefreshToken);
 }
